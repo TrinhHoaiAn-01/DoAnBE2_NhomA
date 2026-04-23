@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| WEB ROUTES
 |--------------------------------------------------------------------------
 */
 
@@ -24,28 +24,14 @@ Route::get('/', function () {
 
 
 // =========================
-// LOGIN
+// AUTH
 // =========================
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login.form');
-
+Route::get('/login', fn () => view('auth.login'))->name('login.form');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
-
-// =========================
-// REGISTER
-// =========================
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register.form');
-
+Route::get('/register', fn () => view('auth.register'))->name('register.form');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 
-
-// =========================
-// LOGOUT
-// =========================
 Route::post('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
@@ -56,13 +42,13 @@ Route::post('/logout', function () {
 
 
 // =========================
-// FORGOT PASSWORD 
+// FORGOT PASSWORD (FAKE RESET)
 // =========================
-Route::get('/forgot-password', function () {
-    return view('auth.forget-password');
-})->name('password.request');
+Route::get('/forgot-password', fn () => view('auth.forget-password'))
+    ->name('password.request');
 
 Route::post('/forgot-password', function (Request $request) {
+
     $request->validate([
         'email' => ['required', 'email'],
         'password' => ['required', 'min:6', 'confirmed'],
@@ -81,6 +67,7 @@ Route::post('/forgot-password', function (Request $request) {
 
     return redirect()->route('login.form')
         ->with('success', 'Đổi mật khẩu thành công!');
+
 })->name('password.update.fake');
 
 
@@ -88,26 +75,36 @@ Route::post('/forgot-password', function (Request $request) {
 // DASHBOARD (AFTER LOGIN)
 // =========================
 Route::get('/home', function () {
-    return "Login thành công";
-})->middleware('auth');
-
-
-// =========================
-// ADMIN ROUTES (NGƯỜI 5)
-// =========================
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    
-    // Quản lý Nhà cung cấp
-    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
-    Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
-    Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
-
-    Route::get('/permissions', [AdminController::class, 'permissions'])->name('permissions');
-    Route::post('/permissions', [AdminController::class, 'updatePermissions'])->name('permissions.update');
-    Route::get('/logs', [AdminController::class, 'logs'])->name('logs');
-});
-=======
     return view('admin.dashboard');
 })->middleware('auth')->name('home');
->>>>>>> template
+
+
+// =========================
+// ADMIN ROUTES
+// =========================
+Route::prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])
+        ->name('dashboard');
+
+    // Suppliers
+    Route::get('/suppliers', [SupplierController::class, 'index'])
+        ->name('suppliers.index');
+
+    Route::post('/suppliers', [SupplierController::class, 'store'])
+        ->name('suppliers.store');
+
+    Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])
+        ->name('suppliers.destroy');
+
+    // Permissions
+    Route::get('/permissions', [AdminController::class, 'permissions'])
+        ->name('permissions');
+
+    Route::post('/permissions', [AdminController::class, 'updatePermissions'])
+        ->name('permissions.update');
+
+    // Logs
+    Route::get('/logs', [AdminController::class, 'logs'])
+        ->name('logs');
+});
