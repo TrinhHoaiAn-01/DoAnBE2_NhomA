@@ -32,22 +32,9 @@ class AdminController extends Controller
 
         $logs = $query->paginate(20);
 
-        // HÀM AI GIẢ LẬP VÀ PHÂN TÍCH DIFF
+        // PHÂN TÍCH DIFF
         foreach ($logs as $log) {
-            // 1. Phân tích Rủi ro
-            $action = mb_strtolower($log->action);
-            if (str_contains($action, 'xóa') || str_contains($action, 'quyền')) {
-                $log->ai_risk = 'Rủi ro cao';
-                $log->ai_color = 'danger';
-            } elseif (str_contains($action, 'cập nhật') || str_contains($action, 'sửa')) {
-                $log->ai_risk = 'Trung bình';
-                $log->ai_color = 'warning';
-            } else {
-                $log->ai_risk = 'An toàn';
-                $log->ai_color = 'success';
-            }
-
-            // 2. So sánh dữ liệu (Diff Analysis)
+            // So sánh dữ liệu (Diff Analysis)
             $changes = [];
             $oldData = is_string($log->old_data) ? json_decode($log->old_data, true) : $log->old_data;
             $newData = is_string($log->new_data) ? json_decode($log->new_data, true) : $log->new_data;
