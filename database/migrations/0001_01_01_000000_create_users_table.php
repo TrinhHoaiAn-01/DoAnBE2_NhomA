@@ -19,11 +19,14 @@ return new class extends Migration
 
             $table->string('email', 191)->unique();
 
+            // PHONE
+            $table->string('phone', 20)->nullable()->after('email');
+
             $table->timestamp('email_verified_at')->nullable();
 
             $table->string('password', 191);
 
-            // ROLE (1: admin, 2: user, v.v...)
+            // ROLE (1: admin, 2: user, ...)
             $table->unsignedBigInteger('role_id')->default(2);
 
             // STATUS (active / inactive)
