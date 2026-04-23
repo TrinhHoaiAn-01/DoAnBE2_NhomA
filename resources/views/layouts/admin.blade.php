@@ -105,31 +105,42 @@
             </div>
 
             <ul class="list-unstyled components">
-                <p>Hệ thống & Quản trị</p>
+                <p>Quản lý chung</p>
                 <li class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('admin.dashboard') }}">
                         <i class="bi bi-grid-1x2"></i> Tổng quan
                     </a>
                 </li>
 
-                <p class="mt-3">Người 5: Hệ thống</p>
+                <p class="mt-3">Kho vận & Mua hàng</p>
+                <li>
+                    <a href="#"><i class="bi bi-truck"></i> Quản lý Nhà cung cấp</a>
+                </li>
+                <li>
+                    <a href="#"><i class="bi bi-file-earmark-text"></i> Nhập / Xuất kho</a>
+                </li>
+                <li>
+                    <a href="#"><i class="bi bi-box-seam"></i> Tồn kho & Lô hàng</a>
+                </li>
+
+                <p class="mt-3">Hệ thống & Bảo mật</p>
                 <li class="{{ request()->routeIs('admin.permissions') ? 'active' : '' }}">
-                    <a href="#">
+                    <a href="{{ route('admin.permissions') }}">
                         <i class="bi bi-shield-lock"></i> Ma trận quyền
                     </a>
                 </li>
                 <li class="{{ request()->routeIs('admin.logs') ? 'active' : '' }}">
-                    <a href="#">
+                    <a href="{{ route('admin.logs') }}">
                         <i class="bi bi-journal-text"></i> Nhật ký hệ thống
                     </a>
                 </li>
                 
-                <p class="mt-3">Khu vực các thành viên</p>
+                <p class="mt-3">Hỗ trợ & Nội dung</p>
                 <li>
-                    <a href="#"><i class="bi bi-people"></i> Người 1: Khách hàng</a>
+                    <a href="#"><i class="bi bi-image"></i> Banner & Trang chủ</a>
                 </li>
                 <li>
-                    <a href="#"><i class="bi bi-box"></i> Người 2: Sản phẩm</a>
+                    <a href="#"><i class="bi bi-question-circle"></i> Trung tâm trợ giúp</a>
                 </li>
             </ul>
 
