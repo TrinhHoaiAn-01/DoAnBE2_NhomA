@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use App\Http\Controllers\AuthController;
 
 /*
@@ -10,35 +13,37 @@ use App\Http\Controllers\AuthController;
 */
 
 // =========================
-// HOME / WELCOME
+// HOME
 // =========================
 Route::get('/', function () {
     return view('welcome');
 });
 
 // =========================
-// AUTH - LOGIN
+// LOGIN
 // =========================
 
-// Hiển thị form login
+// form login
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login.form');
 
-// Xử lý login
+// xử lý login
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
+
 // =========================
-// AUTH - REGISTER
+// REGISTER
 // =========================
 
-// Hiển thị form register
+// form register
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register.form');
 
-// Xử lý register
+// xử lý register
 Route::post('/register', [AuthController::class, 'register'])->name('register');
+
 
 // =========================
 // LOGOUT
@@ -51,15 +56,43 @@ Route::post('/logout', function () {
     return redirect('/login');
 })->name('logout');
 
+
 // =========================
 // FORGOT PASSWORD
 // =========================
+
+// form forgot password
 Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
+    return view('auth.forget-password');
 })->name('password.request');
 
+
+// xử lý đổi mật khẩu (fake reset)
+Route::post('/forgot-password', function (Request $request) {
+
+    $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required', 'min:6', 'confirmed'],
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return back()->withErrors([
+            'email' => 'Email không tồn tại'
+        ]);
+    }
+
+    $user->password = Hash::make($request->password);
+    $user->save();
+
+    return redirect()->route('login.form')
+        ->with('success', 'Đổi mật khẩu thành công!');
+})->name('password.update.fake');
+
+
 // =========================
-// HOME (SAU LOGIN)
+// HOME (AFTER LOGIN)
 // =========================
 Route::get('/home', function () {
     return "Login thành công";
