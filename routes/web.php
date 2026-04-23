@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,30 +11,17 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Trang chủ
-Route::get('/', function () {
-    return view('welcome');
-});
-
-// --- Nhóm route Đăng nhập (Auth) ---
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login.form');
-
-Route::post('/login', [AuthController::class, 'login'])->name('login');
-
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->name('password.request');
-
-Route::get('/home', function () {
-    return "Login thành công 🎉";
-})->middleware('auth');
-
+// ... (giữ nguyên các route login bên dưới)
 
 // --- Nhóm route Admin (Người 5) ---
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Quản lý Nhà cung cấp
+    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
+    Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
+    Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
+
     Route::get('/permissions', [AdminController::class, 'permissions'])->name('permissions');
     Route::post('/permissions', [AdminController::class, 'updatePermissions'])->name('permissions.update');
     Route::get('/logs', [AdminController::class, 'logs'])->name('logs');

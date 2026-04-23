@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name') }} - Quản trị hệ thống (Người 5)</title>
     
-    <!-- Bootstrap 5 CSS (Local từ nhánh của Trọng) -->
-    @vite(['resources/bootstrap-5.3.8-dist/css/bootstrap.min.css'])
+    <!-- Bootstrap 5 (Dùng hàng Offline từ public/bootstrap theo cập nhật của Trọng) -->
+    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
     
     <!-- Bootstrap Icons (CDN để dùng icon) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -113,8 +113,8 @@
                 </li>
 
                 <p class="mt-3">Kho vận & Mua hàng</p>
-                <li>
-                    <a href="#"><i class="bi bi-truck"></i> Quản lý Nhà cung cấp</a>
+                <li class="{{ request()->routeIs('admin.suppliers.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.suppliers.index') }}"><i class="bi bi-truck"></i> Quản lý Nhà cung cấp</a>
                 </li>
                 <li>
                     <a href="#"><i class="bi bi-file-earmark-text"></i> Nhập / Xuất kho</a>
@@ -184,8 +184,10 @@
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS (Local từ nhánh của Trọng) -->
-    @vite(['resources/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js'])
+    <!-- Bootstrap 5 JS (Hàng của Trọng dời sang public) -->
+    <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     @stack('scripts')
 </body>

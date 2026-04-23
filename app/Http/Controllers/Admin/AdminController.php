@@ -20,6 +20,7 @@ class AdminController extends Controller
 
     public function logs()
     {
-        return "Trang Nhật ký hệ thống đang được xây dựng (Người 5)";
+        $logs = \App\Models\SystemLog::latest()->paginate(20);
+        return view('admin.logs', compact('logs'));
     }
 }
