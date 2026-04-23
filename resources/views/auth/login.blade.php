@@ -60,92 +60,91 @@
 
 <body>
 
-    <div class="login-box">
+<div class="login-box">
 
-        <h4 class="text-center login-title">Đăng nhập</h4>
+    <h4 class="text-center login-title">Đăng nhập</h4>
 
-        {{-- SUCCESS MESSAGE --}}
-        @if (session('success'))
-            <div class="alert alert-success py-2">
-                {{ session('success') }}
-            </div>
-        @endif
+    {{-- SUCCESS --}}
+    @if (session('success'))
+        <div class="alert alert-success py-2">
+            {{ session('success') }}
+        </div>
+    @endif
 
-        {{-- ERROR --}}
-        @if ($errors->any())
-            <div class="alert alert-danger py-2">
-                @foreach ($errors->all() as $error)
-                    <div>{{ $error }}</div>
-                @endforeach
-            </div>
-        @endif
+    {{-- ERROR --}}
+    @if ($errors->any())
+        <div class="alert alert-danger py-2">
+            @foreach ($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    @endif
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
+    <form method="POST" action="{{ route('login') }}">
+        @csrf
 
-            <!-- EMAIL -->
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email"
-                       name="email"
-                       class="form-control"
-                       value="{{ old('email') }}"
-                       placeholder="Nhập email..."
-                       required>
-            </div>
+        <!-- EMAIL -->
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email"
+                   name="email"
+                   class="form-control"
+                   value="{{ old('email') }}"
+                   placeholder="Nhập email..."
+                   required>
+        </div>
 
-            <!-- PASSWORD -->
-            <div class="mb-3">
-                <label class="form-label">Mật khẩu</label>
-                <input type="password"
-                       name="password"
-                       class="form-control"
-                       placeholder="Nhập mật khẩu..."
-                       required>
-            </div>
+        <!-- PASSWORD -->
+        <div class="mb-3">
+            <label class="form-label">Mật khẩu</label>
+            <input type="password"
+                   name="password"
+                   class="form-control"
+                   placeholder="Nhập mật khẩu..."
+                   required>
+        </div>
 
-            <!-- REMEMBER ME -->
-            <div class="mb-3 form-check">
-                <input type="checkbox"
-                       class="form-check-input"
-                       name="remember"
-                       id="remember"
-                       {{ old('remember') ? 'checked' : '' }}>
+        <!-- REMEMBER -->
+        <div class="mb-3 form-check">
+            <input type="checkbox"
+                   class="form-check-input"
+                   name="remember"
+                   id="remember"
+                   {{ old('remember') ? 'checked' : '' }}>
 
-                <label class="form-check-label" for="remember">
-                    Ghi nhớ đăng nhập
-                </label>
-            </div>
+            <label class="form-check-label" for="remember">
+                Ghi nhớ đăng nhập
+            </label>
+        </div>
 
-            <!-- BUTTON -->
-            <div class="d-grid mb-3">
-                <button type="submit" class="btn btn-primary">
-                    Đăng nhập
-                </button>
-            </div>
+        <!-- BUTTON -->
+        <div class="d-grid mb-3">
+            <button type="submit" class="btn btn-primary">
+                Đăng nhập
+            </button>
+        </div>
 
-            <!-- FORGOT PASSWORD -->
-            <div class="text-center">
-                <a href="{{ route('password.request') }}" class="forgot">
-                    Quên mật khẩu?
-                </a>
-            </div>
+        <!-- FORGOT -->
+        <div class="text-center">
+            <a href="{{ route('password.request') }}" class="forgot">
+                Quên mật khẩu?
+            </a>
+        </div>
 
-            <!-- REGISTER LINK -->
-            <div class="text-center mt-3">
-                <span style="font-size: 14px; color: #666;">
-                    Chưa có tài khoản?
-                </span>
-                <a href="{{ route('register.form') }}"
-                   class="fw-semibold text-primary text-decoration-none">
-                    Đăng ký ngay
-                </a>
-            </div>
+        <!-- REGISTER -->
+        <div class="text-center mt-3">
+            <span style="font-size: 14px; color: #666;">
+                Chưa có tài khoản?
+            </span>
+            <a href="{{ route('register.form') }}"
+               class="fw-semibold text-primary text-decoration-none">
+                Đăng ký ngay
+            </a>
+        </div>
 
-        </form>
+    </form>
 
-    </div>
+</div>
 
 </body>
-
 </html>
