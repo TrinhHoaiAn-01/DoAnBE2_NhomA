@@ -64,6 +64,13 @@
 
         <h4 class="text-center login-title">Đăng nhập</h4>
 
+        {{-- SUCCESS MESSAGE --}}
+        @if (session('success'))
+            <div class="alert alert-success py-2">
+                {{ session('success') }}
+            </div>
+        @endif
+
         {{-- ERROR --}}
         @if ($errors->any())
             <div class="alert alert-danger py-2">
@@ -121,6 +128,17 @@
             <div class="text-center">
                 <a href="{{ route('password.request') }}" class="forgot">
                     Quên mật khẩu?
+                </a>
+            </div>
+
+            <!-- REGISTER LINK -->
+            <div class="text-center mt-3">
+                <span style="font-size: 14px; color: #666;">
+                    Chưa có tài khoản?
+                </span>
+                <a href="{{ route('register.form') }}"
+                   class="fw-semibold text-primary text-decoration-none">
+                    Đăng ký ngay
                 </a>
             </div>
 
