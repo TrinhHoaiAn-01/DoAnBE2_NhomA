@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\AuthController;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
@@ -45,7 +46,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 // LOGOUT
 // =========================
 Route::post('/logout', function () {
-    auth()->logout();
+    Auth::logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
 
