@@ -18,10 +18,36 @@ class AdminController extends Controller
         return view('admin.permissions', compact('roles'));
     }
 
-    public function logs()
+    public function logs(Request $request)
     {
-        $logs = \App\Models\SystemLog::latest()->paginate(20);
-        return view('admin.logs', compact('logs'));
+        $query = \App\Models\SystemLog::query();
+
+        // Sắp xếp
+        $sort = $request->get('sort', 'latest');
+        if ($sort == 'oldest') {
+            $query->oldest();
+        } else {
+            $query->latest();
+        }
+
+        $logs = $query->paginate(20);
+
+        // HÀM AI GIẢ LẬP: Đánh giá rủi ro dựa trên từ khóa (Keyword-based Semantic Analysis)
+        foreach ($logs as $log) {
+            $action = mb_strtolower($log->action);
+            if (str_contains($action, 'xóa') || str_contains($action, 'quyền')) {
+                $log->ai_risk = 'Rủi ro cao';
+                $log->ai_color = 'danger';
+            } elseif (str_contains($action, 'cập nhật') || str_contains($action, 'sửa')) {
+                $log->ai_risk = 'Trung bình';
+                $log->ai_color = 'warning';
+            } else {
+                $log->ai_risk = 'An toàn';
+                $log->ai_color = 'success';
+            }
+        }
+
+        return view('admin.logs', compact('logs', 'sort'));
     }
 
     public function updatePermissions(Request $request)
