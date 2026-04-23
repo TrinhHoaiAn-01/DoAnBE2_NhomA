@@ -18,10 +18,36 @@ class AdminController extends Controller
         return view('admin.permissions', compact('roles'));
     }
 
-    public function logs()
+    public function logs(Request $request)
     {
-        $logs = \App\Models\SystemLog::latest()->paginate(20);
-        return view('admin.logs', compact('logs'));
+        $query = \App\Models\SystemLog::query();
+
+        // Sắp xếp
+        $sort = $request->get('sort', 'latest');
+        if ($sort == 'oldest') {
+            $query->oldest();
+        } else {
+            $query->latest();
+        }
+
+        $logs = $query->paginate(20);
+
+        // HÀM AI GIẢ LẬP: Đánh giá rủi ro dựa trên từ khóa (Keyword-based Semantic Analysis)
+        foreach ($logs as $log) {
+            $action = mb_strtolower($log->action);
+            if (str_contains($action, 'xóa') || str_contains($action, 'quyền')) {
+                $log->ai_risk = 'Rủi ro cao';
+                $log->ai_color = 'danger';
+            } elseif (str_contains($action, 'cập nhật') || str_contains($action, 'sửa')) {
+                $log->ai_risk = 'Trung bình';
+                $log->ai_color = 'warning';
+            } else {
+                $log->ai_risk = 'An toàn';
+                $log->ai_color = 'success';
+            }
+        }
+
+        return view('admin.logs', compact('logs', 'sort'));
     }
 
     public function updatePermissions(Request $request)
@@ -53,12 +79,12 @@ class AdminController extends Controller
         // Ghi vào Nhật ký hệ thống (Task 50)
         \App\Models\SystemLog::create([
             'user_name' => 'Người 5 (Quản trị viên)',
-            'action' => 'Cập nhật Ma trận quyền',
+            'action' => 'Cập nhật Phân quyền hệ thống',
             'target_type' => 'Phân quyền Hệ thống',
             'old_data' => $oldData,
             'new_data' => $newData,
         ]);
 
-        return redirect()->back()->with('success', 'Đã lưu Ma trận Phân quyền và ghi vào Nhật ký Hệ thống thành công!');
+        return redirect()->back()->with('success', 'Đã lưu Phân quyền hệ thống và ghi vào Nhật ký Hệ thống thành công!');
     }
 }

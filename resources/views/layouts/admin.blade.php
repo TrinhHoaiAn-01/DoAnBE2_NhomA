@@ -126,7 +126,7 @@
                 <p class="mt-3">Hệ thống & Bảo mật</p>
                 <li class="{{ request()->routeIs('admin.permissions') ? 'active' : '' }}">
                     <a href="{{ route('admin.permissions') }}">
-                        <i class="bi bi-shield-lock"></i> Ma trận quyền
+                        <i class="bi bi-shield-lock"></i> Phân quyền hệ thống
                     </a>
                 </li>
                 <li class="{{ request()->routeIs('admin.logs') ? 'active' : '' }}">
@@ -187,7 +187,7 @@
     <!-- Bootstrap 5 JS (Hàng của Trọng dời sang public) -->
     <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     
     @stack('scripts')
 </body>
