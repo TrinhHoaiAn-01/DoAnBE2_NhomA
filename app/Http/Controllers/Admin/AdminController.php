@@ -53,12 +53,12 @@ class AdminController extends Controller
         // Ghi vào Nhật ký hệ thống (Task 50)
         \App\Models\SystemLog::create([
             'user_name' => 'Người 5 (Quản trị viên)',
-            'action' => 'Cập nhật Ma trận quyền',
+            'action' => 'Cập nhật Phân quyền hệ thống',
             'target_type' => 'Phân quyền Hệ thống',
             'old_data' => $oldData,
             'new_data' => $newData,
         ]);
 
-        return redirect()->back()->with('success', 'Đã lưu Ma trận Phân quyền và ghi vào Nhật ký Hệ thống thành công!');
+        return redirect()->back()->with('success', 'Đã lưu Phân quyền hệ thống và ghi vào Nhật ký Hệ thống thành công!');
     }
 }

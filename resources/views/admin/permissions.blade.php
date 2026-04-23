@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Ma trận Phân quyền Hệ thống')
+@section('title', 'Phân quyền Hệ thống')
 
 @section('content')
     <div class="card border-0 shadow-sm rounded-3 mb-4">
