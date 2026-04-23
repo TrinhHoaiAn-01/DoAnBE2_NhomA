@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('email', 191)->unique();
 
             // PHONE
-            $table->string('phone', 20)->nullable()->after('email');
+            $table->string('phone', 20)->nullable();
 
             $table->timestamp('email_verified_at')->nullable();
 
@@ -32,7 +32,7 @@ return new class extends Migration
             // STATUS (active / inactive)
             $table->enum('status', ['active', 'inactive'])->default('active');
 
-            $table->string('remember_token', 100)->nullable();
+            $table->rememberToken(); // chuẩn Laravel
 
             $table->timestamps();
         });
