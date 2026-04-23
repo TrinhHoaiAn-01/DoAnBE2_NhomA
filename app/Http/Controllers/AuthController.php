@@ -20,11 +20,16 @@ class AuthController extends Controller
             'password' => ['required', 'min:6'],
         ]);
 
+        // remember me
+        $remember = $request->filled('remember');
+
         // Attempt login
         if (Auth::attempt([
             'email' => $data['email'],
             'password' => $data['password']
-        ])) {
+        ], $remember)) {
+
+            // bảo mật session
             $request->session()->regenerate();
 
             return redirect()->intended('/home');
@@ -51,8 +56,8 @@ class AuthController extends Controller
             'role_id' => ['required', 'in:1,2'],
         ]);
 
-        // Create user + HASH PASSWORD
-        $user = User::create([
+        // Create user
+        User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
@@ -60,9 +65,8 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        // Auto login sau khi register (tuỳ chọn)
-        Auth::login($user);
-
-        return redirect('/home');
+        // redirect về login sau khi đăng ký
+        return redirect()->route('login.form')
+            ->with('success', 'Đăng ký thành công! Hãy đăng nhập.');
     }
 }
