@@ -22,6 +22,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 // =========================
 // LOGIN
 // =========================
@@ -50,12 +51,12 @@ Route::post('/logout', function () {
     request()->session()->invalidate();
     request()->session()->regenerateToken();
 
-    return redirect('/login');
+    return redirect()->route('login.form');
 })->name('logout');
 
 
 // =========================
-// FORGOT PASSWORD
+// FORGOT PASSWORD 
 // =========================
 Route::get('/forgot-password', function () {
     return view('auth.forget-password');
@@ -84,7 +85,7 @@ Route::post('/forgot-password', function (Request $request) {
 
 
 // =========================
-// HOME (AFTER LOGIN)
+// DASHBOARD (AFTER LOGIN)
 // =========================
 Route::get('/home', function () {
     return "Login thành công";
@@ -106,3 +107,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/permissions', [AdminController::class, 'updatePermissions'])->name('permissions.update');
     Route::get('/logs', [AdminController::class, 'logs'])->name('logs');
 });
+=======
+    return view('admin.dashboard');
+})->middleware('auth')->name('home');
+>>>>>>> template
