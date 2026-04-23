@@ -23,4 +23,42 @@ class AdminController extends Controller
         $logs = \App\Models\SystemLog::latest()->paginate(20);
         return view('admin.logs', compact('logs'));
     }
+
+    public function updatePermissions(Request $request)
+    {
+        $permissions = $request->input('permissions', []);
+        $oldData = [];
+        $newData = [];
+
+        foreach ($permissions as $roleId => $data) {
+            $role = \App\Models\RolePermission::find($roleId);
+            if ($role) {
+                // Lưu lại dữ liệu cũ trước khi sửa
+                $oldData[$role->role_name] = $role->toArray();
+                
+                // Cập nhật dữ liệu mới
+                $role->update([
+                    'can_view' => isset($data['can_view']) ? $data['can_view'] : 0,
+                    'can_add' => isset($data['can_add']) ? $data['can_add'] : 0,
+                    'can_edit' => isset($data['can_edit']) ? $data['can_edit'] : 0,
+                    'can_delete' => isset($data['can_delete']) ? $data['can_delete'] : 0,
+                    'can_approve' => isset($data['can_approve']) ? $data['can_approve'] : 0,
+                ]);
+
+                // Lưu lại dữ liệu sau khi sửa
+                $newData[$role->role_name] = $role->toArray();
+            }
+        }
+
+        // Ghi vào Nhật ký hệ thống (Task 50)
+        \App\Models\SystemLog::create([
+            'user_name' => 'Người 5 (Quản trị viên)',
+            'action' => 'Cập nhật Ma trận quyền',
+            'target_type' => 'Phân quyền Hệ thống',
+            'old_data' => $oldData,
+            'new_data' => $newData,
+        ]);
+
+        return redirect()->back()->with('success', 'Đã lưu Ma trận Phân quyền và ghi vào Nhật ký Hệ thống thành công!');
+    }
 }
