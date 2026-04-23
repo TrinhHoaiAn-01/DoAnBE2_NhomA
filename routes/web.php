@@ -19,29 +19,24 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 // =========================
 // LOGIN
 // =========================
-
-// form login
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login.form');
 
-// xử lý login
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 
 // =========================
 // REGISTER
 // =========================
-
-// form register
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register.form');
 
-// xử lý register
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 
@@ -53,21 +48,17 @@ Route::post('/logout', function () {
     request()->session()->invalidate();
     request()->session()->regenerateToken();
 
-    return redirect('/login');
+    return redirect()->route('login.form');
 })->name('logout');
 
 
 // =========================
-// FORGOT PASSWORD
+// FORGOT PASSWORD (fake reset)
 // =========================
-
-// form forgot password
 Route::get('/forgot-password', function () {
     return view('auth.forget-password');
 })->name('password.request');
 
-
-// xử lý đổi mật khẩu (fake reset)
 Route::post('/forgot-password', function (Request $request) {
 
     $request->validate([
@@ -92,8 +83,8 @@ Route::post('/forgot-password', function (Request $request) {
 
 
 // =========================
-// HOME (AFTER LOGIN)
+// DASHBOARD (AFTER LOGIN)
 // =========================
 Route::get('/home', function () {
-    return "Login thành công";
-})->middleware('auth');
+    return view('admin.dashboard');
+})->middleware('auth')->name('home');
