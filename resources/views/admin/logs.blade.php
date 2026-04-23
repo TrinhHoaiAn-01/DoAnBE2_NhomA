@@ -65,16 +65,49 @@
                     </tr>
                     <tr class="collapse d-print-none" id="logDetail{{ $log->id }}">
                         <td colspan="5" class="bg-light p-4">
-                            <div class="row g-4">
-                                <div class="col-md-6">
-                                    <h6 class="fw-bold text-danger small text-uppercase">Snapshot Trước</h6>
-                                    <pre class="bg-white p-3 rounded border small text-wrap shadow-sm"><code>{{ json_encode($log->old_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</code></pre>
+                            @if(isset($log->changes_diff) && count($log->changes_diff) > 0)
+                                <h6 class="fw-bold text-primary mb-3"><i class="bi bi-magic"></i> Chi tiết thay đổi (AI Trích xuất)</h6>
+                                <ul class="list-group shadow-sm">
+                                    @foreach($log->changes_diff as $change)
+                                        @php
+                                            // Dịch tên trường
+                                            $fieldName = $change['field'];
+                                            $fieldMap = [
+                                                'can_view' => 'Quyền Xem',
+                                                'can_add' => 'Quyền Thêm',
+                                                'can_edit' => 'Quyền Sửa',
+                                                'can_delete' => 'Quyền Xóa',
+                                                'can_approve' => 'Quyền Duyệt'
+                                            ];
+                                            $displayField = $fieldMap[$fieldName] ?? $fieldName;
+                                            
+                                            // Dịch giá trị True/False
+                                            $formatValue = function($val) {
+                                                if ($val === true) return '<span class="badge bg-success">Có</span>';
+                                                if ($val === false) return '<span class="badge bg-danger">Không</span>';
+                                                return "<strong>{$val}</strong>";
+                                            };
+                                        @endphp
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <span class="fw-bold">{{ $change['item'] }}</span>
+                                                <i class="bi bi-arrow-right-short text-muted mx-1"></i>
+                                                <span class="text-secondary">{{ $displayField }}</span>
+                                            </div>
+                                            <div>
+                                                {!! $formatValue($change['old']) !!}
+                                                <i class="bi bi-arrow-right mx-2 text-primary"></i>
+                                                {!! $formatValue($change['new']) !!}
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <div class="text-center text-muted py-3">
+                                    <i class="bi bi-info-circle fs-4 d-block mb-2"></i>
+                                    Không có sự thay đổi chi tiết nào được ghi nhận.
                                 </div>
-                                <div class="col-md-6">
-                                    <h6 class="fw-bold text-success small text-uppercase">Snapshot Sau</h6>
-                                    <pre class="bg-white p-3 rounded border small text-wrap shadow-sm"><code>{{ json_encode($log->new_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</code></pre>
-                                </div>
-                            </div>
+                            @endif
                         </td>
                     </tr>
                     @empty
