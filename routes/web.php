@@ -3,65 +3,68 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\AuthController;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| WEB ROUTES
 |--------------------------------------------------------------------------
 */
 
 // =========================
 // HOME
 // =========================
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', fn () => view('welcome'));
+
+
+// =========================
+// AUTH
+// =========================
+Route::middleware('guest')->group(function () {
+
+    Route::get('/login', fn () => view('auth.login'))
+        ->name('login.form');
+
+    Route::post('/login', [AuthController::class, 'login'])
+        ->name('login');
+
+    Route::get('/register', fn () => view('auth.register'))
+        ->name('register.form');
+
+    Route::post('/register', [AuthController::class, 'register'])
+        ->name('register');
 });
-
-// =========================
-// LOGIN
-// =========================
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login.form');
-
-Route::post('/login', [AuthController::class, 'login'])->name('login');
-
-
-// =========================
-// REGISTER
-// =========================
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register.form');
-
-Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 
 // =========================
 // LOGOUT
 // =========================
 Route::post('/logout', function () {
+
     Auth::logout();
+
     request()->session()->invalidate();
     request()->session()->regenerateToken();
 
-    return redirect('/login');
-})->name('logout');
+    return redirect()->route('login.form');
+
+})->middleware('auth')->name('logout');
 
 
 // =========================
-// FORGOT PASSWORD
+// FORGOT PASSWORD (FAKE RESET)
 // =========================
-Route::get('/forgot-password', function () {
-    return view('auth.forget-password');
-})->name('password.request');
+Route::get('/forgot-password', fn () => view('auth.forget-password'))
+    ->middleware('guest')
+    ->name('password.request');
 
 Route::post('/forgot-password', function (Request $request) {
+
     $request->validate([
         'email' => ['required', 'email'],
         'password' => ['required', 'min:6', 'confirmed'],
@@ -80,29 +83,44 @@ Route::post('/forgot-password', function (Request $request) {
 
     return redirect()->route('login.form')
         ->with('success', 'Đổi mật khẩu thành công!');
-})->name('password.update.fake');
+
+})->middleware('guest')->name('password.update.fake');
 
 
 // =========================
-// HOME (AFTER LOGIN)
+// DASHBOARD (USER)
 // =========================
 Route::get('/home', function () {
-    return "Login thành công";
-})->middleware('auth');
+    return view('admin.dashboard');
+})->middleware('auth')->name('home');
 
 
 // =========================
-// ADMIN ROUTES (NGƯỜI 5)
+// ADMIN ONLY ROUTES
 // =========================
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    
-    // Quản lý Nhà cung cấp
-    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
-    Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
-    Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth', CheckRole::class . ':1'])
+    ->group(function () {
 
-    Route::get('/permissions', [AdminController::class, 'permissions'])->name('permissions');
-    Route::post('/permissions', [AdminController::class, 'updatePermissions'])->name('permissions.update');
-    Route::get('/logs', [AdminController::class, 'logs'])->name('logs');
-});
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])
+            ->name('dashboard');
+
+        Route::get('/suppliers', [SupplierController::class, 'index'])
+            ->name('suppliers.index');
+
+        Route::post('/suppliers', [SupplierController::class, 'store'])
+            ->name('suppliers.store');
+
+        Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])
+            ->name('suppliers.destroy');
+
+        Route::get('/permissions', [AdminController::class, 'permissions'])
+            ->name('permissions');
+
+        Route::post('/permissions', [AdminController::class, 'updatePermissions'])
+            ->name('permissions.update');
+
+        Route::get('/logs', [AdminController::class, 'logs'])
+            ->name('logs');
+    });

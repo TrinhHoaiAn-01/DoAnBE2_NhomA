@@ -17,15 +17,22 @@ return new class extends Migration
 
             $table->string('name', 191);
 
-            // FIX index
             $table->string('email', 191)->unique();
+
+            // PHONE
+            $table->string('phone', 20)->nullable();
 
             $table->timestamp('email_verified_at')->nullable();
 
             $table->string('password', 191);
 
-            // FIX luôn token (Laravel default 100 nhưng để chắc)
-            $table->string('remember_token', 100)->nullable();
+            // ROLE (1: admin, 2: user, ...)
+            $table->unsignedBigInteger('role_id')->default(2);
+
+            // STATUS (active / inactive)
+            $table->enum('status', ['active', 'inactive'])->default('active');
+
+            $table->rememberToken(); // chuẩn Laravel
 
             $table->timestamps();
         });
@@ -33,15 +40,12 @@ return new class extends Migration
         // PASSWORD RESET TOKENS
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email', 191)->primary();
-
             $table->string('token', 191);
-
             $table->timestamp('created_at')->nullable();
         });
 
         // SESSIONS
         Schema::create('sessions', function (Blueprint $table) {
-            // FIX chính
             $table->string('id', 191)->primary();
 
             $table->unsignedBigInteger('user_id')->nullable();

@@ -14,22 +14,18 @@ class AuthController extends Controller
     // =========================
     public function login(Request $request)
     {
-        // Validate input
         $data = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'min:6'],
         ]);
 
-        // remember me
         $remember = $request->filled('remember');
 
-        // Attempt login
         if (Auth::attempt([
             'email' => $data['email'],
             'password' => $data['password']
         ], $remember)) {
 
-            // security session
             $request->session()->regenerate();
 
             return redirect()->intended('/home');
@@ -48,21 +44,23 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'phone' => ['required', 'string', 'max:20'],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'email', 'unique:users,email'],
+            'phone'    => ['required', 'string', 'max:20'],
             'password' => ['required', 'min:6'],
-            'role_id' => ['required', 'in:1,2'],
+            'role_id'  => ['required', 'in:1,2'],
         ]);
 
-        User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'],
-            'role_id' => $data['role_id'],
+        // dd($data);
+        $user = User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'phone'    => $data['phone'],
             'password' => Hash::make($data['password']),
+            'role_id'  => (int) $data['role_id'], 
         ]);
 
+        // dd($user->role_id);
         return redirect()->route('login.form')
             ->with('success', 'Đăng ký thành công! Hãy đăng nhập.');
     }
