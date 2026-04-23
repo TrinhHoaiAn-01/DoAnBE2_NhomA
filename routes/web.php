@@ -11,5 +11,6 @@ Route::get('/', function () {
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/permissions', [AdminController::class, 'permissions'])->name('permissions');
+    Route::post('/permissions', [AdminController::class, 'updatePermissions'])->name('permissions.update');
     Route::get('/logs', [AdminController::class, 'logs'])->name('logs');
 });
