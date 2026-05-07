@@ -20,6 +20,12 @@
                             <div class="fw-semibold">{{ $order->status }}</div>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="soft-surface rounded-3 p-3">
+                            <div class="small text-secondary">Thanh toan</div>
+                            <div class="fw-semibold">{{ $order->payment_status }}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-5">

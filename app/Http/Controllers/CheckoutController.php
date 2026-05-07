@@ -75,6 +75,10 @@ class CheckoutController extends Controller
 
         $request->session()->forget('cart');
 
+        if ($order->payment_method !== 'cod') {
+            return to_route('payment.demo', $order)->with('status', 'Vui long xac nhan thanh toan demo.');
+        }
+
         return to_route('checkout.success', $order)->with('status', 'Dat hang thanh cong.');
     }
 

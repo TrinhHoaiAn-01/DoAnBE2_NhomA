@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController as ShopProductController;
 
 use App\Http\Middleware\CheckRole;
@@ -61,6 +62,13 @@ Route::post('/dat-hang', [CheckoutController::class, 'store'])
 
 Route::get('/dat-hang/thanh-cong/{order}', [CheckoutController::class, 'success'])
     ->name('checkout.success');
+
+// DEMO PAYMENT
+Route::get('/thanh-toan-demo/{order}', [PaymentController::class, 'show'])
+    ->name('payment.demo');
+
+Route::post('/thanh-toan-demo/{order}', [PaymentController::class, 'confirm'])
+    ->name('payment.confirm');
 
 
 /*
