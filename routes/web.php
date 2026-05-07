@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\AuthController;
@@ -159,6 +160,16 @@ Route::prefix('admin')
         // PRODUCTS
         Route::resource('products', ProductController::class)
             ->except(['show', 'create', 'edit']);
+
+        // ORDERS
+        Route::get('/orders', [OrderController::class, 'index'])
+            ->name('orders.index');
+
+        Route::get('/orders/{order}', [OrderController::class, 'show'])
+            ->name('orders.show');
+
+        Route::patch('/orders/{order}', [OrderController::class, 'update'])
+            ->name('orders.update');
 
         // PERMISSIONS
         Route::get('/permissions', [AdminController::class, 'permissions'])
