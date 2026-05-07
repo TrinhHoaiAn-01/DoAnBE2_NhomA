@@ -1,109 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app', ['title' => 'Dang ky NeoMart'])
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-
-    <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-</head>
-
-<body class="bg-light">
-
-<div class="container mt-5">
+@section('content')
     <div class="row justify-content-center">
+        <div class="col-lg-7 col-xl-6">
+            <div class="surface rounded-4 p-4 p-lg-5">
+                <p class="text-uppercase small text-secondary fw-semibold mb-2">Tai khoan nguoi dung</p>
+                <h1 class="h2 fw-bold mb-3">Dang ky tai khoan moi</h1>
+                <p class="text-secondary mb-4">Tao tai khoan de luu thong tin ca nhan, gio hang va lich su mua sam trong cac dot tiep theo.</p>
 
-        <div class="col-md-6">
+                <form method="post" action="{{ route('register.submit') }}">
+                    @csrf
 
-            <div class="card shadow">
-
-                <div class="card-header text-center bg-primary text-white">
-                    <h4>Register Account</h4>
-                </div>
-
-                <div class="card-body">
-
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
-
-                        <!-- NAME -->
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name"
-                                   class="form-control"
-                                   value="{{ old('name') }}">
-                            @error('name')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="name">Ho ten</label>
+                            <input class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
+                            @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
-
-                        <!-- EMAIL -->
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email"
-                                   class="form-control"
-                                   value="{{ old('email') }}">
-                            @error('email')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
+                        <div class="col-md-6">
+                            <label class="form-label" for="phone">So dien thoai</label>
+                            <input class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}">
+                            @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
-
-                        <!-- PHONE -->
-                        <div class="mb-3">
-                            <label class="form-label">Phone</label>
-                            <input type="text" name="phone"
-                                   class="form-control"
-                                   value="{{ old('phone') }}">
-                            @error('phone')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
+                        <div class="col-12">
+                            <label class="form-label" for="email">Email</label>
+                            <input class="form-control @error('email') is-invalid @enderror" id="email" name="email" type="email" value="{{ old('email') }}" required>
+                            @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
-
-                        <!-- PASSWORD -->
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password"
-                                   class="form-control">
-                            @error('password')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
+                        <div class="col-md-6">
+                            <label class="form-label" for="password">Mat khau</label>
+                            <input class="form-control @error('password') is-invalid @enderror" id="password" name="password" type="password" required>
+                            @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
-
-                        <!-- ROLE (FIXED LOGIC) -->
-                        <div class="mb-3">
-                            <label class="form-label">Role</label>
-
-                            <select name="role_id" class="form-select">
-                                <option value="1" {{ old('role_id') == 1 ? 'selected' : '' }}>
-                                    Admin
-                                </option>
-
-                                <option value="2" {{ old('role_id', 2) == 2 ? 'selected' : '' }}>
-                                    User
-                                </option>
-                            </select>
-
-                            @error('role_id')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
+                        <div class="col-md-6">
+                            <label class="form-label" for="password_confirmation">Nhap lai mat khau</label>
+                            <input class="form-control" id="password_confirmation" name="password_confirmation" type="password" required>
                         </div>
+                    </div>
 
-                        <!-- BUTTON -->
-                        <button type="submit" class="btn btn-primary w-100">
-                            Register
-                        </button>
-
-                    </form>
-
-                </div>
-
+                    <button class="btn btn-primary w-100 mt-4" type="submit">Tao tai khoan</button>
+                </form>
             </div>
-
         </div>
-
     </div>
-</div>
-
-</body>
-</html>
+@endsection

@@ -2,71 +2,81 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-    // =========================
-    // LOGIN
-    // =========================
-    public function login(Request $request)
+    public function showLogin(): View
     {
-        // Validate input
-        $data = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'min:6'],
-        ]);
-
-        // remember me
-        $remember = $request->filled('remember');
-
-        // Attempt login
-        if (Auth::attempt([
-            'email' => $data['email'],
-            'password' => $data['password']
-        ], $remember)) {
-
-            // bảo mật session
-            $request->session()->regenerate();
-
-            return redirect()->intended('/home');
-        }
-
-        return back()
-            ->withErrors([
-                'email' => 'Sai email hoặc mật khẩu'
-            ])
-            ->onlyInput('email');
+        return view('auth.login');
     }
 
-    // =========================
-    // REGISTER
-    // =========================
-    public function register(Request $request)
+    public function login(Request $request): RedirectResponse
     {
-        // Validate input
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+            return back()
+                ->withInput($request->except('password'))
+                ->withErrors(['email' => 'Thong tin dang nhap khong hop le.']);
+        }
+
+        $request->session()->regenerate();
+
+        if (Auth::user()?->status !== 'active') {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors(['email' => 'Tai khoan tam thoi khong duoc phep dang nhap.']);
+        }
+
+        return redirect()->intended(route('home'))->with('status', 'Dang nhap thanh cong.');
+    }
+
+    public function showRegister(): View
+    {
+        return view('auth.register');
+    }
+
+    public function register(Request $request): RedirectResponse
+    {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'phone' => ['required', 'string', 'max:20'],
-            'password' => ['required', 'min:6'],
-            'role_id' => ['required', 'in:1,2'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'password' => ['required', 'string', 'confirmed', 'min:8'],
         ]);
 
-        // Create user
-        User::create([
+        $user = User::query()->create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'phone' => $data['phone'],
-            'role_id' => $data['role_id'],
+            'phone' => $data['phone'] ?? null,
             'password' => Hash::make($data['password']),
+            'status' => 'active',
         ]);
 
-        // redirect về login sau khi đăng ký
-        return redirect()->route('login.form')
-            ->with('success', 'Đăng ký thành công! Hãy đăng nhập.');
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return to_route('home')->with('status', 'Dang ky tai khoan thanh cong.');
+    }
+
+    public function logout(Request $request): RedirectResponse
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return to_route('home')->with('status', 'Da dang xuat.');
     }
 }

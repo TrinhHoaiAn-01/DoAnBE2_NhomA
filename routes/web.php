@@ -1,66 +1,27 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
+Route::get('/', HomeController::class)->name('home');
 
-// =========================
-// HOME / WELCOME
-// =========================
-Route::get('/', function () {
-    return view('welcome');
+Route::middleware('guest')->group(function (): void {
+    Route::get('/dang-nhap', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/dang-nhap', [AuthController::class, 'login'])->name('login.submit');
+    Route::get('/dang-ky', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/dang-ky', [AuthController::class, 'register'])->name('register.submit');
 });
 
-// =========================
-// AUTH - LOGIN
-// =========================
+Route::middleware('auth')->group(function (): void {
+    Route::post('/dang-xuat', [AuthController::class, 'logout'])->name('logout');
+});
 
-// Hiển thị form login
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login.form');
-
-// Xử lý login
-Route::post('/login', [AuthController::class, 'login'])->name('login');
-
-// =========================
-// AUTH - REGISTER
-// =========================
-
-// Hiển thị form register
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register.form');
-
-// Xử lý register
-Route::post('/register', [AuthController::class, 'register'])->name('register');
-
-// =========================
-// LOGOUT
-// =========================
-Route::post('/logout', function () {
-    auth()->logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-
-    return redirect('/login');
-})->name('logout');
-
-// =========================
-// FORGOT PASSWORD
-// =========================
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->name('password.request');
-
-// =========================
-// HOME (SAU LOGIN)
-// =========================
-Route::get('/home', function () {
-    return "Login thành công";
-})->middleware('auth');
+Route::prefix('admin')->name('admin.')->group(function (): void {
+    Route::resource('categories', CategoryController::class)
+        ->except(['show', 'create', 'edit']);
+    Route::resource('products', ProductController::class)
+        ->except(['show', 'create', 'edit']);
+});
