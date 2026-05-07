@@ -1,6 +1,7 @@
 @extends('layouts.app', ['title' => 'Dang ky NeoMart'])
 
 @section('content')
+
 <div class="row justify-content-center">
     <div class="col-lg-7 col-xl-6">
 
@@ -162,4 +163,5 @@
         </div>
     </div>
 </div>
+
 @endsection

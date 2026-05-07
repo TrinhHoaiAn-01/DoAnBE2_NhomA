@@ -28,12 +28,13 @@ class AuthController extends Controller
             return back()
                 ->withInput($request->except('password'))
                 ->withErrors([
-                    'email' => 'Thông tin đăng nhập không hợp lệ.'
+                    'email' => 'Thong tin dang nhap khong hop le.'
                 ]);
         }
 
         $request->session()->regenerate();
 
+        // CHECK STATUS
         if (Auth::user()?->status !== 'active') {
 
             Auth::logout();
@@ -42,12 +43,13 @@ class AuthController extends Controller
             $request->session()->regenerateToken();
 
             return back()->withErrors([
-                'email' => 'Tài khoản tạm thời không được phép đăng nhập.'
+                'email' => 'Tai khoan tam thoi khong duoc phep dang nhap.'
             ]);
         }
 
-        return redirect()->intended(route('home'))
-            ->with('status', 'Đăng nhập thành công.');
+        return redirect()
+            ->intended(route('home'))
+            ->with('status', 'Dang nhap thanh cong.');
     }
 
     public function showRegister(): View
@@ -77,7 +79,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
         return to_route('home')
-            ->with('status', 'Đăng ký tài khoản thành công.');
+            ->with('status', 'Dang ky tai khoan thanh cong.');
     }
 
     public function logout(Request $request): RedirectResponse
@@ -88,6 +90,6 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return to_route('home')
-            ->with('status', 'Đã đăng xuất.');
+            ->with('status', 'Da dang xuat.');
     }
 }
