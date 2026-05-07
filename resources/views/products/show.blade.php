@@ -24,11 +24,17 @@
                     </span>
                 </div>
 
-                <form class="d-flex flex-wrap gap-2" method="post" action="{{ route('cart.add', $product) }}">
-                    @csrf
-                    <input class="form-control" type="number" name="quantity" value="1" min="1" max="{{ max($product->stock, 1) }}" style="max-width: 120px">
-                    <button class="btn btn-primary" type="submit" @disabled($product->stock <= 0)>Them vao gio</button>
-                </form>
+                <div class="d-flex flex-wrap gap-2">
+                    <form class="d-flex gap-2" method="post" action="{{ route('cart.add', $product) }}">
+                        @csrf
+                        <input class="form-control" type="number" name="quantity" value="1" min="1" max="{{ max($product->stock, 1) }}" style="max-width: 120px">
+                        <button class="btn btn-primary" type="submit" @disabled($product->stock <= 0)>Them vao gio</button>
+                    </form>
+                    <form method="post" action="{{ route('cart.buy-now', $product) }}">
+                        @csrf
+                        <button class="btn btn-outline-primary" type="submit" @disabled($product->stock <= 0)>Mua ngay</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

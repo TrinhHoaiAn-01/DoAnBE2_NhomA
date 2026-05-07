@@ -39,6 +39,10 @@
                                     <i class="fa-solid fa-plus"></i>
                                 </button>
                             </form>
+                            <form method="post" action="{{ route('cart.buy-now', $product) }}">
+                                @csrf
+                                <button class="btn btn-outline-primary btn-sm" type="submit" @disabled($product->stock <= 0)>Mua</button>
+                            </form>
                         </div>
                     </div>
                 </div>
