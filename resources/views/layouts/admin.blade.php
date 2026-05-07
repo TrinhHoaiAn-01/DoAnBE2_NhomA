@@ -145,11 +145,11 @@
             </ul>
 
             <div class="sidebar-profile d-flex align-items-center mt-auto">
-                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 40px; height: 40px;">
-                    DH
+                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center fw-bold text-uppercase" style="width: 40px; height: 40px;">
+                    {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
                 </div>
                 <div class="ms-3">
-                    <div class="fw-bold fs-6">Đình Hoàng</div>
+                    <div class="fw-bold fs-6">{{ Auth::check() ? Auth::user()->name : 'Người dùng' }}</div>
                     <div class="text-success small"><i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> Online</div>
                 </div>
             </div>
