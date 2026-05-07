@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Product;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
+
+class ProductController extends Controller
+{
+    public function index(Request $request): View
+    {
+        $search = trim((string) $request->string('search'));
+
+        return view('admin.products.index', [
+            'products' => Product::query()
+                ->with('category')
+                ->when($search !== '', function ($query) use ($search): void {
+                    $query->where(function ($nested) use ($search): void {
+                        $nested
+                            ->where('name', 'like', "%{$search}%")
+                            ->orWhere('sku', 'like', "%{$search}%")
+                            ->orWhere('brand', 'like', "%{$search}%");
+                    });
+                })
+                ->orderByDesc('created_at')
+                ->get(),
+            'categories' => Category::query()->orderBy('sort_order')->get(),
+            'editing' => $request->filled('product')
+                ? Product::query()->find($request->integer('product'))
+                : null,
+            'search' => $search,
+            'productCount' => Product::query()->count(),
+            'lowStockCount' => Product::query()->where('stock', '<=', 10)->count(),
+        ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $data = $this->validateProduct($request);
+
+        Product::query()->create($data + [
+            'slug' => Str::slug($data['name']),
+            'is_active' => (bool) ($data['is_active'] ?? false),
+        ]);
+
+        return to_route('admin.products.index')->with('status', 'Da them san pham moi.');
+    }
+
+    public function update(Request $request, Product $product): RedirectResponse
+    {
+        $data = $this->validateProduct($request, $product);
+
+        $product->update($data + [
+            'slug' => Str::slug($data['name']),
+            'is_active' => (bool) ($data['is_active'] ?? false),
+        ]);
+
+        return to_route('admin.products.index')->with('status', 'Da cap nhat san pham.');
+    }
+
+    public function destroy(Product $product): RedirectResponse
+    {
+        $product->delete();
+
+        return to_route('admin.products.index')->with('status', 'Da xoa san pham.');
+    }
+
+    private function validateProduct(Request $request, ?Product $product = null): array
+    {
+        return $request->validate([
+            'category_id' => ['required', 'exists:categories,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'sku' => ['required', 'string', 'max:100', 'unique:products,sku'.($product ? ','.$product->id : '')],
+            'brand' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'original_price' => ['nullable', 'numeric', 'min:0'],
+            'stock' => ['required', 'integer', 'min:0'],
+            'image_url' => ['nullable', 'url'],
+            'is_active' => ['nullable', 'boolean'],
+        ]);
+    }
+}
