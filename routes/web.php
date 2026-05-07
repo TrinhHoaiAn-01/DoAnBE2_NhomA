@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Hash;
 // =========================
 // HOME
 // =========================
-Route::get('/', fn () => view('welcome'));
+Route::get('/', fn () => redirect()->route('login.form'));
 
 
 // =========================
