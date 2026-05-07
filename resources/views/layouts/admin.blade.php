@@ -31,21 +31,18 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::middleware('guest')->group(function (): void {
 
-    // LOGIN
     Route::get('/dang-nhap', [AuthController::class, 'showLogin'])
         ->name('login');
 
     Route::post('/dang-nhap', [AuthController::class, 'login'])
         ->name('login.submit');
 
-    // REGISTER
     Route::get('/dang-ky', [AuthController::class, 'showRegister'])
         ->name('register');
 
     Route::post('/dang-ky', [AuthController::class, 'register'])
         ->name('register.submit');
 
-    // FORGOT PASSWORD
     Route::get('/quen-mat-khau', function () {
         return view('auth.forget-password');
     })->name('password.request');
@@ -74,12 +71,6 @@ Route::middleware('guest')->group(function (): void {
     })->name('password.update.fake');
 });
 
-/*
-|--------------------------------------------------------------------------
-| LOGOUT
-|--------------------------------------------------------------------------
-*/
-
 Route::middleware('auth')->group(function (): void {
 
     Route::post('/dang-xuat', [AuthController::class, 'logout'])
@@ -97,11 +88,9 @@ Route::prefix('admin')
     ->middleware(['auth', CheckRole::class . ':1'])
     ->group(function (): void {
 
-        // DASHBOARD
         Route::get('/dashboard', [AdminController::class, 'dashboard'])
             ->name('dashboard');
 
-        // SUPPLIERS
         Route::get('/suppliers', [SupplierController::class, 'index'])
             ->name('suppliers.index');
 
@@ -111,22 +100,18 @@ Route::prefix('admin')
         Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])
             ->name('suppliers.destroy');
 
-        // CATEGORIES
         Route::resource('categories', CategoryController::class)
             ->except(['show', 'create', 'edit']);
 
-        // PRODUCTS
         Route::resource('products', ProductController::class)
             ->except(['show', 'create', 'edit']);
 
-        // PERMISSIONS
         Route::get('/permissions', [AdminController::class, 'permissions'])
             ->name('permissions');
 
         Route::post('/permissions', [AdminController::class, 'updatePermissions'])
             ->name('permissions.update');
 
-        // LOGS
         Route::get('/logs', [AdminController::class, 'logs'])
             ->name('logs');
     });

@@ -14,18 +14,20 @@ class SupplierController extends Controller
     public function index()
     {
         $suppliers = Supplier::latest()->get();
+
         return view('admin.suppliers.index', compact('suppliers'));
     }
 
     // Lưu NCC mới
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
         ]);
 
-        $supplier = Supplier::create($request->all());
+        $supplier = Supplier::create($data);
 
         // Ghi vào Nhật ký hệ thống
         SystemLog::create([
@@ -43,7 +45,9 @@ class SupplierController extends Controller
     public function destroy($id)
     {
         $supplier = Supplier::findOrFail($id);
+
         $oldData = $supplier->toArray();
+
         $supplier->delete();
 
         // Ghi vào Nhật ký hệ thống

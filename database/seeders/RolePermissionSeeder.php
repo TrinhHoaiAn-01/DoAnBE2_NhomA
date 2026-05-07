@@ -18,16 +18,21 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($roles as $role) {
-            RolePermission::create([
-                'role_code' => $role['code'],
-                'role_name' => $role['name'],
-                'module' => $role['module'],
-                'can_view' => true,
-                'can_add' => true,
-                'can_edit' => true,
-                'can_delete' => ($role['code'] === 'ROLE_5'), // Chỉ Người 5 có quyền xóa mặc định
-                'can_approve' => ($role['code'] === 'ROLE_5' || $role['code'] === 'ROLE_4'),
-            ]);
+
+            RolePermission::query()->updateOrCreate(
+                [
+                    'role_code' => $role['code'],
+                    'module' => $role['module'],
+                ],
+                [
+                    'role_name' => $role['name'],
+                    'can_view' => true,
+                    'can_add' => true,
+                    'can_edit' => true,
+                    'can_delete' => $role['code'] === 'ROLE_5',
+                    'can_approve' => $role['code'] === 'ROLE_5' || $role['code'] === 'ROLE_4',
+                ]
+            );
         }
     }
 }

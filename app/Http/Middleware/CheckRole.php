@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
@@ -14,14 +14,16 @@ class CheckRole
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, $role): Response
+    public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         if (!Auth::check()) {
-            return redirect()->route('login.form');
+            return redirect()->route('login');
         }
 
-        if (Auth::user()->role_id != $role) {
-            abort(403, 'Bạn không có quyền truy cập trang này.');
+        $userRole = (string) Auth::user()->role_id;
+
+        if (!in_array($userRole, $roles, true)) {
+            abort(403, 'Ban khong co quyen truy cap trang nay.');
         }
 
         return $next($request);

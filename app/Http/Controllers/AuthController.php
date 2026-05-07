@@ -64,6 +64,7 @@ class AuthController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['nullable', 'string', 'max:20'],
             'password' => ['required', 'string', 'confirmed', 'min:8'],
+            'role_id' => ['required', 'integer', 'in:1,2'],
         ]);
 
         $user = User::create([
@@ -71,6 +72,7 @@ class AuthController extends Controller
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'password' => Hash::make($data['password']),
+            'role_id' => $data['role_id'],
             'status' => 'active',
         ]);
 

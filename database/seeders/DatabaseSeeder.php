@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
@@ -16,12 +17,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // USER TEST
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'phone' => '0912345678',
-            'status' => 'active',
-        ]);
+        User::query()->updateOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'phone' => '0912345678',
+                'password' => Hash::make('password'),
+                'role_id' => 1,
+                'status' => 'active',
+            ]
+        );
 
         // ROLE + PERMISSION
         $this->call([
