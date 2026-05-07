@@ -5,7 +5,9 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController as ShopProductController;
 
 use App\Http\Middleware\CheckRole;
 
@@ -23,6 +25,26 @@ use App\Models\User;
 
 // HOME
 Route::get('/', HomeController::class)->name('home');
+
+// CUSTOMER PRODUCT DISCOVERY
+Route::get('/san-pham', [ShopProductController::class, 'index'])
+    ->name('products.index');
+
+Route::get('/san-pham/{product:slug}', [ShopProductController::class, 'show'])
+    ->name('products.show');
+
+// CART
+Route::get('/gio-hang', [CartController::class, 'index'])
+    ->name('cart.index');
+
+Route::post('/gio-hang/{product}', [CartController::class, 'add'])
+    ->name('cart.add');
+
+Route::patch('/gio-hang/{product}', [CartController::class, 'update'])
+    ->name('cart.update');
+
+Route::delete('/gio-hang/{product}', [CartController::class, 'remove'])
+    ->name('cart.remove');
 
 
 /*

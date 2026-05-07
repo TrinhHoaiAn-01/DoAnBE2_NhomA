@@ -14,6 +14,8 @@
             <a class="brand-mark text-decoration-none" href="{{ route('home') }}">NEOMART</a>
             <div class="d-flex align-items-center gap-2 ms-auto">
                 <a class="btn btn-outline-secondary btn-sm" href="{{ route('home') }}">Trang chu</a>
+                <a class="btn btn-outline-secondary btn-sm" href="{{ route('products.index') }}">San pham</a>
+                <a class="btn btn-outline-secondary btn-sm" href="{{ route('cart.index') }}">Gio hang</a>
                 <a class="btn btn-outline-secondary btn-sm" href="{{ route('admin.categories.index') }}">Quan tri danh muc</a>
                 @auth
                     <span class="small text-secondary d-none d-lg-inline">Xin chao, {{ auth()->user()->name }}</span>
