@@ -22,13 +22,42 @@
                 <div class="fs-4 fw-bold">{{ $lowStockCount }}</div>
             </div>
         </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="soft-surface rounded-4 p-3">
+                <div class="small text-secondary">Dang mo ban</div>
+                <div class="fs-4 fw-bold">{{ $activeProductCount }}</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="soft-surface rounded-4 p-3">
+                <div class="small text-secondary">Tam an</div>
+                <div class="fs-4 fw-bold">{{ $hiddenProductCount }}</div>
+            </div>
+        </div>
     </div>
 
     <div class="surface rounded-4 p-3 p-lg-4 mb-4">
         <form class="row g-3 align-items-end">
-            <div class="col-lg-9">
+            <div class="col-lg-4">
                 <label class="form-label" for="search">Tim san pham</label>
                 <input class="form-control" id="search" name="search" value="{{ $search }}" placeholder="Ten, SKU hoac thuong hieu">
+            </div>
+            <div class="col-lg-3">
+                <label class="form-label" for="category_id">Danh muc</label>
+                <select class="form-select" id="category_id" name="category_id">
+                    <option value="">Tat ca danh muc</option>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}" @selected($categoryId === $category->id)>{{ $category->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-lg-2">
+                <label class="form-label" for="stock_status">Ton kho</label>
+                <select class="form-select" id="stock_status" name="stock_status">
+                    <option value="">Tat ca</option>
+                    <option value="low" @selected($stockStatus === 'low')>Sap het</option>
+                    <option value="out" @selected($stockStatus === 'out')>Het hang</option>
+                </select>
             </div>
             <div class="col-lg-3 d-flex gap-2">
                 <button class="btn btn-primary flex-grow-1" type="submit">Tim</button>
