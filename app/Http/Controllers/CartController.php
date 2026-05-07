@@ -45,7 +45,7 @@ class CartController extends Controller
             $product->id => $quantity,
         ]);
 
-        return to_route('cart.index')->with('status', 'San pham da san sang de dat hang.');
+        return to_route('checkout.index')->with('status', 'San pham da san sang de dat hang.');
     }
 
     public function update(Request $request, Product $product): RedirectResponse
