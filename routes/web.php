@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -170,6 +171,13 @@ Route::prefix('admin')
 
         Route::patch('/orders/{order}', [OrderController::class, 'update'])
             ->name('orders.update');
+
+        // USERS
+        Route::get('/users', [UserController::class, 'index'])
+            ->name('users.index');
+
+        Route::patch('/users/{user}', [UserController::class, 'update'])
+            ->name('users.update');
 
         // PERMISSIONS
         Route::get('/permissions', [AdminController::class, 'permissions'])
