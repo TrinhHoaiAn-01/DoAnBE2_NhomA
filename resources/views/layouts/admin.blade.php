@@ -124,6 +124,9 @@
                 <li class="{{ request()->routeIs('admin.suppliers.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.suppliers.index') }}"><i class="bi bi-truck"></i> Quản lý Nhà cung cấp</a>
                 </li>
+                <li class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.orders.index') }}"><i class="bi bi-receipt"></i> Quản lý Đơn hàng</a>
+                </li>
                 <li>
                     <a href="#"><i class="bi bi-file-earmark-text"></i> Nhập / Xuất kho</a>
                 </li>
