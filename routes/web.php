@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController as ShopProductController;
 
@@ -48,6 +49,16 @@ Route::patch('/gio-hang/{product}', [CartController::class, 'update'])
 
 Route::delete('/gio-hang/{product}', [CartController::class, 'remove'])
     ->name('cart.remove');
+
+// CHECKOUT
+Route::get('/dat-hang', [CheckoutController::class, 'index'])
+    ->name('checkout.index');
+
+Route::post('/dat-hang', [CheckoutController::class, 'store'])
+    ->name('checkout.store');
+
+Route::get('/dat-hang/thanh-cong/{order}', [CheckoutController::class, 'success'])
+    ->name('checkout.success');
 
 
 /*

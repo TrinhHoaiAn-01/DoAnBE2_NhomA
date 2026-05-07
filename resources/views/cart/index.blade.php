@@ -64,7 +64,7 @@
                         <span>Tam tinh</span>
                         <strong>{{ number_format($total, 0, ',', '.') }}d</strong>
                     </div>
-                    <a class="btn btn-primary w-100" href="#">Dat hang</a>
+                    <a class="btn btn-primary w-100" href="{{ route('checkout.index') }}">Dat hang</a>
                 </div>
             </div>
         @else
