@@ -10,7 +10,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Middleware\CheckRole;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
@@ -26,9 +25,12 @@ use App\Models\User;
 Route::get('/', HomeController::class)->name('home');
 
 
-// =========================
-// AUTH
-// =========================
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('guest')->group(function (): void {
 
     // LOGIN
@@ -71,13 +73,17 @@ Route::middleware('guest')->group(function (): void {
         return redirect()
             ->route('login')
             ->with('success', 'Doi mat khau thanh cong!');
+
     })->name('password.update.fake');
 });
 
 
-// =========================
-// LOGOUT
-// =========================
+/*
+|--------------------------------------------------------------------------
+| LOGOUT
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('auth')->group(function (): void {
 
     Route::post('/dang-xuat', [AuthController::class, 'logout'])
@@ -85,9 +91,12 @@ Route::middleware('auth')->group(function (): void {
 });
 
 
-// =========================
-// ADMIN ROUTES
-// =========================
+/*
+|--------------------------------------------------------------------------
+| ADMIN ROUTES
+|--------------------------------------------------------------------------
+*/
+
 Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth', CheckRole::class . ':1'])
