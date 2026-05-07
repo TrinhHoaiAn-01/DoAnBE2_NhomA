@@ -99,7 +99,7 @@ Route::middleware('auth')->group(function (): void {
 
 Route::get('/home', function () {
     return view('admin.dashboard');
-})->middleware('auth')->name('home');
+})->middleware('auth')->name('user.home');
 
 
 /*
