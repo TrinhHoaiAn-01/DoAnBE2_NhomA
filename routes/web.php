@@ -1,14 +1,20 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+
 use App\Http\Middleware\CheckRole;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
+
 use Illuminate\Http\Request;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
+
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,94 +25,81 @@ use Illuminate\Support\Facades\Hash;
 // =========================
 // HOME
 // =========================
-Route::get('/', fn () => view('welcome'));
+Route::get('/', HomeController::class)->name('home');
 
 
 // =========================
 // AUTH
 // =========================
-Route::middleware('guest')->group(function () {
+Route::middleware('guest')->group(function (): void {
 
-    Route::get('/login', fn () => view('auth.login'))
-        ->name('login.form');
-
-    Route::post('/login', [AuthController::class, 'login'])
+    // LOGIN
+    Route::get('/dang-nhap', [AuthController::class, 'showLogin'])
         ->name('login');
 
-    Route::get('/register', fn () => view('auth.register'))
-        ->name('register.form');
+    Route::post('/dang-nhap', [AuthController::class, 'login'])
+        ->name('login.submit');
 
-    Route::post('/register', [AuthController::class, 'register'])
+    // REGISTER
+    Route::get('/dang-ky', [AuthController::class, 'showRegister'])
         ->name('register');
+
+    Route::post('/dang-ky', [AuthController::class, 'register'])
+        ->name('register.submit');
+
+    // FORGOT PASSWORD
+    Route::get('/quen-mat-khau', function () {
+        return view('auth.forget-password');
+    })->name('password.request');
+
+    Route::post('/quen-mat-khau', function (Request $request) {
+
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'min:6', 'confirmed'],
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'Email khong ton tai'
+            ]);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()
+            ->route('login')
+            ->with('success', 'Doi mat khau thanh cong!');
+    })->name('password.update.fake');
 });
 
 
 // =========================
 // LOGOUT
 // =========================
-Route::post('/logout', function () {
+Route::middleware('auth')->group(function (): void {
 
-    Auth::logout();
-
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-
-    return redirect()->route('login.form');
-
-})->middleware('auth')->name('logout');
+    Route::post('/dang-xuat', [AuthController::class, 'logout'])
+        ->name('logout');
+});
 
 
 // =========================
-// FORGOT PASSWORD (FAKE - FIXED)
-// =========================
-Route::get('/forgot-password', fn () => view('auth.forget-password'))
-    ->middleware('guest')
-    ->name('password.request');
-
-Route::post('/forgot-password', function (Request $request) {
-
-    $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required', 'min:6', 'confirmed'],
-    ]);
-
-    $user = User::where('email', $request->email)->first();
-
-    if (!$user) {
-        return back()->withErrors([
-            'email' => 'Email không tồn tại'
-        ]);
-    }
-
-    $user->password = Hash::make($request->password);
-    $user->save();
-
-    return redirect()->route('login.form')
-        ->with('success', 'Đổi mật khẩu thành công!');
-
-})->middleware('guest')->name('password.update.fake');
-
-
-// =========================
-// DASHBOARD (USER)
-// =========================
-Route::get('/home', function () {
-    return view('admin.dashboard');
-})->middleware('auth')->name('home');
-
-
-// =========================
-// ADMIN ONLY ROUTES (FIX IMPORTANT)
+// ADMIN ROUTES
 // =========================
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth', CheckRole::class . ':1']) // 1 = admin
-    ->group(function () {
+    ->middleware(['auth', CheckRole::class . ':1'])
+    ->group(function (): void {
 
+        // DASHBOARD
         Route::get('/dashboard', [AdminController::class, 'dashboard'])
             ->name('dashboard');
 
-        // Suppliers
+        // SUPPLIERS
         Route::get('/suppliers', [SupplierController::class, 'index'])
             ->name('suppliers.index');
 
@@ -116,14 +109,22 @@ Route::prefix('admin')
         Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])
             ->name('suppliers.destroy');
 
-        // Permissions
+        // CATEGORIES
+        Route::resource('categories', CategoryController::class)
+            ->except(['show', 'create', 'edit']);
+
+        // PRODUCTS
+        Route::resource('products', ProductController::class)
+            ->except(['show', 'create', 'edit']);
+
+        // PERMISSIONS
         Route::get('/permissions', [AdminController::class, 'permissions'])
             ->name('permissions');
 
         Route::post('/permissions', [AdminController::class, 'updatePermissions'])
             ->name('permissions.update');
 
-        // Logs
+        // LOGS
         Route::get('/logs', [AdminController::class, 'logs'])
             ->name('logs');
     });

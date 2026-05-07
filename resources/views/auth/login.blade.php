@@ -1,150 +1,130 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app', ['title' => 'Dang nhap NeoMart'])
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+@section('content')
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-xl-5">
 
-    <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        <div class="surface rounded-4 p-4 p-lg-5">
 
-    <style>
-        body {
-            background: linear-gradient(135deg, #f5f5f5, #eaeaea);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+            <p class="text-uppercase small text-secondary fw-semibold mb-2">
+                Tai khoan nguoi dung
+            </p>
 
-        .login-box {
-            width: 100%;
-            max-width: 380px;
-            background: #fff;
-            padding: 30px 25px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            transition: 0.3s;
-        }
+            <h1 class="h2 fw-bold mb-3">
+                Dang nhap
+            </h1>
 
-        .login-box:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-        }
+            <p class="text-secondary mb-4">
+                Su dung tai khoan da dang ky de tiep tuc mua hang va quan ly du lieu ca nhan.
+            </p>
 
-        .login-title {
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
+            {{-- SUCCESS --}}
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-        .form-control {
-            border-radius: 8px;
-        }
+            {{-- ERROR --}}
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    @foreach ($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
+                </div>
+            @endif
 
-        .btn-primary {
-            border-radius: 8px;
-            font-weight: 500;
-        }
+            <form method="POST" action="{{ route('login.submit') }}">
+                @csrf
 
-        .forgot {
-            font-size: 14px;
-            color: #666;
-            text-decoration: none;
-        }
+                <!-- EMAIL -->
+                <div class="mb-3">
+                    <label class="form-label" for="email">
+                        Email
+                    </label>
 
-        .forgot:hover {
-            color: #0d6efd;
-        }
-    </style>
-</head>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        class="form-control @error('email') is-invalid @enderror"
+                        required
+                        autofocus
+                    >
 
-<body>
+                    @error('email')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
 
-<div class="login-box">
+                <!-- PASSWORD -->
+                <div class="mb-3">
+                    <label class="form-label" for="password">
+                        Mat khau
+                    </label>
 
-    <h4 class="text-center login-title">Đăng nhập</h4>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-control @error('password') is-invalid @enderror"
+                        required
+                    >
 
-    {{-- SUCCESS --}}
-    @if (session('success'))
-        <div class="alert alert-success py-2">
-            {{ session('success') }}
+                    @error('password')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+                <!-- REMEMBER -->
+                <div class="form-check mb-4">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="remember"
+                        name="remember"
+                        value="1"
+                        {{ old('remember') ? 'checked' : '' }}
+                    >
+
+                    <label class="form-check-label" for="remember">
+                        Ghi nho dang nhap
+                    </label>
+                </div>
+
+                <!-- BUTTON -->
+                <button class="btn btn-primary w-100" type="submit">
+                    Dang nhap
+                </button>
+
+                <!-- FORGOT -->
+                <div class="text-center mt-3">
+                    <a href="{{ route('password.request') }}"
+                       class="text-decoration-none">
+                        Quen mat khau?
+                    </a>
+                </div>
+
+                <!-- REGISTER -->
+                <div class="text-center mt-3">
+                    <span class="text-secondary">
+                        Chua co tai khoan?
+                    </span>
+
+                    <a href="{{ route('register') }}"
+                       class="fw-semibold text-decoration-none">
+                        Dang ky ngay
+                    </a>
+                </div>
+
+            </form>
+
         </div>
-    @endif
-
-    {{-- ERROR --}}
-    @if ($errors->any())
-        <div class="alert alert-danger py-2">
-            @foreach ($errors->all() as $error)
-                <div>{{ $error }}</div>
-            @endforeach
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
-
-        <!-- EMAIL -->
-        <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email"
-                   name="email"
-                   class="form-control"
-                   value="{{ old('email') }}"
-                   placeholder="Nhập email..."
-                   required>
-        </div>
-
-        <!-- PASSWORD -->
-        <div class="mb-3">
-            <label class="form-label">Mật khẩu</label>
-            <input type="password"
-                   name="password"
-                   class="form-control"
-                   placeholder="Nhập mật khẩu..."
-                   required>
-        </div>
-
-        <!-- REMEMBER -->
-        <div class="mb-3 form-check">
-            <input type="checkbox"
-                   class="form-check-input"
-                   name="remember"
-                   id="remember"
-                   {{ old('remember') ? 'checked' : '' }}>
-
-            <label class="form-check-label" for="remember">
-                Ghi nhớ đăng nhập
-            </label>
-        </div>
-
-        <!-- BUTTON -->
-        <div class="d-grid mb-3">
-            <button type="submit" class="btn btn-primary">
-                Đăng nhập
-            </button>
-        </div>
-
-        <!-- FORGOT -->
-        <div class="text-center">
-            <a href="{{ route('password.request') }}" class="forgot">
-                Quên mật khẩu?
-            </a>
-        </div>
-
-        <!-- REGISTER -->
-        <div class="text-center mt-3">
-            <span style="font-size: 14px; color: #666;">
-                Chưa có tài khoản?
-            </span>
-            <a href="{{ route('register.form') }}"
-               class="fw-semibold text-primary text-decoration-none">
-                Đăng ký ngay
-            </a>
-        </div>
-
-    </form>
-
+    </div>
 </div>
-
-</body>
-</html>
+@endsection
