@@ -33,6 +33,21 @@ class CartController extends Controller
         return to_route('cart.index')->with('status', 'Da them san pham vao gio hang.');
     }
 
+    public function buyNow(Request $request, Product $product): RedirectResponse
+    {
+        $data = $request->validate([
+            'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
+        ]);
+
+        $quantity = min((int) ($data['quantity'] ?? 1), max($product->stock, 1));
+
+        $request->session()->put('cart', [
+            $product->id => $quantity,
+        ]);
+
+        return to_route('cart.index')->with('status', 'San pham da san sang de dat hang.');
+    }
+
     public function update(Request $request, Product $product): RedirectResponse
     {
         $data = $request->validate([

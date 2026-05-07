@@ -40,6 +40,9 @@ Route::get('/gio-hang', [CartController::class, 'index'])
 Route::post('/gio-hang/{product}', [CartController::class, 'add'])
     ->name('cart.add');
 
+Route::post('/mua-ngay/{product}', [CartController::class, 'buyNow'])
+    ->name('cart.buy-now');
+
 Route::patch('/gio-hang/{product}', [CartController::class, 'update'])
     ->name('cart.update');
 
