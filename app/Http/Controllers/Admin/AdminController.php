@@ -64,7 +64,7 @@ class AdminController extends Controller
 
         // Ghi vào Nhật ký hệ thống (Task 50)
         \App\Models\SystemLog::create([
-            'user_name' => Auth::user()->name,
+            'user_name' => Auth::user()->name ?? 'Quản trị viên',
             'action' => 'Cập nhật Phân quyền hệ thống',
             'target_type' => 'Phân quyền Hệ thống',
             'old_data' => $oldData,
