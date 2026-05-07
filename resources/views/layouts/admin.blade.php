@@ -145,6 +145,11 @@
                         <i class="bi bi-journal-text"></i> Nhật ký hệ thống
                     </a>
                 </li>
+                <li class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.users.index') }}">
+                        <i class="bi bi-people"></i> Quản lý người dùng
+                    </a>
+                </li>
                 
                 <p class="mt-3">Hỗ trợ & Nội dung</p>
                 <li>
