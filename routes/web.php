@@ -2,10 +2,16 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProductController as ShopProductController;
 
 use App\Http\Middleware\CheckRole;
 
@@ -23,6 +29,46 @@ use App\Models\User;
 
 // HOME
 Route::get('/', HomeController::class)->name('home');
+
+// CUSTOMER PRODUCT DISCOVERY
+Route::get('/san-pham', [ShopProductController::class, 'index'])
+    ->name('products.index');
+
+Route::get('/san-pham/{product:slug}', [ShopProductController::class, 'show'])
+    ->name('products.show');
+
+// CART
+Route::get('/gio-hang', [CartController::class, 'index'])
+    ->name('cart.index');
+
+Route::post('/gio-hang/{product}', [CartController::class, 'add'])
+    ->name('cart.add');
+
+Route::post('/mua-ngay/{product}', [CartController::class, 'buyNow'])
+    ->name('cart.buy-now');
+
+Route::patch('/gio-hang/{product}', [CartController::class, 'update'])
+    ->name('cart.update');
+
+Route::delete('/gio-hang/{product}', [CartController::class, 'remove'])
+    ->name('cart.remove');
+
+// CHECKOUT
+Route::get('/dat-hang', [CheckoutController::class, 'index'])
+    ->name('checkout.index');
+
+Route::post('/dat-hang', [CheckoutController::class, 'store'])
+    ->name('checkout.store');
+
+Route::get('/dat-hang/thanh-cong/{order}', [CheckoutController::class, 'success'])
+    ->name('checkout.success');
+
+// DEMO PAYMENT
+Route::get('/thanh-toan-demo/{order}', [PaymentController::class, 'show'])
+    ->name('payment.demo');
+
+Route::post('/thanh-toan-demo/{order}', [PaymentController::class, 'confirm'])
+    ->name('payment.confirm');
 
 
 /*
@@ -134,6 +180,23 @@ Route::prefix('admin')
         // PRODUCTS
         Route::resource('products', ProductController::class)
             ->except(['show', 'create', 'edit']);
+
+        // ORDERS
+        Route::get('/orders', [OrderController::class, 'index'])
+            ->name('orders.index');
+
+        Route::get('/orders/{order}', [OrderController::class, 'show'])
+            ->name('orders.show');
+
+        Route::patch('/orders/{order}', [OrderController::class, 'update'])
+            ->name('orders.update');
+
+        // USERS
+        Route::get('/users', [UserController::class, 'index'])
+            ->name('users.index');
+
+        Route::patch('/users/{user}', [UserController::class, 'update'])
+            ->name('users.update');
 
         // PERMISSIONS
         Route::get('/permissions', [AdminController::class, 'permissions'])

@@ -22,6 +22,13 @@ class ProductController extends Controller
     {
         return view('products.show', [
             'product' => $product->load('category'),
+            'relatedProducts' => Product::query()
+                ->where('category_id', $product->category_id)
+                ->whereKeyNot($product->id)
+                ->where('is_active', true)
+                ->latest()
+                ->limit(4)
+                ->get(),
         ]);
     }
 }

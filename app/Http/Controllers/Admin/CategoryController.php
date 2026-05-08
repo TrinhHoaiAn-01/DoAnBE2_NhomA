@@ -17,6 +17,7 @@ class CategoryController extends Controller
         $status = $request->string('status')->toString();
 
         $categories = Category::query()
+            ->withCount('products')
             ->when($search !== '', function ($query) use ($search): void {
                 $query->where(function ($nested) use ($search): void {
                     $nested
@@ -87,6 +88,11 @@ class CategoryController extends Controller
 
     public function destroy(Category $category): RedirectResponse
     {
+        if ($category->products()->exists()) {
+            return to_route('admin.categories.index')
+                ->with('error', 'Khong the xoa danh muc dang co san pham.');
+        }
+
         $category->delete();
 
         return to_route('admin.categories.index')->with('status', 'Da xoa danh muc.');
