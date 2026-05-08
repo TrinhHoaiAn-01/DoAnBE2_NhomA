@@ -18,6 +18,7 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($roles as $role) {
+
             RolePermission::query()->updateOrCreate(
                 [
                     'role_code' => $role['code'],

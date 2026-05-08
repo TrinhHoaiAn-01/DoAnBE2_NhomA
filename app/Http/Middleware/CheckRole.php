@@ -16,13 +16,13 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        if (! Auth::check()) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
         $userRole = (string) Auth::user()->role_id;
 
-        if (! in_array($userRole, $roles, true)) {
+        if (!in_array($userRole, $roles, true)) {
             abort(403, 'Ban khong co quyen truy cap trang nay.');
         }
 

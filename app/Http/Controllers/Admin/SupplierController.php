@@ -14,6 +14,7 @@ class SupplierController extends Controller
     public function index()
     {
         $suppliers = Supplier::latest()->get();
+
         return view('admin.suppliers.index', compact('suppliers'));
     }
 
@@ -44,7 +45,9 @@ class SupplierController extends Controller
     public function destroy($id)
     {
         $supplier = Supplier::findOrFail($id);
+
         $oldData = $supplier->toArray();
+
         $supplier->delete();
 
         // Ghi vào Nhật ký hệ thống
