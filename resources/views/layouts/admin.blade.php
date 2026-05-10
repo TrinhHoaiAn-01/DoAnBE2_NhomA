@@ -11,13 +11,18 @@
     <!-- Bootstrap Icons (CDN để dùng icon) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow-x: hidden;
         }
         
@@ -105,27 +110,28 @@
             </div>
 
             <ul class="list-unstyled components">
-                <p>Quản lý chung</p>
+                <li>
+                    <a href="{{ route('welcome') }}">
+                        <i class="bi bi-house-door"></i> Trang chủ
+                    </a>
+                </li>
+                @auth
+                <li class="{{ request()->routeIs('product.list') ? 'active' : '' }}">
+                    <a href="{{ route('product.list') }}">
+                        <i class="bi bi-view-list"></i> Danh sách sản phẩm
+                    </a>
+                </li>
+                @endauth
+                <p class="mt-2">Quản lý chung</p>
                 <li class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('admin.dashboard') }}">
                         <i class="bi bi-grid-1x2"></i> Tổng quan
                     </a>
                 </li>
 
-                <p class="mt-3">Sản phẩm & Danh mục</p>
-                <li class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.categories.index') }}"><i class="bi bi-tags"></i> Quản lý Danh mục</a>
-                </li>
-                <li class="{{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.products.index') }}"><i class="bi bi-box"></i> Quản lý Sản phẩm</a>
-                </li>
-
                 <p class="mt-3">Kho vận & Mua hàng</p>
                 <li class="{{ request()->routeIs('admin.suppliers.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.suppliers.index') }}"><i class="bi bi-truck"></i> Quản lý Nhà cung cấp</a>
-                </li>
-                <li class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.orders.index') }}"><i class="bi bi-receipt"></i> Quản lý Đơn hàng</a>
                 </li>
                 <li>
                     <a href="#"><i class="bi bi-file-earmark-text"></i> Nhập / Xuất kho</a>
@@ -145,11 +151,6 @@
                         <i class="bi bi-journal-text"></i> Nhật ký hệ thống
                     </a>
                 </li>
-                <li class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.users.index') }}">
-                        <i class="bi bi-people"></i> Quản lý người dùng
-                    </a>
-                </li>
                 
                 <p class="mt-3">Hỗ trợ & Nội dung</p>
                 <li>
@@ -160,15 +161,21 @@
                 </li>
             </ul>
 
+            @auth
             <div class="sidebar-profile d-flex align-items-center mt-auto">
-                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center fw-bold text-uppercase" style="width: 40px; height: 40px;">
-                    {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
+                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 40px; height: 40px;">
+                    {{ substr(Auth::user()->name, 0, 1) }}
                 </div>
                 <div class="ms-3">
-                    <div class="fw-bold fs-6">{{ Auth::check() ? Auth::user()->name : 'Người dùng' }}</div>
+                    <div class="fw-bold fs-6">{{ Auth::user()->name }}</div>
                     <div class="text-success small"><i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> Online</div>
                 </div>
             </div>
+            @else
+            <div class="sidebar-profile d-flex align-items-center mt-auto">
+                <a href="{{ route('login.form') }}" class="btn btn-outline-primary w-100 btn-sm">Đăng nhập</a>
+            </div>
+            @endauth
         </nav>
 
         <!-- Page Content -->
@@ -183,21 +190,101 @@
                     <span class="navbar-brand mb-0 h1 fs-5">@yield('title', 'Bảng điều khiển')</span>
 
                     <div class="ms-auto d-flex align-items-center">
-                        <button class="btn btn-light position-relative rounded-circle p-2">
+                        @auth
+                        <button class="btn btn-light position-relative rounded-circle p-2 me-3">
                             <i class="bi bi-bell fs-5"></i>
                             <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
                                 <span class="visually-hidden">New alerts</span>
                             </span>
                         </button>
+                        <form action="{{ route('logout') }}" method="POST" class="m-0">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                            </button>
+                        </form>
+                        @else
+                        <a href="{{ route('login.form') }}" class="btn btn-primary btn-sm px-4">Đăng nhập</a>
+                        @endauth
                     </div>
                 </div>
             </nav>
 
             <!-- Main Content Area -->
             <div class="main-container">
-                @include('partials.flash')
                 @yield('content')
             </div>
+
+            <!-- Footer Area -->
+            <footer class="bg-white border-top mt-auto py-5">
+                <div class="container-fluid px-5">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-box-seam text-primary fs-3 me-2"></i>
+                                <span class="h4 mb-0 fw-bold">Neo<span class="text-primary">Mart</span></span>
+                            </div>
+                            <p class="text-muted small">
+                                Hệ thống NeoMart cung cấp các giải pháp công nghệ toàn diện cho doanh nghiệp và người tiêu dùng cá nhân. Chúng tôi cam kết mang lại sản phẩm chất lượng cao nhất với dịch vụ hậu mãi vượt trội.
+                            </p>
+                            <div class="d-flex gap-3 mt-4">
+                                <a href="#" class="text-muted fs-5 hover-primary"><i class="bi bi-facebook"></i></a>
+                                <a href="#" class="text-muted fs-5 hover-primary"><i class="bi bi-instagram"></i></a>
+                                <a href="#" class="text-muted fs-5 hover-primary"><i class="bi bi-twitter-x"></i></a>
+                                <a href="#" class="text-muted fs-5 hover-primary"><i class="bi bi-youtube"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-2 offset-md-1">
+                            <h6 class="fw-bold mb-4">Sản phẩm</h6>
+                            <ul class="list-unstyled small text-muted">
+                                <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Điện thoại</a></li>
+                                <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Laptop</a></li>
+                                <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Phụ kiện</a></li>
+                                <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Âm thanh</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-2">
+                            <h6 class="fw-bold mb-4">Hỗ trợ khách hàng</h6>
+                            <ul class="list-unstyled small text-muted">
+                                <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Trung tâm trợ giúp</a></li>
+                                <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Chính sách bảo hành</a></li>
+                                <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Vận chuyển & Giao hàng</a></li>
+                                <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Hoàn tiền & Trả hàng</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3">
+                            <h6 class="fw-bold mb-4">Liên hệ với chúng tôi</h6>
+                            <div class="small text-muted mb-2">
+                                <i class="bi bi-geo-alt me-2"></i> 123 Đường Công Nghệ, Quận 1, TP. HCM
+                            </div>
+                            <div class="small text-muted mb-2">
+                                <i class="bi bi-telephone me-2"></i> (+84) 123 456 789
+                            </div>
+                            <div class="small text-muted mb-2">
+                                <i class="bi bi-envelope me-2"></i> support@neomart.com
+                            </div>
+                            <div class="mt-4 p-3 bg-light rounded-3">
+                                <h6 class="small fw-bold mb-2">Tải ứng dụng ngay</h6>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-dark btn-sm px-3"><i class="bi bi-apple me-1"></i> App Store</button>
+                                    <button class="btn btn-dark btn-sm px-3"><i class="bi bi-play-fill me-1"></i> Play Store</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-4 text-muted opacity-25">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                        <div class="small text-muted">
+                            &copy; 2026 NeoMart. Tất cả quyền được bảo lưu. Thiết kế bởi Nhóm A.
+                        </div>
+                        <div class="d-flex gap-4">
+                            <a href="#" class="text-muted text-decoration-none small">Điều khoản sử dụng</a>
+                            <a href="#" class="text-muted text-decoration-none small">Chính sách bảo mật</a>
+                            <a href="#" class="text-muted text-decoration-none small">Cookies</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
 
