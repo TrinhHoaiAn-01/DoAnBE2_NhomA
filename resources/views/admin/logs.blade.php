@@ -61,7 +61,7 @@
                             </tr>
                             <tr class="collapse d-print-none" id="logDetail{{ $log->id }}">
                                 <td colspan="4" class="bg-light p-4">
-                                    @if(!empty($log->changes_diff))
+                                    @if(isset($log->changes_diff) && count($log->changes_diff) > 0)
                                         <h6 class="fw-bold text-primary mb-3"><i class="bi bi-file-diff"></i> Chi tiết thay đổi</h6>
                                         <ul class="list-group shadow-sm">
                                             @foreach($log->changes_diff as $change)
