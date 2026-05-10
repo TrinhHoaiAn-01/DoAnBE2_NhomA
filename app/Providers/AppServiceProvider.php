@@ -7,19 +7,14 @@ use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        Schema::defaultStringLength(191);
+        // FIX GLOBAL tất cả string - giảm xuống 125 để hỗ trợ composite key (125*2*4 = 1000 bytes)
+        Schema::defaultStringLength(125);
     }
 }
