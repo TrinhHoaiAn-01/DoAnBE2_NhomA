@@ -18,6 +18,8 @@ class Order extends Model
         'customer_email',
         'customer_phone',
         'shipping_address',
+        'shipping_district',
+        'shipping_service',
         'note',
         'payment_method',
         'payment_status',

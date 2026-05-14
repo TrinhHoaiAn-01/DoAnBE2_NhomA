@@ -63,6 +63,7 @@
                     <div>{{ $order->customer_phone }}</div>
                     <div>{{ $order->customer_email ?: 'Chua co email' }}</div>
                     <div>{{ $order->shipping_address }}</div>
+                    <div>Van chuyen: {{ $shippingDistrictLabel }} - {{ $shippingServiceLabel }}</div>
                     @if ($order->note)
                         <div>Ghi chu: {{ $order->note }}</div>
                     @endif

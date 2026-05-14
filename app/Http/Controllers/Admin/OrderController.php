@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Support\ShippingFeeCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -48,6 +49,8 @@ class OrderController extends Controller
         return view('admin.orders.show', [
             'order' => $order->load('items.product', 'user'),
             'statusOptions' => $this->statusOptions(),
+            'shippingDistrictLabel' => ShippingFeeCalculator::districtLabel($order->shipping_district),
+            'shippingServiceLabel' => ShippingFeeCalculator::serviceLabel($order->shipping_service),
         ]);
     }
 

@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'NeoMart - Dat hang'])
+﻿@extends('layouts.app', ['title' => 'NeoMart - Dat hang'])
 
 @section('content')
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
@@ -35,6 +35,28 @@
                         <label class="form-label" for="shipping_address">Dia chi giao hang</label>
                         <input class="form-control @error('shipping_address') is-invalid @enderror" id="shipping_address" name="shipping_address" value="{{ old('shipping_address') }}" required>
                         @error('shipping_address')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="shipping_district">Khu vá»±c giao hÃ ng</label>
+                        <select class="form-select @error('shipping_district') is-invalid @enderror" id="shipping_district" name="shipping_district" required>
+                            @foreach ($shippingDistricts as $value => $district)
+                                <option value="{{ $value }}" data-fee="{{ $district['base_fee'] }}" @selected(old('shipping_district', 'noi_thanh') === $value)>
+                                    {{ $district['label'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('shipping_district')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="shipping_service">Dá»‹ch vá»¥ váº­n chuyá»ƒn</label>
+                        <select class="form-select @error('shipping_service') is-invalid @enderror" id="shipping_service" name="shipping_service" required>
+                            @foreach ($shippingServices as $value => $service)
+                                <option value="{{ $value }}" data-fee="{{ $service['extra_fee'] }}" @selected(old('shipping_service', 'standard') === $value)>
+                                    {{ $service['label'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('shipping_service')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="note">Ghi chu</label>
@@ -95,15 +117,39 @@
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Phi giao hang</span>
-                        <strong>{{ number_format($shippingFee, 0, ',', '.') }}d</strong>
+                        <strong id="shippingFeeText">{{ number_format($shippingFee, 0, ',', '.') }}d</strong>
                     </div>
                     <div class="d-flex justify-content-between fs-5">
                         <span>Tong cong</span>
-                        <strong>{{ number_format($subtotal + $shippingFee, 0, ',', '.') }}d</strong>
+                        <strong id="orderTotalText">{{ number_format($subtotal + $shippingFee, 0, ',', '.') }}d</strong>
                     </div>
                 </div>
                 <button class="btn btn-primary w-100 mt-4" type="submit">Xac nhan dat hang</button>
             </div>
         </div>
     </form>
+
+    <script>
+        const subtotal = {{ (float) $subtotal }};
+        const districtSelect = document.getElementById('shipping_district');
+        const serviceSelect = document.getElementById('shipping_service');
+        const shippingFeeText = document.getElementById('shippingFeeText');
+        const orderTotalText = document.getElementById('orderTotalText');
+        const money = new Intl.NumberFormat('vi-VN');
+
+        function updateShippingFee() {
+            const districtFee = Number(districtSelect.selectedOptions[0].dataset.fee || 0);
+            const serviceFee = Number(serviceSelect.selectedOptions[0].dataset.fee || 0);
+            const fee = subtotal >= 500000 && serviceSelect.value === 'standard' ? 0 : districtFee + serviceFee;
+
+            shippingFeeText.textContent = money.format(fee) + 'd';
+            orderTotalText.textContent = money.format(subtotal + fee) + 'd';
+        }
+
+        districtSelect.addEventListener('change', updateShippingFee);
+        serviceSelect.addEventListener('change', updateShippingFee);
+        updateShippingFee();
+    </script>
 @endsection
+
+

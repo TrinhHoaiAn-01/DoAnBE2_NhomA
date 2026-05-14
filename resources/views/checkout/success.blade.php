@@ -28,6 +28,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="soft-surface rounded-3 p-3">
+                            <div class="small text-secondary">Vận chuyển</div>
+                            <div class="fw-semibold">{{ $shippingDistrictLabel }} - {{ $shippingServiceLabel }}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-5">
