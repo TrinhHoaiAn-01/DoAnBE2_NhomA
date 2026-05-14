@@ -21,10 +21,14 @@ class CheckoutController extends Controller
             return to_route('cart.index')->with('error', 'Gio hang dang trong.');
         }
 
+        $selectedDistrict = $request->old('shipping_district', 'noi_thanh');
+        $selectedService = $request->old('shipping_service', 'standard');
+        $subtotal = $this->cartTotal($items);
+
         return view('checkout.index', [
             'items' => $items,
-            'subtotal' => $this->cartTotal($items),
-            'shippingFee' => ShippingFeeCalculator::calculate($this->cartTotal($items), 'noi_thanh', 'standard'),
+            'subtotal' => $subtotal,
+            'shippingFee' => ShippingFeeCalculator::calculate($subtotal, $selectedDistrict, $selectedService),
             'shippingDistricts' => ShippingFeeCalculator::districts(),
             'shippingServices' => ShippingFeeCalculator::services(),
             'user' => $request->user(),
@@ -93,6 +97,8 @@ class CheckoutController extends Controller
     {
         return view('checkout.success', [
             'order' => $order->load('items'),
+            'shippingDistrictLabel' => ShippingFeeCalculator::districtLabel($order->shipping_district),
+            'shippingServiceLabel' => ShippingFeeCalculator::serviceLabel($order->shipping_service),
         ]);
     }
 
