@@ -72,6 +72,10 @@ class PromotionController extends Controller
         ]);
 
         $data['code'] = mb_strtoupper($data['code']);
+        if ($data['discount_type'] === 'percent' && (float) $data['discount_value'] > 100) {
+            abort(422, 'Phần trăm giảm giá không được vượt quá 100%.');
+        }
+
         $data['minimum_order'] = $data['minimum_order'] ?? 0;
         $data['is_active'] = (bool) ($data['is_active'] ?? false);
 

@@ -122,6 +122,14 @@ class CheckoutController extends Controller
             ->where('is_active', true)
             ->where('minimum_order', '<=', $subtotal)
             ->where(function ($query): void {
+                $query->whereNull('starts_at')
+                    ->orWhere('starts_at', '<=', now());
+            })
+            ->where(function ($query): void {
+                $query->whereNull('ends_at')
+                    ->orWhere('ends_at', '>=', now());
+            })
+            ->where(function ($query): void {
                 $query->whereNull('usage_limit')
                     ->orWhereColumn('used_count', '<', 'usage_limit');
             })
