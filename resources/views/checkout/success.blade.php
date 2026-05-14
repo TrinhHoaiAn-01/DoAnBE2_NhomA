@@ -49,6 +49,12 @@
                         <span>Tong cong</span>
                         <strong>{{ number_format((float) $order->total, 0, ',', '.') }}d</strong>
                     </div>
+                    @if ((float) $order->discount_total > 0)
+                        <div class="d-flex justify-content-between text-success mt-2">
+                            <span>Mã {{ $order->promotion_code }}</span>
+                            <strong>-{{ number_format((float) $order->discount_total, 0, ',', '.') }}đ</strong>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

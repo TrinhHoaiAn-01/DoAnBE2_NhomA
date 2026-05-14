@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
@@ -217,6 +218,10 @@ Route::prefix('admin')
 
         // PRODUCTS
         Route::resource('products', ProductController::class)
+            ->except(['show', 'create', 'edit']);
+
+        // PROMOTIONS
+        Route::resource('promotions', PromotionController::class)
             ->except(['show', 'create', 'edit']);
 
         // ORDERS
