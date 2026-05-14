@@ -23,23 +23,33 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+
             return back()
                 ->withInput($request->except('password'))
-                ->withErrors(['email' => 'Thong tin dang nhap khong hop le.']);
+                ->withErrors([
+                    'email' => 'Thong tin dang nhap khong hop le.'
+                ]);
         }
 
         $request->session()->regenerate();
 
+        // CHECK STATUS
         if (Auth::user()?->status !== 'active') {
+
             Auth::logout();
+
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return back()->withErrors(['email' => 'Tai khoan tam thoi khong duoc phep dang nhap.']);
+            return back()->withErrors([
+                'email' => 'Tai khoan tam thoi khong duoc phep dang nhap.'
+            ]);
         }
 
-        return redirect()->intended(route('home'))->with('status', 'Dang nhap thanh cong.');
+        return redirect()
+            ->intended(route('home'))
+            ->with('status', 'Dang nhap thanh cong.');
     }
 
     public function showRegister(): View
@@ -54,20 +64,24 @@ class AuthController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['nullable', 'string', 'max:20'],
             'password' => ['required', 'string', 'confirmed', 'min:8'],
+            'role_id' => ['required', 'integer', 'in:1,2'],
         ]);
 
-        $user = User::query()->create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'password' => Hash::make($data['password']),
+            'role_id' => $data['role_id'],
             'status' => 'active',
         ]);
 
         Auth::login($user);
+
         $request->session()->regenerate();
 
-        return to_route('home')->with('status', 'Dang ky tai khoan thanh cong.');
+        return to_route('home')
+            ->with('status', 'Dang ky tai khoan thanh cong.');
     }
 
     public function logout(Request $request): RedirectResponse
@@ -77,6 +91,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return to_route('home')->with('status', 'Da dang xuat.');
+        return to_route('home')
+            ->with('status', 'Da dang xuat.');
     }
 }

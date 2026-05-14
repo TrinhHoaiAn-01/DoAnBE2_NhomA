@@ -39,6 +39,7 @@
                             <tr>
                                 <th>Danh muc</th>
                                 <th>Ma slug</th>
+                                <th>San pham</th>
                                 <th>Thu tu</th>
                                 <th>Trang thai</th>
                                 <th></th>
@@ -52,6 +53,9 @@
                                         <div class="small text-secondary">{{ $category->description ?: 'Chua co mo ta.' }}</div>
                                     </td>
                                     <td><code>{{ $category->slug }}</code></td>
+                                    <td>
+                                        <span class="badge text-bg-light">{{ $category->products_count }}</span>
+                                    </td>
                                     <td>{{ $category->sort_order }}</td>
                                     <td>
                                         <span class="badge {{ $category->is_active ? 'text-bg-success' : 'text-bg-secondary' }}">
@@ -71,7 +75,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-secondary py-4">Chua co danh muc nao.</td>
+                                    <td colspan="6" class="text-center text-secondary py-4">Chua co danh muc nao.</td>
                                 </tr>
                             @endforelse
                         </tbody>
