@@ -7,10 +7,21 @@
             <h1 class="h3 fw-bold mb-0">Phiếu Nhập Kho #{{ $receipt->code }}</h1>
             <p class="text-muted mb-0 small">Ngày lập: {{ $receipt->created_at->format('d/m/Y H:i:s') }}</p>
         </div>
-        <div class="ms-auto">
-            <span class="badge bg-success px-3 py-2 fs-6"><i class="bi bi-check-circle me-1"></i> Hoàn tất</span>
+        <div class="ms-auto d-flex gap-2">
+            <button onclick="window.print()" class="btn btn-primary shadow-sm"><i class="bi bi-printer me-1"></i> In phiếu</button>
+            <span class="badge bg-success px-3 py-2 fs-6 d-flex align-items-center"><i class="bi bi-check-circle me-1"></i> Hoàn tất</span>
         </div>
     </div>
+
+    <style>
+        @media print {
+            body { background: #fff !important; }
+            #sidebar, .top-navbar, .btn, .badge { display: none !important; }
+            #content { width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            .surface { box-shadow: none !important; border: 1px solid #ddd !important; }
+            .col-xl-4, .col-xl-8 { width: 100% !important; }
+        }
+    </style>
 
     <div class="row g-4">
         <div class="col-xl-4">

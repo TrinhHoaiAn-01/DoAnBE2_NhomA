@@ -164,7 +164,23 @@
                     <a href="{{ route('admin.warehouse.inventory') }}"><i class="bi bi-box-seam"></i> Tồn kho & Lô hàng</a>
                 </li>
 
+                <p class="mt-3">Hỗ trợ & Nội dung</p>
+                <li class="{{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.banners.index') }}"><i class="bi bi-image"></i> Quản lý Banner</a>
+                </li>
+                <li class="{{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.faqs.index') }}"><i class="bi bi-question-square"></i> Trung tâm trợ giúp</a>
+                </li>
+                <li class="{{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.contacts.index') }}"><i class="bi bi-envelope"></i> Liên hệ từ khách hàng</a>
+                </li>
+
                 <p class="mt-3">Hệ thống & Bảo mật</p>
+                <li class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.users.index') }}">
+                        <i class="bi bi-people"></i> Tài khoản hệ thống
+                    </a>
+                </li>
                 <li class="{{ request()->routeIs('admin.permissions') ? 'active' : '' }}">
                     <a href="{{ route('admin.permissions') }}">
                         <i class="bi bi-shield-lock"></i> Phân quyền hệ thống
