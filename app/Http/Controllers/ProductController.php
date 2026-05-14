@@ -44,6 +44,16 @@ class ProductController extends Controller
 
     public function storeReview(Request $request, Product $product): RedirectResponse
     {
+        $reviewedProducts = $request->session()->get('reviewed_products', []);
+
+        if ($request->user() && ProductReview::query()->where('product_id', $product->id)->where('user_id', $request->user()->id)->exists()) {
+            return back()->withInput()->with('error', 'Ban da gui danh gia cho san pham nay.');
+        }
+
+        if (! $request->user() && in_array($product->id, $reviewedProducts, true)) {
+            return back()->withInput()->with('error', 'Ban da gui danh gia cho san pham nay trong phien hien tai.');
+        }
+
         $data = $request->validate([
             'customer_name' => ['required', 'string', 'max:255'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
@@ -56,6 +66,8 @@ class ProductController extends Controller
             'user_id' => $request->user()?->id,
             'is_approved' => $request->user() !== null,
         ]);
+
+        $request->session()->put('reviewed_products', array_values(array_unique([...$reviewedProducts, $product->id])));
 
         $message = $request->user()
             ? 'Danh gia da duoc dang.'
