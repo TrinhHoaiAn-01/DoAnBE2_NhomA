@@ -15,6 +15,8 @@ class ProductController extends Controller
     public function index(Request $request): View
     {
         $search = trim((string) $request->string('search'));
+        $categoryId = $request->integer('category_id');
+        $stockStatus = $request->string('stock_status')->toString();
 
         return view('admin.products.index', [
             'products' => Product::query()
@@ -27,6 +29,15 @@ class ProductController extends Controller
                             ->orWhere('brand', 'like', "%{$search}%");
                     });
                 })
+                ->when($categoryId > 0, function ($query) use ($categoryId): void {
+                    $query->where('category_id', $categoryId);
+                })
+                ->when($stockStatus === 'low', function ($query): void {
+                    $query->whereBetween('stock', [1, 10]);
+                })
+                ->when($stockStatus === 'out', function ($query): void {
+                    $query->where('stock', 0);
+                })
                 ->orderByDesc('created_at')
                 ->get(),
             'categories' => Category::query()->orderBy('sort_order')->get(),
@@ -34,8 +45,12 @@ class ProductController extends Controller
                 ? Product::query()->find($request->integer('product'))
                 : null,
             'search' => $search,
+            'categoryId' => $categoryId,
+            'stockStatus' => $stockStatus,
             'productCount' => Product::query()->count(),
             'lowStockCount' => Product::query()->where('stock', '<=', 10)->count(),
+            'activeProductCount' => Product::query()->where('is_active', true)->count(),
+            'hiddenProductCount' => Product::query()->where('is_active', false)->count(),
         ]);
     }
 
