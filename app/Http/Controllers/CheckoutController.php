@@ -48,11 +48,13 @@ class CheckoutController extends Controller
         $subtotal = $this->cartTotal($items);
         $shippingFee = $this->shippingFee($items);
 
-        $order = DB::transaction(function () use ($request, $data, $items, $subtotal, $shippingFee): Order {
+        $paymentStatus = $data['payment_method'] === 'cod' ? 'unpaid' : 'pending';
+
+        $order = DB::transaction(function () use ($request, $data, $items, $subtotal, $shippingFee, $paymentStatus): Order {
             $order = Order::query()->create($data + [
                 'user_id' => $request->user()?->id,
                 'code' => 'NM'.now()->format('ymdHis').Str::upper(Str::random(3)),
-                'payment_status' => 'pending',
+                'payment_status' => $paymentStatus,
                 'status' => 'pending',
                 'subtotal' => $subtotal,
                 'shipping_fee' => $shippingFee,
