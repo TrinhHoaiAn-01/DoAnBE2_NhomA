@@ -11,48 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // USERS
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-
-            $table->string('name', 191);
-
-            // FIX index
-            $table->string('email', 191)->unique();
-
+            $table->string('name');
+            $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-
-            $table->string('password', 191);
-
-            // FIX luôn token (Laravel default 100 nhưng để chắc)
-            $table->string('remember_token', 100)->nullable();
-
+            $table->string('password');
+            $table->rememberToken();
             $table->timestamps();
         });
 
-        // PASSWORD RESET TOKENS
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email', 191)->primary();
-
-            $table->string('token', 191);
-
+            $table->string('email')->primary();
+            $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
 
-        // SESSIONS
         Schema::create('sessions', function (Blueprint $table) {
-            // FIX chính
-            $table->string('id', 191)->primary();
-
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->index('user_id');
-
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
-
             $table->text('user_agent')->nullable();
-
             $table->longText('payload');
-
             $table->integer('last_activity')->index();
         });
     }
@@ -62,8 +42,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sessions');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('users');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('sessions');
     }
 };

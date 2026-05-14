@@ -2,40 +2,96 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-    // Login
-    public function login(Request $request)
+    public function showLogin(): View
     {
-        // 1. Validate input
-        $data = $request->validate([
+        return view('auth.login');
+    }
+
+    public function login(Request $request): RedirectResponse
+    {
+        $credentials = $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required', 'min:6'],
+            'password' => ['required', 'string'],
         ]);
 
-        // 2. Attempt login (có remember)
-        $remember = $request->filled('remember');
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
 
-        if (Auth::attempt([
-            'email' => $data['email'],
-            'password' => $data['password']
-        ], $remember)) {
-
-            // 3. Fix session security
-            $request->session()->regenerate();
-
-            // 4. Redirect sau login
-            return redirect()->intended('/home');
+            return back()
+                ->withInput($request->except('password'))
+                ->withErrors([
+                    'email' => 'Thong tin dang nhap khong hop le.'
+                ]);
         }
 
-        // 5. Login fail
-        return back()
-            ->withErrors([
-                'email' => 'Sai email hoặc mật khẩu'
-            ])
-            ->onlyInput('email');
+        $request->session()->regenerate();
+
+        // CHECK STATUS
+        if (Auth::user()?->status !== 'active') {
+
+            Auth::logout();
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors([
+                'email' => 'Tai khoan tam thoi khong duoc phep dang nhap.'
+            ]);
+        }
+
+        return redirect()
+            ->intended(route('home'))
+            ->with('status', 'Dang nhap thanh cong.');
+    }
+
+    public function showRegister(): View
+    {
+        return view('auth.register');
+    }
+
+    public function register(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'password' => ['required', 'string', 'confirmed', 'min:8'],
+            'role_id' => ['required', 'integer', 'in:1,2'],
+        ]);
+
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
+            'password' => Hash::make($data['password']),
+            'role_id' => $data['role_id'],
+            'status' => 'active',
+        ]);
+
+        Auth::login($user);
+
+        $request->session()->regenerate();
+
+        return to_route('home')
+            ->with('status', 'Dang ky tai khoan thanh cong.');
+    }
+
+    public function logout(Request $request): RedirectResponse
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return to_route('home')
+            ->with('status', 'Da dang xuat.');
     }
 }
