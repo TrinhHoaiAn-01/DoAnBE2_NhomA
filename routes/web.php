@@ -173,6 +173,9 @@ Route::prefix('admin')
         Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])
             ->name('suppliers.destroy');
 
+        Route::put('/suppliers/{id}', [SupplierController::class, 'update'])
+            ->name('suppliers.update');
+
         // CATEGORIES
         Route::resource('categories', CategoryController::class)
             ->except(['show', 'create', 'edit']);
@@ -208,4 +211,37 @@ Route::prefix('admin')
         // LOGS
         Route::get('/logs', [AdminController::class, 'logs'])
             ->name('logs');
+
+        // WAREHOUSE (Nhập Xuất Kho)
+        Route::prefix('warehouse')->name('warehouse.')->group(function () {
+            Route::get('/receipts', [\App\Http\Controllers\Admin\WarehouseController::class, 'receipts'])->name('receipts');
+            Route::get('/receipts/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createReceipt'])->name('receipts.create');
+            Route::post('/receipts', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeReceipt'])->name('receipts.store');
+            Route::get('/receipts/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showReceipt'])->name('receipts.show');
+            
+            Route::get('/inventory', [\App\Http\Controllers\Admin\WarehouseController::class, 'inventory'])->name('inventory');
+        });
+
+        // CONTACTS (Hỗ trợ - Task 46)
+        Route::prefix('contacts')->name('contacts.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\ContactController::class, 'index'])->name('index');
+            Route::get('/{id}', [\App\Http\Controllers\Admin\ContactController::class, 'show'])->name('show');
+            Route::post('/{id}/reply', [\App\Http\Controllers\Admin\ContactController::class, 'reply'])->name('reply');
+        });
+
+        // FAQS (Trung tâm trợ giúp - Task 47)
+        Route::prefix('faqs')->name('faqs.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\FaqController::class, 'index'])->name('index');
+            Route::post('/', [\App\Http\Controllers\Admin\FaqController::class, 'store'])->name('store');
+            Route::post('/{id}/toggle', [\App\Http\Controllers\Admin\FaqController::class, 'toggle'])->name('toggle');
+            Route::delete('/{id}', [\App\Http\Controllers\Admin\FaqController::class, 'destroy'])->name('destroy');
+        });
+
+        // BANNERS (Quản lý nội dung - Task 48)
+        Route::prefix('banners')->name('banners.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\BannerController::class, 'index'])->name('index');
+            Route::post('/', [\App\Http\Controllers\Admin\BannerController::class, 'store'])->name('store');
+            Route::post('/{id}/toggle', [\App\Http\Controllers\Admin\BannerController::class, 'toggle'])->name('toggle');
+            Route::delete('/{id}', [\App\Http\Controllers\Admin\BannerController::class, 'destroy'])->name('destroy');
+        });
     });

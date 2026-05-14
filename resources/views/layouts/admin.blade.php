@@ -11,14 +11,18 @@
     <!-- Bootstrap Icons (CDN để dùng icon) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            color: #333;
         }
         
         /* Sidebar Styling */
@@ -89,8 +93,34 @@
         }
 
         .main-container {
-            padding: 20px;
+            padding: 24px;
             flex-grow: 1;
+        }
+
+        /* Utility Classes cho các module khác (Categories, Products, Users, Orders) */
+        .surface {
+            background-color: #ffffff;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.04);
+            border: 1px solid #eef0f3;
+        }
+        .soft-surface {
+            background-color: #fdfdfd;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        
+        /* Đồng bộ Table Header */
+        .table-light th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            border-bottom: 1px solid #dee2e6;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        .table > :not(caption) > * > * {
+            padding: 1rem 0.75rem;
         }
     </style>
 </head>
@@ -127,14 +157,30 @@
                 <li class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.orders.index') }}"><i class="bi bi-receipt"></i> Quản lý Đơn hàng</a>
                 </li>
-                <li>
-                    <a href="#"><i class="bi bi-file-earmark-text"></i> Nhập / Xuất kho</a>
+                <li class="{{ request()->routeIs('admin.warehouse.receipts*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.warehouse.receipts') }}"><i class="bi bi-file-earmark-text"></i> Nhập / Xuất kho</a>
                 </li>
-                <li>
-                    <a href="#"><i class="bi bi-box-seam"></i> Tồn kho & Lô hàng</a>
+                <li class="{{ request()->routeIs('admin.warehouse.inventory') ? 'active' : '' }}">
+                    <a href="{{ route('admin.warehouse.inventory') }}"><i class="bi bi-box-seam"></i> Tồn kho & Lô hàng</a>
+                </li>
+
+                <p class="mt-3">Hỗ trợ & Nội dung</p>
+                <li class="{{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.banners.index') }}"><i class="bi bi-image"></i> Banner & Trang chủ</a>
+                </li>
+                <li class="{{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.faqs.index') }}"><i class="bi bi-question-square"></i> Trung tâm trợ giúp</a>
+                </li>
+                <li class="{{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.contacts.index') }}"><i class="bi bi-envelope"></i> Liên hệ từ khách hàng</a>
                 </li>
 
                 <p class="mt-3">Hệ thống & Bảo mật</p>
+                <li class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.users.index') }}">
+                        <i class="bi bi-people"></i> Tài khoản hệ thống
+                    </a>
+                </li>
                 <li class="{{ request()->routeIs('admin.permissions') ? 'active' : '' }}">
                     <a href="{{ route('admin.permissions') }}">
                         <i class="bi bi-shield-lock"></i> Phân quyền hệ thống
@@ -144,19 +190,6 @@
                     <a href="{{ route('admin.logs') }}">
                         <i class="bi bi-journal-text"></i> Nhật ký hệ thống
                     </a>
-                </li>
-                <li class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.users.index') }}">
-                        <i class="bi bi-people"></i> Quản lý người dùng
-                    </a>
-                </li>
-                
-                <p class="mt-3">Hỗ trợ & Nội dung</p>
-                <li>
-                    <a href="#"><i class="bi bi-image"></i> Banner & Trang chủ</a>
-                </li>
-                <li>
-                    <a href="#"><i class="bi bi-question-circle"></i> Trung tâm trợ giúp</a>
                 </li>
             </ul>
 
