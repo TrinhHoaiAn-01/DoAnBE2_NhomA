@@ -11,14 +11,18 @@
     <!-- Bootstrap Icons (CDN để dùng icon) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            color: #333;
         }
         
         /* Sidebar Styling */
@@ -89,8 +93,34 @@
         }
 
         .main-container {
-            padding: 20px;
+            padding: 24px;
             flex-grow: 1;
+        }
+
+        /* Utility Classes cho các module khác (Categories, Products, Users, Orders) */
+        .surface {
+            background-color: #ffffff;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.04);
+            border: 1px solid #eef0f3;
+        }
+        .soft-surface {
+            background-color: #fdfdfd;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        
+        /* Đồng bộ Table Header */
+        .table-light th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            border-bottom: 1px solid #dee2e6;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        .table > :not(caption) > * > * {
+            padding: 1rem 0.75rem;
         }
     </style>
 </head>

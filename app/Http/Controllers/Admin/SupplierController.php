@@ -61,4 +61,30 @@ class SupplierController extends Controller
 
         return redirect()->back()->with('success', 'Đã xóa nhà cung cấp.');
     }
+
+    // Cập nhật thông tin NCC
+    public function update(Request $request, $id)
+    {
+        $supplier = Supplier::findOrFail($id);
+        $oldData = $supplier->toArray();
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+        ]);
+
+        $supplier->update($data);
+
+        // Ghi vào Nhật ký hệ thống
+        SystemLog::create([
+            'user_name' => Auth::user()->name ?? 'Hệ thống',
+            'action' => 'Cập nhật Nhà cung cấp',
+            'target_type' => 'Nhà cung cấp',
+            'old_data' => $oldData,
+            'new_data' => $supplier->toArray(),
+        ]);
+
+        return redirect()->back()->with('success', 'Cập nhật nhà cung cấp thành công!');
+    }
 }

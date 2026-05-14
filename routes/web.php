@@ -173,6 +173,9 @@ Route::prefix('admin')
         Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])
             ->name('suppliers.destroy');
 
+        Route::put('/suppliers/{id}', [SupplierController::class, 'update'])
+            ->name('suppliers.update');
+
         // CATEGORIES
         Route::resource('categories', CategoryController::class)
             ->except(['show', 'create', 'edit']);
