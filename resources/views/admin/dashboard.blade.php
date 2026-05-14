@@ -14,7 +14,7 @@
                     </div>
                     <div>
                         <p class="text-muted mb-1 small fw-bold text-uppercase">Khách hàng</p>
-                        <h3 class="mb-0 fw-bold">1,250</h3>
+                        <h3 class="mb-0 fw-bold">{{ number_format($usersCount) }}</h3>
                     </div>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                     </div>
                     <div>
                         <p class="text-muted mb-1 small fw-bold text-uppercase">Sản phẩm</p>
-                        <h3 class="mb-0 fw-bold">452</h3>
+                        <h3 class="mb-0 fw-bold">{{ number_format($productsCount) }}</h3>
                     </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                     </div>
                     <div>
                         <p class="text-muted mb-1 small fw-bold text-uppercase">Sắp hết hàng</p>
-                        <h3 class="mb-0 fw-bold">15</h3>
+                        <h3 class="mb-0 fw-bold">{{ number_format($lowStockCount) }}</h3>
                     </div>
                 </div>
             </div>
@@ -58,12 +58,26 @@
                 <div class="card-body d-flex align-items-center">
                     <div class="bg-info bg-opacity-10 text-info rounded-3 p-3 me-3 d-flex align-items-center justify-content-center"
                         style="width: 60px; height: 60px;">
-                        <i class="bi bi-truck fs-3"></i>
+                        <i class="bi bi-cart fs-3"></i>
                     </div>
                     <div>
-                        <p class="text-muted mb-1 small fw-bold text-uppercase">Đơn hàng mới</p>
-                        <h3 class="mb-0 fw-bold">89</h3>
+                        <p class="text-muted mb-1 small fw-bold text-uppercase">Đơn chờ xử lý</p>
+                        <h3 class="mb-0 fw-bold">{{ number_format($pendingOrdersCount) }}</h3>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu đồ doanh thu -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 fw-bold">Doanh thu 7 ngày gần nhất</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" height="80"></canvas>
                 </div>
             </div>
         </div>
@@ -75,36 +89,28 @@
             <div class="card border-0 shadow-sm rounded-3 h-100">
                 <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0 fw-bold">Hoạt động hệ thống gần đây</h5>
+                    <a href="{{ route('admin.logs') }}" class="btn btn-sm btn-outline-secondary">Xem tất cả</a>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
                             <tbody>
+                                @forelse($recentLogs as $log)
                                 <tr>
-                                    <td class="text-center" style="width: 50px;"><i
-                                            class="bi bi-shield-check text-success fs-5"></i></td>
-                                    <td>
-                                        <div class="fw-bold">Đình Hoàng</div>
-                                        <div class="text-muted small">Vừa cập nhật ma trận phân quyền hệ thống</div>
+                                    <td class="text-center" style="width: 50px;">
+                                        <i class="bi bi-activity text-primary fs-5"></i>
                                     </td>
-                                    <td class="text-end text-muted small pe-4">Vài giây trước</td>
+                                    <td>
+                                        <div class="fw-bold">{{ $log->user_name }}</div>
+                                        <div class="text-muted small">{{ $log->action }} ({{ $log->target_type }})</div>
+                                    </td>
+                                    <td class="text-end text-muted small pe-4">{{ $log->created_at->diffForHumans() }}</td>
                                 </tr>
+                                @empty
                                 <tr>
-                                    <td class="text-center"><i class="bi bi-box-arrow-in-right text-primary fs-5"></i></td>
-                                    <td>
-                                        <div class="fw-bold">Văn Trọng</div>
-                                        <div class="text-muted small">Đăng nhập vào hệ thống quản trị</div>
-                                    </td>
-                                    <td class="text-end text-muted small pe-4">10 phút trước</td>
+                                    <td colspan="3" class="text-center py-4 text-muted">Chưa có hoạt động nào.</td>
                                 </tr>
-                                <tr>
-                                    <td class="text-center"><i class="bi bi-cart-check text-info fs-5"></i></td>
-                                    <td>
-                                        <div class="fw-bold">Hệ thống</div>
-                                        <div class="text-muted small">Có 15 đơn hàng mới cần xử lý</div>
-                                    </td>
-                                    <td class="text-end text-muted small pe-4">1 giờ trước</td>
-                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -117,34 +123,86 @@
             <div class="card border-0 shadow-sm rounded-3 h-100">
                 <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0 fw-bold">Sản phẩm sắp hết</h5>
-                    <a href="#" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+                    <a href="{{ route('admin.warehouse.inventory') }}" class="btn btn-sm btn-outline-primary">Tới Kho</a>
                 </div>
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush">
+                        @forelse($lowStockProducts as $prod)
                         <li class="list-group-item d-flex justify-content-between align-items-center py-3">
                             <div>
-                                <h6 class="mb-0">Laptop Dell XPS 15</h6>
-                                <small class="text-muted">Kho chính</small>
+                                <h6 class="mb-0 text-truncate" style="max-width: 200px;">{{ $prod->name }}</h6>
+                                <small class="text-muted">SKU: {{ $prod->sku }}</small>
                             </div>
-                            <span class="badge bg-danger rounded-pill">Chỉ còn 2</span>
+                            <span class="badge {{ $prod->stock == 0 ? 'bg-danger' : 'bg-warning text-dark' }} rounded-pill">Chỉ còn {{ $prod->stock }}</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                            <div>
-                                <h6 class="mb-0">Chuột Logitech MX Master 3</h6>
-                                <small class="text-muted">Kho phụ</small>
-                            </div>
-                            <span class="badge bg-warning rounded-pill">Chỉ còn 5</span>
+                        @empty
+                        <li class="list-group-item text-center py-4 text-muted">
+                            Mọi sản phẩm đều còn đủ hàng.
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                            <div>
-                                <h6 class="mb-0">Bàn phím cơ Keychron K2</h6>
-                                <small class="text-muted">Kho chính</small>
-                            </div>
-                            <span class="badge bg-warning rounded-pill">Chỉ còn 8</span>
-                        </li>
+                        @endforelse
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($dates) !!},
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: {!! json_encode($revenues) !!},
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#0d6efd',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return new Intl.NumberFormat('vi-VN').format(value) + 'đ';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+@endpush
