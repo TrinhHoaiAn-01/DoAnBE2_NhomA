@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Support\ShippingFeeCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,9 @@ class CheckoutController extends Controller
         return view('checkout.index', [
             'items' => $items,
             'subtotal' => $this->cartTotal($items),
-            'shippingFee' => $this->shippingFee($items),
+            'shippingFee' => ShippingFeeCalculator::calculate($this->cartTotal($items), 'noi_thanh', 'standard'),
+            'shippingDistricts' => ShippingFeeCalculator::districts(),
+            'shippingServices' => ShippingFeeCalculator::services(),
             'user' => $request->user(),
         ]);
     }
@@ -41,12 +44,14 @@ class CheckoutController extends Controller
             'customer_email' => ['nullable', 'email', 'max:255'],
             'customer_phone' => ['required', 'string', 'max:30'],
             'shipping_address' => ['required', 'string', 'max:500'],
+            'shipping_district' => ['required', 'in:noi_thanh,ngoai_thanh,tinh_thanh'],
+            'shipping_service' => ['required', 'in:standard,express'],
             'note' => ['nullable', 'string', 'max:1000'],
             'payment_method' => ['required', 'in:cod,bank_transfer,wallet'],
         ]);
 
         $subtotal = $this->cartTotal($items);
-        $shippingFee = $this->shippingFee($items);
+        $shippingFee = ShippingFeeCalculator::calculate($subtotal, $data['shipping_district'], $data['shipping_service']);
 
         $paymentStatus = $data['payment_method'] === 'cod' ? 'unpaid' : 'pending';
 
@@ -124,8 +129,4 @@ class CheckoutController extends Controller
         return collect($items)->sum('subtotal');
     }
 
-    private function shippingFee(array $items): float
-    {
-        return $this->cartTotal($items) >= 300000 ? 0 : 25000;
-    }
 }
