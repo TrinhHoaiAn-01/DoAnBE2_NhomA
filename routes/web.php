@@ -211,4 +211,14 @@ Route::prefix('admin')
         // LOGS
         Route::get('/logs', [AdminController::class, 'logs'])
             ->name('logs');
+
+        // WAREHOUSE (Nhập Xuất Kho)
+        Route::prefix('warehouse')->name('warehouse.')->group(function () {
+            Route::get('/receipts', [\App\Http\Controllers\Admin\WarehouseController::class, 'receipts'])->name('receipts');
+            Route::get('/receipts/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createReceipt'])->name('receipts.create');
+            Route::post('/receipts', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeReceipt'])->name('receipts.store');
+            Route::get('/receipts/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showReceipt'])->name('receipts.show');
+            
+            Route::get('/inventory', [\App\Http\Controllers\Admin\WarehouseController::class, 'inventory'])->name('inventory');
+        });
     });
