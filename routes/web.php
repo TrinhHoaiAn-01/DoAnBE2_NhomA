@@ -80,25 +80,25 @@ Route::post('/thanh-toan-demo/{order}', [PaymentController::class, 'confirm'])
 Route::middleware('guest')->group(function (): void {
 
     // LOGIN
-    Route::get('/dang-nhap', [AuthController::class, 'showLogin'])
+    Route::get('/login', [AuthController::class, 'showLogin'])
         ->name('login');
 
-    Route::post('/dang-nhap', [AuthController::class, 'login'])
+    Route::post('/login', [AuthController::class, 'login'])
         ->name('login.submit');
 
     // REGISTER
-    Route::get('/dang-ky', [AuthController::class, 'showRegister'])
+    Route::get('/register', [AuthController::class, 'showRegister'])
         ->name('register');
 
-    Route::post('/dang-ky', [AuthController::class, 'register'])
+    Route::post('/register', [AuthController::class, 'register'])
         ->name('register.submit');
 
     // FORGOT PASSWORD
-    Route::get('/quen-mat-khau', function () {
+    Route::get('/forgetpassword', function () {
         return view('auth.forget-password');
     })->name('password.request');
 
-    Route::post('/quen-mat-khau', function (Request $request) {
+    Route::post('/forgetpassword', function (Request $request) {
 
         $request->validate([
             'email' => ['required', 'email'],
