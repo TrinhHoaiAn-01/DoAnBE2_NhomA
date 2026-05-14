@@ -39,6 +39,9 @@ Route::get('/san-pham', [ShopProductController::class, 'index'])
 Route::get('/san-pham/{product:slug}', [ShopProductController::class, 'show'])
     ->name('products.show');
 
+Route::post('/san-pham/{product:slug}/danh-gia', [ShopProductController::class, 'storeReview'])
+    ->name('products.reviews.store');
+
 // CART
 Route::get('/gio-hang', [CartController::class, 'index'])
     ->name('cart.index');
