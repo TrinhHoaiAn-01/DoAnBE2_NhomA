@@ -12,6 +12,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController as ShopProductController;
+use App\Http\Controllers\ProfileUserController;
 
 use App\Http\Middleware\CheckRole;
 
@@ -132,10 +133,44 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
 
-    Route::post('/dang-xuat', [AuthController::class, 'logout'])
+Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
+
 });
 
+/*
+|--------------------------------------------------------------------------
+| PROFILE USER
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+
+    // profile
+    Route::get('/profileuser',
+        [ProfileUserController::class, 'index']
+    )->name('profile.user');
+
+    Route::post('/profileuser/update',
+        [ProfileUserController::class, 'update']
+    )->name('profile.update');
+
+    // change password page
+    Route::get('/changepassword',
+        [ProfileUserController::class, 'showChangePassword']
+    )->name('change.password');
+
+    // update password
+    Route::post('/changepassword',
+        [ProfileUserController::class, 'changePassword']
+    )->name('password.update');
+	
+	// delete account
+	Route::delete('/delete-account',
+    [ProfileUserController::class, 'deleteAccount']
+)->name('profile.delete');
+
+});
 
 /*
 |--------------------------------------------------------------------------
