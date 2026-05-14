@@ -84,14 +84,14 @@ class AuthController extends Controller
             ->with('status', 'Dang ky tai khoan thanh cong.');
     }
 
-    public function logout(Request $request): RedirectResponse
-    {
-        Auth::logout();
+	public function logout(Request $request)
+	{
+		Auth::logout();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+		$request->session()->invalidate();
 
-        return to_route('home')
-            ->with('status', 'Da dang xuat.');
-    }
+		$request->session()->regenerateToken();
+
+		return redirect()->route('login');
+	}
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController as ShopProductController;
+use App\Http\Controllers\ProfileUserController;
 
 use App\Http\Middleware\CheckRole;
 
@@ -80,25 +81,25 @@ Route::post('/thanh-toan-demo/{order}', [PaymentController::class, 'confirm'])
 Route::middleware('guest')->group(function (): void {
 
     // LOGIN
-    Route::get('/dang-nhap', [AuthController::class, 'showLogin'])
+    Route::get('/login', [AuthController::class, 'showLogin'])
         ->name('login');
 
-    Route::post('/dang-nhap', [AuthController::class, 'login'])
+    Route::post('/login', [AuthController::class, 'login'])
         ->name('login.submit');
 
     // REGISTER
-    Route::get('/dang-ky', [AuthController::class, 'showRegister'])
+    Route::get('/register', [AuthController::class, 'showRegister'])
         ->name('register');
 
-    Route::post('/dang-ky', [AuthController::class, 'register'])
+    Route::post('/register', [AuthController::class, 'register'])
         ->name('register.submit');
 
     // FORGOT PASSWORD
-    Route::get('/quen-mat-khau', function () {
+    Route::get('/forgetpassword', function () {
         return view('auth.forget-password');
     })->name('password.request');
 
-    Route::post('/quen-mat-khau', function (Request $request) {
+    Route::post('/forgetpassword', function (Request $request) {
 
         $request->validate([
             'email' => ['required', 'email'],
@@ -132,10 +133,44 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
 
-    Route::post('/dang-xuat', [AuthController::class, 'logout'])
+Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
+
 });
 
+/*
+|--------------------------------------------------------------------------
+| PROFILE USER
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+
+    // profile
+    Route::get('/profileuser',
+        [ProfileUserController::class, 'index']
+    )->name('profile.user');
+
+    Route::post('/profileuser/update',
+        [ProfileUserController::class, 'update']
+    )->name('profile.update');
+
+    // change password page
+    Route::get('/changepassword',
+        [ProfileUserController::class, 'showChangePassword']
+    )->name('change.password');
+
+    // update password
+    Route::post('/changepassword',
+        [ProfileUserController::class, 'changePassword']
+    )->name('password.update');
+	
+	// delete account
+	Route::delete('/delete-account',
+    [ProfileUserController::class, 'deleteAccount']
+)->name('profile.delete');
+
+});
 
 /*
 |--------------------------------------------------------------------------

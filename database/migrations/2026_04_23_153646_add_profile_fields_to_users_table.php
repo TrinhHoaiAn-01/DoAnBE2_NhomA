@@ -10,13 +10,23 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('phone', 20)->nullable()->after('email');
-            $table->string('status', 50)->default('active')->after('password');
-            $table->string('avatar_url')->nullable()->after('status');
-        });
-    }
+	{
+		Schema::table('users', function (Blueprint $table) {
+
+			if (!Schema::hasColumn('users', 'phone')) {
+				$table->string('phone', 20)->nullable()->after('email');
+			}
+
+			if (!Schema::hasColumn('users', 'status')) {
+				$table->string('status', 50)->default('active')->after('password');
+			}
+
+			if (!Schema::hasColumn('users', 'avatar_url')) {
+				$table->string('avatar_url')->nullable()->after('status');
+			}
+
+		});
+	}
 
     /**
      * Reverse the migrations.
