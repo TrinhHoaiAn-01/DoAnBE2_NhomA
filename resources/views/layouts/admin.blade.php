@@ -152,6 +152,9 @@
                 <li class="{{ request()->routeIs('admin.promotions.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.promotions.index') }}"><i class="bi bi-percent"></i> Khuyến mãi</a>
                 </li>
+                <li class="{{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reviews.index') }}"><i class="bi bi-star"></i> Đánh giá sản phẩm</a>
+                </li>
 
                 <p class="mt-3">Kho vận & Mua hàng</p>
                 <li class="{{ request()->routeIs('admin.suppliers.*') ? 'active' : '' }}">
