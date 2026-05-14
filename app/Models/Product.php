@@ -44,4 +44,36 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        });
+
+        $query->when($filters['category'] ?? null, function ($query, $category) {
+            $query->where('category_id', $category);
+        });
+
+        $query->when($filters['brand'] ?? null, function ($query, $brand) {
+            $query->where('brand', $brand);
+        });
+
+        $query->when($filters['min_price'] ?? null, function ($query, $minPrice) {
+            $query->where('price', '>=', $minPrice);
+        });
+
+        $query->when($filters['max_price'] ?? null, function ($query, $maxPrice) {
+            $query->where('price', '<=', $maxPrice);
+        });
+
+        $query->when($filters['on_sale'] ?? null, function ($query) {
+            $query->whereRaw('original_price > price');
+        });
+
+        return $query;
+    }
 }
