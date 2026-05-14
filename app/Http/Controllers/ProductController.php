@@ -11,18 +11,48 @@ class ProductController extends Controller
 {
     public function index(Request $request): View
     {
+        $search = trim((string) $request->string('search'));
+        $categorySlug = $request->string('category')->toString();
+        $sort = $request->string('sort')->toString();
+
         $products = Product::query()
             ->with('category')
             ->where('is_active', true)
-            ->filter($request->only(['search', 'category', 'brand', 'min_price', 'max_price', 'on_sale']))
-            ->orderByDesc('created_at')
-            ->paginate(12)
-            ->withQueryString();
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where(function ($nested) use ($search): void {
+                    $nested
+                        ->where('name', 'like', "%{$search}%")
+                        ->orWhere('brand', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            ->when($categorySlug !== '', function ($query) use ($categorySlug): void {
+                $query->whereHas('category', fn($q) => $q->where('slug', $categorySlug));
+            })
+            ->when($sort === 'price_asc', fn($q) => $q->orderBy('price'))
+            ->when($sort === 'price_desc', fn($q) => $q->orderByDesc('price'))
+            ->when($sort === 'name', fn($q) => $q->orderBy('name'))
+            ->when(!in_array($sort, ['price_asc', 'price_desc', 'name']), fn($q) => $q->orderByDesc('created_at'))
+            ->get();
 
-        $categories = Category::where('is_active', true)->orderBy('name')->get();
-        $brands = Product::whereNotNull('brand')->distinct()->pluck('brand');
+        $categories = Category::query()
+            ->withCount(['products' => fn($q) => $q->where('is_active', true)])
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
 
-        return view('products.index', compact('products', 'categories', 'brands'));
+        // Tìm danh mục hiện tại đang lọc (nếu có)
+        $currentCategory = $categorySlug !== '' ? $categories->firstWhere('slug', $categorySlug) : null;
+
+        return view('products.index', [
+            'products' => $products,
+            'categories' => $categories,
+            'currentCategory' => $currentCategory,
+            'search' => $search,
+            'categorySlug' => $categorySlug,
+            'sort' => $sort,
+        ]);
     }
 
     public function show(Product $product): View
