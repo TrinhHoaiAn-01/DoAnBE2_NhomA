@@ -215,7 +215,10 @@
                     
                     <span class="navbar-brand mb-0 h1 fs-5">@yield('title', 'Bảng điều khiển')</span>
 
-                    <div class="ms-auto d-flex align-items-center">
+                    <div class="ms-auto d-flex align-items-center gap-3">
+                        <a href="{{ route('home') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3" target="_blank">
+                            <i class="bi bi-house-door me-1"></i>Quay lại
+                        </a>
                         <button class="btn btn-light position-relative rounded-circle p-2">
                             <i class="bi bi-bell fs-5"></i>
                             <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">

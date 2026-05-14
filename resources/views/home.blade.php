@@ -44,18 +44,18 @@
     <div class="hero-banner">
         <div class="row align-items-center hero-content">
             <div class="col-lg-7 px-lg-5">
-                <span class="badge bg-white text-primary mb-3 px-3 py-2 rounded-pill fw-bold shadow-sm">Phiên bản 2026 - NeoMart NextGen</span>
-                <h1 class="display-4 fw-black mb-4">Trải nghiệm <br> Công nghệ Đỉnh cao</h1>
-                <p class="lead text-white-50 mb-5">Hệ thống quản lý và mua sắm công nghệ thông minh, mang lại hiệu quả tối ưu cho doanh nghiệp của bạn.</p>
+                <span class="badge bg-white text-primary mb-3 px-3 py-2 rounded-pill fw-bold shadow-sm">Siêu thị trực tuyến NeoMart</span>
+                <h1 class="display-4 fw-black mb-4">Mua sắm Tiện lợi <br> Tươi ngon mỗi ngày</h1>
+                <p class="lead text-white-50 mb-5">Hệ thống siêu thị trực tuyến cung cấp thực phẩm, đồ uống và các sản phẩm thiết yếu cho gia đình bạn.</p>
                 <div class="d-flex gap-3">
                     <a href="{{ route('products.index') }}" class="btn btn-lg px-4 fw-bold rounded-pill" style="background: white; color: #0d6efd;">Mua sắm ngay</a>
-                    <a href="{{ route('products.index') }}" class="btn btn-outline-light btn-lg px-4 fw-bold rounded-pill">Khám phá giải pháp</a>
+                    <a href="{{ route('products.index') }}" class="btn btn-outline-light btn-lg px-4 fw-bold rounded-pill">Khuyến mãi hot</a>
                 </div>
             </div>
             <div class="col-lg-5 d-none d-lg-block text-center position-relative">
                 <div class="hero-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800&auto=format&fit=crop"
-                         alt="Technology Hero" class="img-fluid rounded-4 shadow-lg floating-img">
+                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=800&auto=format&fit=crop"
+                         alt="NeoMart Supermarket" class="img-fluid rounded-4 shadow-lg floating-img">
                 </div>
             </div>
         </div>
