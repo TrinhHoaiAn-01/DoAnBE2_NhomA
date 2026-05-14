@@ -27,48 +27,26 @@ use App\Models\User;
 |--------------------------------------------------------------------------
 */
 
-// HOME
-Route::get('/', HomeController::class)->name('home');
-
-// CUSTOMER PRODUCT DISCOVERY
-Route::get('/san-pham', [ShopProductController::class, 'index'])
-    ->name('products.index');
-
-Route::get('/san-pham/{product:slug}', [ShopProductController::class, 'show'])
-    ->name('products.show');
+// HOME & PRODUCTS
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('welcome');
+Route::get('/products', [App\Http\Controllers\HomeController::class, 'productList'])->name('product.list');
+Route::get('/product/{id}', [App\Http\Controllers\HomeController::class, 'showProduct'])->name('product.detail');
 
 // CART
-Route::get('/gio-hang', [CartController::class, 'index'])
-    ->name('cart.index');
-
-Route::post('/gio-hang/{product}', [CartController::class, 'add'])
-    ->name('cart.add');
-
-Route::post('/mua-ngay/{product}', [CartController::class, 'buyNow'])
-    ->name('cart.buy-now');
-
-Route::patch('/gio-hang/{product}', [CartController::class, 'update'])
-    ->name('cart.update');
-
-Route::delete('/gio-hang/{product}', [CartController::class, 'remove'])
-    ->name('cart.remove');
+Route::get('/gio-hang', [App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+Route::post('/gio-hang/add/{product}', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+Route::post('/gio-hang/buy-now/{product}', [App\Http\Controllers\CartController::class, 'buyNow'])->name('cart.buy-now');
+Route::patch('/gio-hang/update/{product}', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+Route::delete('/gio-hang/remove/{product}', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
 
 // CHECKOUT
-Route::get('/dat-hang', [CheckoutController::class, 'index'])
-    ->name('checkout.index');
-
-Route::post('/dat-hang', [CheckoutController::class, 'store'])
-    ->name('checkout.store');
-
-Route::get('/dat-hang/thanh-cong/{order}', [CheckoutController::class, 'success'])
-    ->name('checkout.success');
+Route::get('/dat-hang', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/dat-hang', [CheckoutController::class, 'store'])->name('checkout.store');
+Route::get('/dat-hang/thanh-cong/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
 
 // DEMO PAYMENT
-Route::get('/thanh-toan-demo/{order}', [PaymentController::class, 'show'])
-    ->name('payment.demo');
-
-Route::post('/thanh-toan-demo/{order}', [PaymentController::class, 'confirm'])
-    ->name('payment.confirm');
+Route::get('/thanh-toan-demo/{order}', [PaymentController::class, 'show'])->name('payment.demo');
+Route::post('/thanh-toan-demo/{order}', [PaymentController::class, 'confirm'])->name('payment.confirm');
 
 
 /*
