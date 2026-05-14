@@ -21,6 +21,17 @@
                     </div>
                 </div>
 
+                @if (! empty($paymentGuides[$order->payment_method]))
+                    <div class="alert alert-info mb-4">
+                        <div class="fw-semibold mb-2">Hướng dẫn thanh toán</div>
+                        <ul class="mb-0">
+                            @foreach ($paymentGuides[$order->payment_method] as $guide)
+                                <li>{{ $guide }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <div class="vstack gap-2 mb-4">
                     @foreach ($order->items as $item)
                         <div class="d-flex justify-content-between gap-3">
