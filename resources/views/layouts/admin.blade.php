@@ -157,11 +157,11 @@
                 <li class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.orders.index') }}"><i class="bi bi-receipt"></i> Quản lý Đơn hàng</a>
                 </li>
-                <li>
-                    <a href="#"><i class="bi bi-file-earmark-text"></i> Nhập / Xuất kho</a>
+                <li class="{{ request()->routeIs('admin.warehouse.receipts*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.warehouse.receipts') }}"><i class="bi bi-file-earmark-text"></i> Nhập / Xuất kho</a>
                 </li>
-                <li>
-                    <a href="#"><i class="bi bi-box-seam"></i> Tồn kho & Lô hàng</a>
+                <li class="{{ request()->routeIs('admin.warehouse.inventory') ? 'active' : '' }}">
+                    <a href="{{ route('admin.warehouse.inventory') }}"><i class="bi bi-box-seam"></i> Tồn kho & Lô hàng</a>
                 </li>
 
                 <p class="mt-3">Hệ thống & Bảo mật</p>
