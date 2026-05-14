@@ -166,7 +166,7 @@
 
                 <p class="mt-3">Hỗ trợ & Nội dung</p>
                 <li class="{{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.banners.index') }}"><i class="bi bi-image"></i> Quản lý Banner</a>
+                    <a href="{{ route('admin.banners.index') }}"><i class="bi bi-image"></i> Banner & Trang chủ</a>
                 </li>
                 <li class="{{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.faqs.index') }}"><i class="bi bi-question-square"></i> Trung tâm trợ giúp</a>
@@ -190,19 +190,6 @@
                     <a href="{{ route('admin.logs') }}">
                         <i class="bi bi-journal-text"></i> Nhật ký hệ thống
                     </a>
-                </li>
-                <li class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.users.index') }}">
-                        <i class="bi bi-people"></i> Quản lý người dùng
-                    </a>
-                </li>
-                
-                <p class="mt-3">Hỗ trợ & Nội dung</p>
-                <li>
-                    <a href="#"><i class="bi bi-image"></i> Banner & Trang chủ</a>
-                </li>
-                <li>
-                    <a href="#"><i class="bi bi-question-circle"></i> Trung tâm trợ giúp</a>
                 </li>
             </ul>
 
