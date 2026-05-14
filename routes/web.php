@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductReviewController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\UserController;
@@ -38,6 +39,9 @@ Route::get('/san-pham', [ShopProductController::class, 'index'])
 
 Route::get('/san-pham/{product:slug}', [ShopProductController::class, 'show'])
     ->name('products.show');
+
+Route::post('/san-pham/{product:slug}/danh-gia', [ShopProductController::class, 'storeReview'])
+    ->name('products.reviews.store');
 
 // CART
 Route::get('/gio-hang', [CartController::class, 'index'])
@@ -223,6 +227,10 @@ Route::prefix('admin')
         // PROMOTIONS
         Route::resource('promotions', PromotionController::class)
             ->except(['show', 'create', 'edit']);
+
+        // REVIEWS
+        Route::resource('reviews', ProductReviewController::class)
+            ->only(['index', 'update', 'destroy']);
 
         // ORDERS
         Route::get('/orders', [OrderController::class, 'index'])
