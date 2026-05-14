@@ -10,7 +10,31 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $usersCount = \App\Models\User::count();
+        $productsCount = \App\Models\Product::count();
+        $lowStockCount = \App\Models\Product::where('stock', '<=', 10)->count();
+        $pendingOrdersCount = \App\Models\Order::where('status', 'pending')->count();
+        
+        $lowStockProducts = \App\Models\Product::where('stock', '<=', 10)->orderBy('stock', 'asc')->take(5)->get();
+        $recentLogs = \App\Models\SystemLog::latest()->take(5)->get();
+
+        // Thống kê doanh thu 7 ngày gần nhất
+        $dates = collect();
+        $revenues = collect();
+        
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $revenue = \App\Models\Order::whereDate('created_at', $date)
+                        ->where('status', '!=', 'cancelled')
+                        ->sum('total');
+            $dates->push(now()->subDays($i)->format('d/m'));
+            $revenues->push((float)$revenue);
+        }
+
+        return view('admin.dashboard', compact(
+            'usersCount', 'productsCount', 'lowStockCount', 'pendingOrdersCount', 
+            'lowStockProducts', 'recentLogs', 'dates', 'revenues'
+        ));
     }
 
     public function permissions()

@@ -71,13 +71,18 @@
                                     </div>
                                 </td>
                                 <td class="text-end pe-4">
-                                    <form action="{{ route('admin.suppliers.destroy', $supplier->id) }}" method="POST" class="d-inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa nhà cung cấp này không? Mọi dữ liệu liên quan có thể bị ảnh hưởng.');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm" title="Xóa">
-                                            <i class="bi bi-trash"></i> Xóa
+                                    <div class="d-flex justify-content-end gap-2 align-items-center">
+                                        <button type="button" class="btn btn-sm btn-outline-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#editSupplierModal{{ $supplier->id }}" title="Sửa">
+                                            <i class="bi bi-pencil-square"></i> Sửa
                                         </button>
-                                    </form>
+                                        <form action="{{ route('admin.suppliers.destroy', $supplier->id) }}" method="POST" class="m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa nhà cung cấp này không? Mọi dữ liệu liên quan có thể bị ảnh hưởng.');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm" title="Xóa">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -127,4 +132,37 @@
             </div>
         </div>
     </div>
+
+    {{-- Modals Sửa Nhà Cung Cấp --}}
+    @foreach ($suppliers as $supplier)
+        <div class="modal fade" id="editSupplierModal{{ $supplier->id }}" tabindex="-1" aria-labelledby="editSupplierModalLabel{{ $supplier->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <h5 class="modal-title fw-bold" id="editSupplierModalLabel{{ $supplier->id }}">Cập Nhật Nhà Cung Cấp</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body pb-4">
+                        <form action="{{ route('admin.suppliers.update', $supplier->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="mb-4">
+                                <label for="name{{ $supplier->id }}" class="form-label fw-medium text-dark">Tên Nhà Cung Cấp <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-lg bg-light" id="name{{ $supplier->id }}" name="name" value="{{ $supplier->name }}" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="phone{{ $supplier->id }}" class="form-label fw-medium text-dark">Số Điện Thoại</label>
+                                <input type="text" class="form-control form-control-lg bg-light" id="phone{{ $supplier->id }}" name="phone" value="{{ $supplier->phone }}">
+                            </div>
+                            <div class="d-grid mt-2">
+                                <button type="submit" class="btn btn-primary btn-lg fw-medium shadow-sm">
+                                    <i class="bi bi-save me-1"></i> Lưu Cập Nhật
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
 @endsection
