@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Promotion;
 use App\Support\ShippingFeeCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,11 +25,14 @@ class CheckoutController extends Controller
         $selectedDistrict = $request->old('shipping_district', 'noi_thanh');
         $selectedService = $request->old('shipping_service', 'standard');
         $subtotal = $this->cartTotal($items);
+        $promotion = $this->promotionFromCode((string) $request->old('promotion_code'), $subtotal);
+        $discountTotal = $promotion?->discountFor($subtotal) ?? 0;
 
         return view('checkout.index', [
             'items' => $items,
             'subtotal' => $subtotal,
             'shippingFee' => ShippingFeeCalculator::calculate($subtotal, $selectedDistrict, $selectedService),
+            'discountTotal' => $discountTotal,
             'shippingDistricts' => ShippingFeeCalculator::districts(),
             'shippingServices' => ShippingFeeCalculator::services(),
             'user' => $request->user(),
@@ -51,23 +55,33 @@ class CheckoutController extends Controller
             'shipping_district' => ['required', 'in:noi_thanh,ngoai_thanh,tinh_thanh'],
             'shipping_service' => ['required', 'in:standard,express'],
             'note' => ['nullable', 'string', 'max:1000'],
+            'promotion_code' => ['nullable', 'string', 'max:40'],
             'payment_method' => ['required', 'in:cod,bank_transfer,wallet'],
         ]);
 
         $subtotal = $this->cartTotal($items);
         $shippingFee = ShippingFeeCalculator::calculate($subtotal, $data['shipping_district'], $data['shipping_service']);
+        $promotion = $this->promotionFromCode((string) ($data['promotion_code'] ?? ''), $subtotal);
+        $discountTotal = $promotion?->discountFor($subtotal) ?? 0;
+
+        if (($data['promotion_code'] ?? '') !== '' && ! $promotion) {
+            return back()->withInput()->with('error', 'Mã giảm giá không hợp lệ hoặc chưa đủ điều kiện áp dụng.');
+        }
 
         $paymentStatus = $data['payment_method'] === 'cod' ? 'unpaid' : 'pending';
 
-        $order = DB::transaction(function () use ($request, $data, $items, $subtotal, $shippingFee, $paymentStatus): Order {
+        $order = DB::transaction(function () use ($request, $data, $items, $subtotal, $shippingFee, $discountTotal, $promotion, $paymentStatus): Order {
             $order = Order::query()->create($data + [
                 'user_id' => $request->user()?->id,
+                'promotion_id' => $promotion?->id,
+                'promotion_code' => $promotion?->code,
                 'code' => 'NM'.now()->format('ymdHis').Str::upper(Str::random(3)),
                 'payment_status' => $paymentStatus,
                 'status' => 'pending',
                 'subtotal' => $subtotal,
                 'shipping_fee' => $shippingFee,
-                'total' => $subtotal + $shippingFee,
+                'discount_total' => $discountTotal,
+                'total' => max(0, $subtotal + $shippingFee - $discountTotal),
             ]);
 
             foreach ($items as $item) {
@@ -81,6 +95,8 @@ class CheckoutController extends Controller
                 ]);
             }
 
+            $promotion?->increment('used_count');
+
             return $order;
         });
 
@@ -91,6 +107,25 @@ class CheckoutController extends Controller
         }
 
         return to_route('checkout.success', $order)->with('status', 'Dat hang thanh cong.');
+    }
+
+    private function promotionFromCode(string $code, float $subtotal): ?Promotion
+    {
+        $code = trim(mb_strtoupper($code));
+
+        if ($code === '') {
+            return null;
+        }
+
+        return Promotion::query()
+            ->where('code', $code)
+            ->where('is_active', true)
+            ->where('minimum_order', '<=', $subtotal)
+            ->where(function ($query): void {
+                $query->whereNull('usage_limit')
+                    ->orWhereColumn('used_count', '<', 'usage_limit');
+            })
+            ->first();
     }
 
     public function success(Order $order): View

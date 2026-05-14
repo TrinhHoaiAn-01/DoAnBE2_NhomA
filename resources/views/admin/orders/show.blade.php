@@ -47,6 +47,12 @@
                         <span>Phi giao hang</span>
                         <strong>{{ number_format((float) $order->shipping_fee, 0, ',', '.') }}d</strong>
                     </div>
+                    @if ((float) $order->discount_total > 0)
+                        <div class="d-flex justify-content-between mb-2 text-success">
+                            <span>Giam gia {{ $order->promotion_code }}</span>
+                            <strong>-{{ number_format((float) $order->discount_total, 0, ',', '.') }}d</strong>
+                        </div>
+                    @endif
                     <div class="d-flex justify-content-between fs-5">
                         <span>Tong cong</span>
                         <strong>{{ number_format((float) $order->total, 0, ',', '.') }}d</strong>

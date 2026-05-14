@@ -111,6 +111,11 @@
                     @endforeach
                 </div>
                 <div class="border-top pt-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="promotion_code">Ma giam gia</label>
+                        <input class="form-control @error('promotion_code') is-invalid @enderror" id="promotion_code" name="promotion_code" value="{{ old('promotion_code') }}" placeholder="Nhap ma neu co">
+                        @error('promotion_code')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Tam tinh</span>
                         <strong>{{ number_format($subtotal, 0, ',', '.') }}d</strong>
@@ -119,9 +124,13 @@
                         <span>Phi giao hang</span>
                         <strong id="shippingFeeText">{{ number_format($shippingFee, 0, ',', '.') }}d</strong>
                     </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Giam gia</span>
+                        <strong>-{{ number_format($discountTotal, 0, ',', '.') }}d</strong>
+                    </div>
                     <div class="d-flex justify-content-between fs-5">
                         <span>Tong cong</span>
-                        <strong id="orderTotalText">{{ number_format($subtotal + $shippingFee, 0, ',', '.') }}d</strong>
+                        <strong id="orderTotalText">{{ number_format($subtotal + $shippingFee - $discountTotal, 0, ',', '.') }}d</strong>
                     </div>
                 </div>
                 <button class="btn btn-primary w-100 mt-4" type="submit">Xac nhan dat hang</button>
@@ -135,6 +144,7 @@
         const serviceSelect = document.getElementById('shipping_service');
         const shippingFeeText = document.getElementById('shippingFeeText');
         const orderTotalText = document.getElementById('orderTotalText');
+        const discountTotal = {{ (float) $discountTotal }};
         const money = new Intl.NumberFormat('vi-VN');
 
         function updateShippingFee() {
@@ -143,7 +153,7 @@
             const fee = subtotal >= 500000 && serviceSelect.value === 'standard' ? 0 : districtFee + serviceFee;
 
             shippingFeeText.textContent = money.format(fee) + 'd';
-            orderTotalText.textContent = money.format(subtotal + fee) + 'd';
+            orderTotalText.textContent = money.format(Math.max(0, subtotal + fee - discountTotal)) + 'd';
         }
 
         districtSelect.addEventListener('change', updateShippingFee);
@@ -151,5 +161,6 @@
         updateShippingFee();
     </script>
 @endsection
+
 
 
