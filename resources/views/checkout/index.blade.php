@@ -44,11 +44,30 @@
                 </div>
 
                 <h2 class="h5 fw-bold mt-4 mb-3">Thanh toan</h2>
+                @php
+                    $paymentMethods = [
+                        'cod' => [
+                            'label' => 'Thanh toan khi nhan hang',
+                            'description' => 'Khach kiem tra don va thanh toan truc tiep cho nhan vien giao hang.',
+                        ],
+                        'bank_transfer' => [
+                            'label' => 'Chuyen khoan ngan hang',
+                            'description' => 'NeoMart giu don trong 24 gio de khach chuyen khoan theo ma don.',
+                        ],
+                        'wallet' => [
+                            'label' => 'Vi dien tu demo',
+                            'description' => 'Mo phong thanh toan qua vi dien tu trong moi truong bai tap.',
+                        ],
+                    ];
+                @endphp
                 <div class="vstack gap-2">
-                    @foreach (['cod' => 'Thanh toan khi nhan hang', 'bank_transfer' => 'Chuyen khoan ngan hang', 'wallet' => 'Vi dien tu demo'] as $value => $label)
-                        <label class="soft-surface rounded-3 p-3 d-flex gap-2 align-items-center">
-                            <input class="form-check-input mt-0" type="radio" name="payment_method" value="{{ $value }}" @checked(old('payment_method', 'cod') === $value)>
-                            <span>{{ $label }}</span>
+                    @foreach ($paymentMethods as $value => $method)
+                        <label class="soft-surface rounded-3 p-3 d-flex gap-3 align-items-start">
+                            <input class="form-check-input mt-1" type="radio" name="payment_method" value="{{ $value }}" @checked(old('payment_method', 'cod') === $value)>
+                            <span>
+                                <span class="d-block fw-semibold">{{ $method['label'] }}</span>
+                                <span class="d-block small text-secondary">{{ $method['description'] }}</span>
+                            </span>
                         </label>
                     @endforeach
                 </div>
