@@ -6,17 +6,23 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\User;
+use App\Models\Product;
+use App\Models\Order;
+use App\Models\SystemLog;
+use App\Models\RolePermission;
+
 class AdminController extends Controller
 {
     public function dashboard()
     {
-        $usersCount = \App\Models\User::count();
-        $productsCount = \App\Models\Product::count();
-        $lowStockCount = \App\Models\Product::where('stock', '<=', 10)->count();
-        $pendingOrdersCount = \App\Models\Order::where('status', 'pending')->count();
+        $usersCount = User::count();
+        $productsCount = Product::count();
+        $lowStockCount = Product::where('stock', '<=', 10)->count();
+        $pendingOrdersCount = Order::where('status', 'pending')->count();
         
-        $lowStockProducts = \App\Models\Product::where('stock', '<=', 10)->orderBy('stock', 'asc')->take(5)->get();
-        $recentLogs = \App\Models\SystemLog::latest()->take(5)->get();
+        $lowStockProducts = Product::where('stock', '<=', 10)->orderBy('stock', 'asc')->take(5)->get();
+        $recentLogs = SystemLog::latest()->take(5)->get();
 
         // Thống kê doanh thu 7 ngày gần nhất
         $dates = collect();
@@ -24,7 +30,7 @@ class AdminController extends Controller
         
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i)->format('Y-m-d');
-            $revenue = \App\Models\Order::whereDate('created_at', $date)
+            $revenue = Order::whereDate('created_at', $date)
                         ->where('status', '!=', 'cancelled')
                         ->sum('total');
             $dates->push(now()->subDays($i)->format('d/m'));
@@ -39,13 +45,13 @@ class AdminController extends Controller
 
     public function permissions()
     {
-        $roles = \App\Models\RolePermission::all();
+        $roles = RolePermission::all();
         return view('admin.permissions', compact('roles'));
     }
 
     public function logs(Request $request)
     {
-        $query = \App\Models\SystemLog::query();
+        $query = SystemLog::query();
 
         // Sắp xếp
         $sort = $request->get('sort', 'latest');
@@ -67,7 +73,7 @@ class AdminController extends Controller
         $newData = [];
 
         foreach ($permissions as $roleId => $data) {
-            $role = \App\Models\RolePermission::find($roleId);
+            $role = RolePermission::find($roleId);
             if ($role) {
                 // Lưu lại dữ liệu cũ trước khi sửa
                 $oldData[$role->role_name] = $role->toArray();
@@ -87,7 +93,7 @@ class AdminController extends Controller
         }
 
         // Ghi vào Nhật ký hệ thống (Task 50)
-        \App\Models\SystemLog::create([
+        SystemLog::create([
             'user_name' => Auth::user()->name ?? 'Quản trị viên',
             'action' => 'Cập nhật Phân quyền hệ thống',
             'target_type' => 'Phân quyền Hệ thống',
