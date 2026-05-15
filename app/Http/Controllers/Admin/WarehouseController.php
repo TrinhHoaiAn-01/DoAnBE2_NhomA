@@ -40,6 +40,8 @@ class WarehouseController extends Controller
             'products.*.id' => 'required|exists:products,id',
             'products.*.quantity' => 'required|integer|min:1',
             'products.*.price' => 'required|numeric|min:0',
+            'products.*.batch_code' => 'nullable|string',
+            'products.*.expires_at' => 'nullable|date',
             'note' => 'nullable|string',
         ]);
 
@@ -56,6 +58,8 @@ class WarehouseController extends Controller
                     'quantity' => $prod['quantity'],
                     'price' => $prod['price'],
                     'subtotal' => $subtotal,
+                    'batch_code' => $prod['batch_code'] ?? null,
+                    'expires_at' => $prod['expires_at'] ?? null,
                 ];
             }
 
@@ -122,7 +126,13 @@ class WarehouseController extends Controller
         $outOfStockCount = Product::where('stock', 0)->count();
         $totalStock = Product::sum('stock');
         
-        return view('admin.warehouse.inventory.index', compact('products', 'lowStockCount', 'outOfStockCount', 'totalStock'));
+        $expiringBatches = \App\Models\WarehouseReceiptItem::with(['product', 'receipt'])
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '<=', now()->addDays(30))
+            ->orderBy('expires_at', 'asc')
+            ->get();
+        
+        return view('admin.warehouse.inventory.index', compact('products', 'lowStockCount', 'outOfStockCount', 'totalStock', 'expiringBatches'));
     }
 
     // Xem lịch sử thẻ kho của 1 sản phẩm

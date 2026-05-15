@@ -92,4 +92,53 @@
         </div>
         <div class="mt-3">{{ $products->links() }}</div>
     </div>
+
+    <!-- KHU VỰC CẢNH BÁO LÔ HÀNG SẮP HẾT HẠN (THÊM CHO TASK 45) -->
+    @if(isset($expiringBatches) && $expiringBatches->count() > 0)
+    <div class="mt-5">
+        <h4 class="fw-bold mb-3 text-danger"><i class="bi bi-calendar-x"></i> Cảnh báo Hạn Sử Dụng (Dưới 30 ngày)</h4>
+        <div class="surface rounded-4 p-4 border border-danger border-opacity-50">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Mã lô (Batch)</th>
+                            <th>Hạn sử dụng</th>
+                            <th>Số lượng nhập lúc đầu</th>
+                            <th>Thuộc Phiếu nhập</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($expiringBatches as $batch)
+                            @php
+                                $daysLeft = \Carbon\Carbon::now()->diffInDays(\Carbon\Carbon::parse($batch->expires_at), false);
+                            @endphp
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">{{ $batch->product->name ?? 'N/A' }}</div>
+                                    <small class="text-muted">SKU: {{ $batch->product->sku ?? 'N/A' }}</small>
+                                </td>
+                                <td><span class="badge bg-secondary">{{ $batch->batch_code ?? 'Không có' }}</span></td>
+                                <td class="fw-bold text-danger">{{ \Carbon\Carbon::parse($batch->expires_at)->format('d/m/Y') }}</td>
+                                <td>{{ $batch->quantity }}</td>
+                                <td><a href="{{ route('admin.warehouse.receipts.show', $batch->receipt->id) }}">{{ $batch->receipt->code }}</a></td>
+                                <td>
+                                    @if($daysLeft < 0)
+                                        <span class="badge bg-danger">Đã hết hạn (Quá {{ abs($daysLeft) }} ngày)</span>
+                                    @elseif($daysLeft == 0)
+                                        <span class="badge bg-danger">Hết hạn hôm nay</span>
+                                    @else
+                                        <span class="badge bg-warning text-dark">Còn {{ $daysLeft }} ngày</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @endif
 @endsection
