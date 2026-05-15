@@ -13,6 +13,8 @@ class WarehouseReceiptItem extends Model
         'quantity',
         'price',
         'subtotal',
+        'batch_code',
+        'expires_at',
     ];
 
     public function receipt(): BelongsTo

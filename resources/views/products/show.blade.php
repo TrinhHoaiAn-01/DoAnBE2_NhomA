@@ -17,6 +17,9 @@
                         <div class="h5 text-secondary text-decoration-line-through mb-2">{{ number_format((float) $product->original_price, 0, ',', '.') }}d</div>
                     @endif
                 </div>
+                <div class="small text-secondary mb-3">
+                    {{ $averageRating ?: 'Chua co' }} sao tu {{ $approvedReviews->count() }} danh gia
+                </div>
                 <p class="text-secondary">{{ $product->description ?: 'San pham dang duoc cap nhat mo ta.' }}</p>
                 <div class="mb-4">
                     <span class="badge {{ $product->stock > 0 ? 'text-bg-success' : 'text-bg-secondary' }}">
@@ -38,6 +41,67 @@
             </div>
         </div>
     </div>
+
+    <section class="mt-5">
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="surface rounded-3 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="h4 fw-bold mb-0">Danh gia khach hang</h2>
+                        <span class="small text-secondary">{{ $approvedReviews->count() }} danh gia</span>
+                    </div>
+
+                    @forelse ($approvedReviews as $review)
+                        <div class="border-top py-3">
+                            <div class="d-flex justify-content-between gap-3">
+                                <div class="fw-semibold">{{ $review->customer_name }}</div>
+                                <div class="text-warning fw-bold">{{ $review->rating }}/5</div>
+                            </div>
+                            @if ($review->title)
+                                <div class="small fw-semibold mt-1">{{ $review->title }}</div>
+                            @endif
+                            <p class="small text-secondary mb-0 mt-1">{{ $review->content }}</p>
+                        </div>
+                    @empty
+                        <div class="text-secondary small">Chua co danh gia duoc duyet cho san pham nay.</div>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="surface rounded-3 p-4">
+                    <h2 class="h4 fw-bold mb-3">Viet danh gia</h2>
+                    <form method="post" action="{{ route('products.reviews.store', $product) }}">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label" for="customer_name">Ten cua ban</label>
+                            <input class="form-control @error('customer_name') is-invalid @enderror" id="customer_name" name="customer_name" value="{{ old('customer_name', auth()->user()?->name) }}" required>
+                            @error('customer_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="rating">So sao</label>
+                            <select class="form-select @error('rating') is-invalid @enderror" id="rating" name="rating" required>
+                                @for ($star = 5; $star >= 1; $star--)
+                                    <option value="{{ $star }}" @selected((int) old('rating', 5) === $star)>{{ $star }} sao</option>
+                                @endfor
+                            </select>
+                            @error('rating')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="title">Tieu de</label>
+                            <input class="form-control" id="title" name="title" value="{{ old('title') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="content">Noi dung</label>
+                            <textarea class="form-control @error('content') is-invalid @enderror" id="content" name="content" rows="4" required>{{ old('content') }}</textarea>
+                            @error('content')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <button class="btn btn-primary w-100" type="submit">Gui danh gia</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 
     @if ($relatedProducts->isNotEmpty())
         <section class="mt-5">

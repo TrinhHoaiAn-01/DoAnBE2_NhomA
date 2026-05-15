@@ -13,6 +13,7 @@ class PaymentController extends Controller
         return view('payment.demo', [
             'order' => $order->load('items'),
             'methodLabels' => $this->methodLabels(),
+            'paymentGuides' => $this->paymentGuides(),
         ]);
     }
 
@@ -32,6 +33,21 @@ class PaymentController extends Controller
             'cod' => 'Thanh toan khi nhan hang',
             'bank_transfer' => 'Chuyen khoan ngan hang',
             'wallet' => 'Vi dien tu demo',
+        ];
+    }
+
+    private function paymentGuides(): array
+    {
+        return [
+            'bank_transfer' => [
+                'Ngân hàng: NeoMart Bank',
+                'Số tài khoản: 1900 2026 0514',
+                'Nội dung: mã đơn hàng',
+            ],
+            'wallet' => [
+                'Chọn xác nhận để mô phỏng ví điện tử đã trừ tiền.',
+                'Mã giao dịch demo sẽ được ghi nhận sau khi thanh toán.',
+            ],
         ];
     }
 }

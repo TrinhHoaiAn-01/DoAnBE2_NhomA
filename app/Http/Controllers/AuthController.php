@@ -28,7 +28,7 @@ class AuthController extends Controller
             return back()
                 ->withInput($request->except('password'))
                 ->withErrors([
-                    'email' => 'Thong tin dang nhap khong hop le.'
+                    'email' => 'Thông tin đăng nhập không hợp lệ.'
                 ]);
         }
 
@@ -43,13 +43,21 @@ class AuthController extends Controller
             $request->session()->regenerateToken();
 
             return back()->withErrors([
-                'email' => 'Tai khoan tam thoi khong duoc phep dang nhap.'
+                'email' => 'Tài khoản tạm thời không được phép đăng nhập.'
             ]);
         }
 
+        \App\Models\SystemLog::create([
+            'user_name' => Auth::user()->name,
+            'action' => 'Đăng nhập hệ thống',
+            'target_type' => 'Tài khoản',
+            'old_data' => null,
+            'new_data' => ['ip' => $request->ip(), 'user_agent' => $request->userAgent()],
+        ]);
+
         return redirect()
             ->intended(route('home'))
-            ->with('status', 'Dang nhap thanh cong.');
+            ->with('status', 'Đăng nhập thành công.');
     }
 
     public function showRegister(): View
@@ -81,7 +89,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
         return to_route('home')
-            ->with('status', 'Dang ky tai khoan thanh cong.');
+            ->with('status', 'Đăng ký tài khoản thành công.');
     }
 
 	public function logout(Request $request)

@@ -61,7 +61,7 @@ class CategoryController extends Controller
             'is_active' => (bool) ($data['is_active'] ?? false),
         ]);
 
-        return to_route('admin.categories.index')->with('status', 'Da tao danh muc moi.');
+        return to_route('admin.categories.index')->with('status', 'Đã tạo danh mục mới.');
     }
 
     public function update(Request $request, Category $category): RedirectResponse
@@ -83,18 +83,18 @@ class CategoryController extends Controller
             'is_active' => (bool) ($data['is_active'] ?? false),
         ]);
 
-        return to_route('admin.categories.index')->with('status', 'Da cap nhat danh muc.');
+        return to_route('admin.categories.index')->with('status', 'Đã cập nhật danh mục.');
     }
 
     public function destroy(Category $category): RedirectResponse
     {
         if ($category->products()->exists()) {
             return to_route('admin.categories.index')
-                ->with('error', 'Khong the xoa danh muc dang co san pham.');
+                ->with('error', 'Không thể xóa danh mục đang có sản phẩm.');
         }
 
         $category->delete();
 
-        return to_route('admin.categories.index')->with('status', 'Da xoa danh muc.');
+        return to_route('admin.categories.index')->with('status', 'Đã xóa danh mục.');
     }
 }

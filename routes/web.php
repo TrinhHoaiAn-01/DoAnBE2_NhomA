@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductReviewController;
+use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
@@ -37,6 +39,9 @@ Route::get('/san-pham', [ShopProductController::class, 'index'])
 
 Route::get('/san-pham/{product:slug}', [ShopProductController::class, 'show'])
     ->name('products.show');
+
+Route::post('/san-pham/{product:slug}/danh-gia', [ShopProductController::class, 'storeReview'])
+    ->name('products.reviews.store');
 
 // CART
 Route::get('/gio-hang', [CartController::class, 'index'])
@@ -219,6 +224,14 @@ Route::prefix('admin')
         Route::resource('products', ProductController::class)
             ->except(['show', 'create', 'edit']);
 
+        // PROMOTIONS
+        Route::resource('promotions', PromotionController::class)
+            ->except(['show', 'create', 'edit']);
+
+        // REVIEWS
+        Route::resource('reviews', ProductReviewController::class)
+            ->only(['index', 'update', 'destroy']);
+
         // ORDERS
         Route::get('/orders', [OrderController::class, 'index'])
             ->name('orders.index');
@@ -255,6 +268,17 @@ Route::prefix('admin')
             Route::get('/receipts/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showReceipt'])->name('receipts.show');
             
             Route::get('/inventory', [\App\Http\Controllers\Admin\WarehouseController::class, 'inventory'])->name('inventory');
+            Route::get('/inventory/{id}/history', [\App\Http\Controllers\Admin\WarehouseController::class, 'stockHistory'])->name('inventory.history');
+            
+            Route::get('/issues', [\App\Http\Controllers\Admin\WarehouseController::class, 'issues'])->name('issues');
+            Route::get('/issues/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createIssue'])->name('issues.create');
+            Route::post('/issues', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeIssue'])->name('issues.store');
+            Route::get('/issues/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showIssue'])->name('issues.show');
+            
+            Route::get('/checks', [\App\Http\Controllers\Admin\WarehouseController::class, 'checks'])->name('checks');
+            Route::get('/checks/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createCheck'])->name('checks.create');
+            Route::post('/checks', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeCheck'])->name('checks.store');
+            Route::get('/checks/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showCheck'])->name('checks.show');
         });
 
         // CONTACTS (Hỗ trợ - Task 46)

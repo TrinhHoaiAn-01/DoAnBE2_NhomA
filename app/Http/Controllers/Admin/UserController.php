@@ -56,30 +56,30 @@ class UserController extends Controller
         ]);
 
         if ($request->user()?->is($user) && $data['status'] === 'locked') {
-            return to_route('admin.users.index')->with('error', 'Khong the khoa tai khoan dang dang nhap.');
+            return to_route('admin.users.index')->with('error', 'Không thể khóa tài khoản đang đăng nhập.');
         }
 
         $user->update($data);
 
-        return to_route('admin.users.index')->with('status', 'Da cap nhat nguoi dung.');
+        return to_route('admin.users.index')->with('status', 'Đã cập nhật người dùng.');
     }
 
     private function roleOptions(): array
     {
         return [
-            1 => 'Quan tri vien',
-            2 => 'Khach hang',
-            3 => 'Ban hang',
-            4 => 'Kho van',
-            5 => 'Ho tro',
+            1 => 'Quản trị viên',
+            2 => 'Khách hàng',
+            3 => 'Bán hàng',
+            4 => 'Kho vận',
+            5 => 'Hỗ trợ',
         ];
     }
 
     private function statusOptions(): array
     {
         return [
-            'active' => 'Dang hoat dong',
-            'locked' => 'Da khoa',
+            'active' => 'Đang hoạt động',
+            'locked' => 'Đã khóa',
         ];
     }
 }
