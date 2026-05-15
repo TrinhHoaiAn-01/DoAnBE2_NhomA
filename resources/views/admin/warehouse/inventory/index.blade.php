@@ -78,6 +78,7 @@
                                 @endif
                             </td>
                             <td>
+                                <a href="{{ route('admin.warehouse.inventory.history', $product->id) }}" class="btn btn-sm btn-outline-info"><i class="bi bi-clock-history"></i> Thẻ kho</a>
                                 <a href="{{ route('admin.products.index', ['search' => $product->sku]) }}" class="btn btn-sm btn-outline-secondary">Tới SP</a>
                             </td>
                         </tr>

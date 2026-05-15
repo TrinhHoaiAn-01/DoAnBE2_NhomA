@@ -164,7 +164,13 @@
                     <a href="{{ route('admin.orders.index') }}"><i class="bi bi-receipt"></i> Quản lý Đơn hàng</a>
                 </li>
                 <li class="{{ request()->routeIs('admin.warehouse.receipts*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.warehouse.receipts') }}"><i class="bi bi-file-earmark-text"></i> Nhập / Xuất kho</a>
+                    <a href="{{ route('admin.warehouse.receipts') }}"><i class="bi bi-box-arrow-in-right"></i> Phiếu Nhập Kho</a>
+                </li>
+                <li class="{{ request()->routeIs('admin.warehouse.issues*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.warehouse.issues') }}"><i class="bi bi-box-arrow-up-right"></i> Phiếu Xuất Kho</a>
+                </li>
+                <li class="{{ request()->routeIs('admin.warehouse.checks*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.warehouse.checks') }}"><i class="bi bi-ui-checks"></i> Kiểm kê kho</a>
                 </li>
                 <li class="{{ request()->routeIs('admin.warehouse.inventory') ? 'active' : '' }}">
                     <a href="{{ route('admin.warehouse.inventory') }}"><i class="bi bi-box-seam"></i> Tồn kho & Lô hàng</a>

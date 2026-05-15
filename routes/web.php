@@ -268,6 +268,17 @@ Route::prefix('admin')
             Route::get('/receipts/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showReceipt'])->name('receipts.show');
             
             Route::get('/inventory', [\App\Http\Controllers\Admin\WarehouseController::class, 'inventory'])->name('inventory');
+            Route::get('/inventory/{id}/history', [\App\Http\Controllers\Admin\WarehouseController::class, 'stockHistory'])->name('inventory.history');
+            
+            Route::get('/issues', [\App\Http\Controllers\Admin\WarehouseController::class, 'issues'])->name('issues');
+            Route::get('/issues/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createIssue'])->name('issues.create');
+            Route::post('/issues', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeIssue'])->name('issues.store');
+            Route::get('/issues/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showIssue'])->name('issues.show');
+            
+            Route::get('/checks', [\App\Http\Controllers\Admin\WarehouseController::class, 'checks'])->name('checks');
+            Route::get('/checks/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createCheck'])->name('checks.create');
+            Route::post('/checks', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeCheck'])->name('checks.store');
+            Route::get('/checks/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showCheck'])->name('checks.show');
         });
 
         // CONTACTS (Hỗ trợ - Task 46)
