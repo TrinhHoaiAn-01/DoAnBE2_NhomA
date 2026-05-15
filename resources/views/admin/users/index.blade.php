@@ -1,30 +1,30 @@
-@extends('layouts.admin', ['title' => 'NeoMart Admin - Nguoi dung'])
+@extends('layouts.admin', ['title' => 'NeoMart Admin - Người dùng'])
 
 @section('content')
     <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start mb-4">
         <div>
-            <p class="text-uppercase text-secondary small fw-semibold mb-2">Quan tri nguoi dung</p>
-            <h1 class="h2 fw-bold mb-1">Tai khoan he thong</h1>
-            <p class="text-secondary mb-0">Theo doi tai khoan, vai tro va trang thai truy cap.</p>
+            <p class="text-uppercase text-secondary small fw-semibold mb-2">Quản trị người dùng</p>
+            <h1 class="h2 fw-bold mb-1">Tài khoản hệ thống</h1>
+            <p class="text-secondary mb-0">Theo dõi tài khoản, vai trò và trạng thái truy cập.</p>
         </div>
     </div>
 
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="soft-surface rounded-4 p-3">
-                <div class="small text-secondary">Quan tri vien</div>
+                <div class="small text-secondary">Quản trị viên</div>
                 <div class="fs-4 fw-bold">{{ $adminCount }}</div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="soft-surface rounded-4 p-3">
-                <div class="small text-secondary">Khach hang</div>
+                <div class="small text-secondary">Khách hàng</div>
                 <div class="fs-4 fw-bold">{{ $customerCount }}</div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="soft-surface rounded-4 p-3">
-                <div class="small text-secondary">Da khoa</div>
+                <div class="small text-secondary">Đã khóa</div>
                 <div class="fs-4 fw-bold">{{ $lockedCount }}</div>
             </div>
         </div>
@@ -33,30 +33,30 @@
     <div class="surface rounded-4 p-3 p-lg-4 mb-4">
         <form class="row g-3 align-items-end">
             <div class="col-lg-5">
-                <label class="form-label" for="search">Tim nguoi dung</label>
-                <input class="form-control" id="search" name="search" value="{{ $search }}" placeholder="Ten, email hoac so dien thoai">
+                <label class="form-label" for="search">Tìm người dùng</label>
+                <input class="form-control" id="search" name="search" value="{{ $search }}" placeholder="Tên, email hoặc số điện thoại">
             </div>
             <div class="col-lg-3">
-                <label class="form-label" for="role_id">Vai tro</label>
+                <label class="form-label" for="role_id">Vai trò</label>
                 <select class="form-select" id="role_id" name="role_id">
-                    <option value="">Tat ca</option>
+                    <option value="">Tất cả</option>
                     @foreach ($roleOptions as $value => $label)
                         <option value="{{ $value }}" @selected($roleId === $value)>{{ $label }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="col-lg-2">
-                <label class="form-label" for="status">Trang thai</label>
+                <label class="form-label" for="status">Trạng thái</label>
                 <select class="form-select" id="status" name="status">
-                    <option value="">Tat ca</option>
+                    <option value="">Tất cả</option>
                     @foreach ($statusOptions as $value => $label)
                         <option value="{{ $value }}" @selected($status === $value)>{{ $label }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="col-lg-2 d-flex gap-2">
-                <button class="btn btn-primary flex-grow-1" type="submit">Loc</button>
-                <a class="btn btn-outline-secondary" href="{{ route('admin.users.index') }}">Xoa</a>
+                <button class="btn btn-primary flex-grow-1" type="submit">Lọc</button>
+                <a class="btn btn-outline-secondary" href="{{ route('admin.users.index') }}">Xóa</a>
             </div>
         </form>
     </div>
@@ -66,11 +66,11 @@
             <table class="table align-middle mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Nguoi dung</th>
-                        <th>So dien thoai</th>
-                        <th>Vai tro</th>
-                        <th>Trang thai</th>
-                        <th>Ngay tao</th>
+                        <th>Người dùng</th>
+                        <th>Số điện thoại</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -82,7 +82,7 @@
                                 <div class="small text-secondary">{{ $user->email }}</div>
                             </td>
                             <td>{{ $user->phone ?: '-' }}</td>
-                            <td>{{ $roleOptions[$user->role_id] ?? 'Khac' }}</td>
+                            <td>{{ $roleOptions[$user->role_id] ?? 'Khác' }}</td>
                             <td>
                                 <span class="badge {{ $user->status === 'locked' ? 'text-bg-danger' : 'text-bg-success' }}">
                                     {{ $statusOptions[$user->status] ?? $user->status }}
@@ -103,13 +103,13 @@
                                             <option value="{{ $value }}" @selected($user->status === $value)>{{ $label }}</option>
                                         @endforeach
                                     </select>
-                                    <button class="btn btn-sm btn-outline-primary" type="submit">Luu</button>
+                                    <button class="btn btn-sm btn-outline-primary" type="submit">Lưu</button>
                                 </form>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-secondary py-4">Chua co nguoi dung nao.</td>
+                            <td colspan="6" class="text-center text-secondary py-4">Chưa có người dùng nào.</td>
                         </tr>
                     @endforelse
                 </tbody>
