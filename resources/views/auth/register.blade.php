@@ -119,8 +119,8 @@
         position:relative;
 
         overflow:hidden;
-		
-		margin-top: -50px;
+
+        margin-top:-110px;
     }
 
     /* =========================
@@ -233,6 +233,38 @@
 
         transition:
             background-color 9999s ease-in-out 0s;
+    }
+
+    /* =========================
+        CAPTCHA
+    ========================== */
+
+    .captcha-wrapper{
+
+        width:100%;
+
+        min-height:78px;
+
+        border-radius:18px;
+
+        border:
+            1px dashed rgba(255,255,255,0.12);
+
+        background:
+            rgba(255,255,255,0.04);
+
+        display:flex;
+
+        align-items:center;
+        justify-content:center;
+
+        padding:20px;
+
+        color:#94a3b8;
+
+        font-size:14px;
+
+        text-align:center;
     }
 
     /* =========================
@@ -459,6 +491,31 @@
                     autocomplete="off"
                     required
                 >
+
+            </div>
+
+            <!-- CAPTCHA -->
+            <div class="form-group">
+
+                <label class="form-label">
+                    CAPTCHA
+                </label>
+
+                <div class="captcha-wrapper">
+
+                    Khu vực tích hợp Google reCAPTCHA
+                    <br>
+                    hoặc Cloudflare Turnstile
+
+                </div>
+
+                <!-- Ví dụ API -->
+                <!--
+                <div
+                    class="g-recaptcha"
+                    data-sitekey="YOUR_SITE_KEY">
+                </div>
+                -->
 
             </div>
 
