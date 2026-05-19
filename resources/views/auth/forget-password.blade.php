@@ -14,7 +14,7 @@
 
         min-height:100vh;
 
-        overflow-x:hidden;
+        overflow:hidden;
 
         font-family:'Segoe UI',sans-serif;
 
@@ -32,10 +32,6 @@
 
         position:relative;
     }
-
-    /* =========================
-        HIDE DEFAULT NAVBAR
-    ========================== */
 
     .navbar:first-of-type{
         display:none !important;
@@ -81,106 +77,12 @@
     }
 
     /* =========================
-        NAVBAR
-    ========================== */
-
-    .custom-navbar{
-
-        width:88%;
-        max-width:1450px;
-
-        margin:32px auto 0;
-
-        padding:16px 22px;
-
-        border-radius:24px;
-
-        display:flex;
-
-        align-items:center;
-        justify-content:space-between;
-
-        background:
-            rgba(5,10,28,0.75);
-
-        backdrop-filter:blur(18px);
-
-        border:
-            1px solid rgba(96,165,250,0.16);
-
-        box-shadow:
-            0 0 25px rgba(37,99,235,0.12);
-    }
-
-    .logo{
-
-        font-size:26px;
-
-        font-weight:800;
-
-        letter-spacing:1px;
-
-        color:white;
-
-        text-transform:uppercase;
-    }
-
-    .nav-menu{
-
-        display:flex;
-
-        align-items:center;
-
-        gap:10px;
-    }
-
-    .nav-item-custom{
-
-        text-decoration:none;
-
-        color:#dbeafe;
-
-        font-size:14px;
-        font-weight:600;
-
-        padding:13px 20px;
-
-        border-radius:16px;
-
-        transition:0.3s;
-    }
-
-    .nav-item-custom:hover{
-
-        color:white;
-
-        background:
-            rgba(255,255,255,0.05);
-    }
-
-    .nav-item-custom.active{
-
-        color:white;
-
-        background:
-            linear-gradient(
-                135deg,
-                rgba(37,99,235,0.24),
-                rgba(124,58,237,0.18)
-            );
-
-        border:
-            1px solid rgba(96,165,250,0.2);
-    }
-
-    /* =========================
-        FORGOT WRAPPER
+        WRAPPER
     ========================== */
 
     .forgot-wrapper{
 
-        min-height:
-            calc(100vh - 130px);
+        min-height:100vh;
 
         display:flex;
 
@@ -197,11 +99,11 @@
     .forgot-card{
 
         width:100%;
-        max-width:500px;
+        max-width:520px;
 
-        padding:42px;
+        padding:45px;
 
-        border-radius:28px;
+        border-radius:32px;
 
         background:
             rgba(255,255,255,0.06);
@@ -212,11 +114,13 @@
             1px solid rgba(255,255,255,0.08);
 
         box-shadow:
-            0 10px 40px rgba(0,0,0,0.4);
+            0 10px 40px rgba(0,0,0,0.45);
 
         position:relative;
 
         overflow:hidden;
+
+        margin-top:-50px;
     }
 
     .forgot-card::before{
@@ -225,13 +129,13 @@
 
         position:absolute;
 
-        width:220px;
-        height:220px;
+        width:240px;
+        height:240px;
 
         border-radius:50%;
 
         background:
-            rgba(255,255,255,0.04);
+            rgba(255,255,255,0.03);
 
         top:-120px;
         right:-120px;
@@ -241,39 +145,26 @@
         TEXT
     ========================== */
 
-    .mini-title{
-
-        text-align:center;
-
-        text-transform:uppercase;
-
-        letter-spacing:3px;
-
-        color:#93c5fd;
-
-        font-size:11px;
-
-        margin-bottom:10px;
-    }
-
     .main-title{
 
         text-align:center;
 
-        font-size:36px;
+        font-size:38px;
 
         font-weight:800;
 
-        margin-bottom:12px;
+        margin-bottom:14px;
     }
 
     .sub-title{
 
         text-align:center;
 
-        color:#cbd5e1;
+        color:#94a3b8;
 
         font-size:14px;
+
+        line-height:1.7;
 
         margin-bottom:34px;
     }
@@ -286,7 +177,7 @@
 
         border:none;
 
-        border-radius:16px;
+        border-radius:18px;
 
         padding:14px 16px;
 
@@ -316,14 +207,14 @@
     ========================== */
 
     .form-group{
-        margin-bottom:22px;
+        margin-bottom:24px;
     }
 
     .form-label{
 
         display:block;
 
-        margin-bottom:9px;
+        margin-bottom:10px;
 
         color:#f8fafc;
 
@@ -336,9 +227,9 @@
 
         width:100%;
 
-        padding:15px 18px;
+        padding:17px 18px;
 
-        border-radius:16px;
+        border-radius:18px;
 
         border:
             1px solid rgba(255,255,255,0.08);
@@ -346,11 +237,15 @@
         background:
             rgba(255,255,255,0.05);
 
-        color:white;
+        color:#ffffff !important;
 
         font-size:14px;
 
         transition:0.3s;
+
+        caret-color:white;
+
+        outline:none;
     }
 
     .form-control::placeholder{
@@ -359,8 +254,6 @@
 
     .form-control:focus{
 
-        outline:none;
-
         border-color:#3b82f6;
 
         background:
@@ -368,6 +261,38 @@
 
         box-shadow:
             0 0 0 4px rgba(37,99,235,0.15);
+    }
+
+    /* =========================
+        CAPTCHA BOX
+    ========================== */
+
+    .captcha-box{
+
+        width:100%;
+
+        height:80px;
+
+        border-radius:20px;
+
+        border:
+            1px dashed rgba(255,255,255,0.14);
+
+        background:
+            rgba(255,255,255,0.04);
+
+        display:flex;
+
+        align-items:center;
+        justify-content:center;
+
+        color:#94a3b8;
+
+        font-size:14px;
+
+        text-align:center;
+
+        padding:20px;
     }
 
     /* =========================
@@ -380,9 +305,9 @@
 
         border:none;
 
-        padding:16px;
+        padding:17px;
 
-        border-radius:16px;
+        border-radius:20px;
 
         color:white;
 
@@ -390,6 +315,8 @@
         font-weight:700;
 
         cursor:pointer;
+
+        margin-top:10px;
 
         transition:0.35s;
 
@@ -401,15 +328,15 @@
             );
 
         box-shadow:
-            0 10px 25px rgba(124,58,237,0.22);
+            0 12px 30px rgba(124,58,237,0.22);
     }
 
     .submit-btn:hover{
 
-        transform:translateY(-2px);
+        transform:translateY(-3px);
 
         box-shadow:
-            0 14px 30px rgba(124,58,237,0.3);
+            0 18px 35px rgba(124,58,237,0.32);
     }
 
     /* =========================
@@ -420,9 +347,13 @@
 
         text-align:center;
 
-        margin-top:22px;
+        margin-top:24px;
 
         font-size:14px;
+    }
+
+    .links span{
+        color:#cbd5e1;
     }
 
     .links a{
@@ -430,10 +361,12 @@
         color:#93c5fd;
 
         text-decoration:none;
+
+        font-weight:600;
     }
 
-    .links span{
-        color:#cbd5e1;
+    .links a:hover{
+        color:white;
     }
 
     /* =========================
@@ -442,20 +375,9 @@
 
     @media(max-width:768px){
 
-        .custom-navbar{
-
-            flex-direction:column;
-
-            gap:18px;
-        }
-
-        .nav-menu{
-            flex-wrap:wrap;
-            justify-content:center;
-        }
-
         .forgot-card{
-            padding:32px 22px;
+
+            padding:32px 24px;
         }
 
         .main-title{
@@ -469,54 +391,18 @@
 <div class="bg-light one"></div>
 <div class="bg-light two"></div>
 
-<!-- NAVBAR -->
-<div class="custom-navbar">
-
-    <div class="logo">
-        NEOMART
-    </div>
-
-    <div class="nav-menu">
-
-        <a href="#" class="nav-item-custom active">
-            Trang chủ
-        </a>
-
-        <a href="#" class="nav-item-custom">
-            Sản phẩm
-        </a>
-
-        <a href="#" class="nav-item-custom">
-            Giỏ hàng
-        </a>
-
-        <a href="#" class="nav-item-custom">
-            Danh mục
-        </a>
-
-        <a href="#" class="nav-item-custom">
-            Liên hệ
-        </a>
-
-    </div>
-
-</div>
-
 <!-- FORGOT PASSWORD -->
 <div class="forgot-wrapper">
 
     <div class="forgot-card">
 
-        <div class="mini-title">
-            Khôi phục tài khoản
-        </div>
-
+        <!-- TITLE -->
         <h1 class="main-title">
             Quên mật khẩu
         </h1>
 
         <p class="sub-title">
-            Nhập email và mật khẩu mới để cập nhật tài khoản
+            Nhập email để xác minh tài khoản và tiếp tục khôi phục mật khẩu
         </p>
 
         {{-- SUCCESS --}}
@@ -546,7 +432,7 @@
         <!-- FORM -->
         <form
             method="POST"
-            action="{{ route('password.update.fake') }}"
+            action="#"
         >
 
             @csrf
@@ -563,49 +449,33 @@
                     name="email"
                     class="form-control"
                     placeholder="Nhập email..."
+                    autocomplete="off"
                     required
                 >
 
             </div>
 
-            <!-- NEW PASSWORD -->
+            <!-- CAPTCHA -->
             <div class="form-group">
 
                 <label class="form-label">
-                    Mật khẩu mới
+                    CAPTCHA
                 </label>
 
-                <input
-                    type="password"
-                    name="password"
-                    class="form-control"
-                    placeholder="Nhập mật khẩu mới..."
-                    required
-                >
+                <div class="captcha-box">
 
-            </div>
+                    Khu vực hiển thị CAPTCHA API
+                    <br>
+                    (Google reCAPTCHA / Cloudflare Turnstile)
 
-            <!-- CONFIRM -->
-            <div class="form-group">
-
-                <label class="form-label">
-                    Xác nhận mật khẩu
-                </label>
-
-                <input
-                    type="password"
-                    name="password_confirmation"
-                    class="form-control"
-                    placeholder="Nhập lại mật khẩu..."
-                    required
-                >
+                </div>
 
             </div>
 
             <!-- BUTTON -->
             <button class="submit-btn">
 
-                Đổi mật khẩu
+                Xác minh tài khoản
 
             </button>
 
