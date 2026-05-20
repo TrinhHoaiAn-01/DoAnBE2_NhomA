@@ -149,7 +149,7 @@ Route::middleware('auth')->group(function () {
     // profile
     Route::get('/profileuser',
         [ProfileUserController::class, 'index']
-    )->name('profile.user');
+    )->name('profile');
 
     Route::post('/profileuser/update',
         [ProfileUserController::class, 'update']
