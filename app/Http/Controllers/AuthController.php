@@ -35,17 +35,18 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
         // CHECK STATUS
-        if (Auth::user()?->status !== 'active') {
+		if (!Auth::user()?->status) {
 
-            Auth::logout();
+			Auth::logout();
 
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+			$request->session()->invalidate();
 
-            return back()->withErrors([
-                'email' => 'Tài khoản này đã bị khoá!'
-            ]);
-        }
+			$request->session()->regenerateToken();
+
+			return back()->withErrors([
+				'email' => 'Tài khoản này đã bị khoá!'
+			]);
+		}
 
         \App\Models\SystemLog::create([
             'user_name' => Auth::user()->name,
