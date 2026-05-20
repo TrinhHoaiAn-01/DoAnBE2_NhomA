@@ -187,18 +187,18 @@
                         <img src="{{ Auth::user()->avatar_url ? asset(Auth::user()->avatar_url) : 'https://i.pinimg.com/736x/4d/5e/7c/4d5e7c77bb9bcbcd1b4d6e8c6e0bff6d.jpg' }}">
                     </div>
 
-                    <div class="name">
-                        {{ Auth::user()->name }}
-                    </div>
+                    <h2 class="name">
+						{{ Auth::user()->username }}#{{ Auth::user()->id }}
+					</h2>
 
-                    <div class="role">
-                        {{ Auth::user()->role_id == 1 ? 'Quản trị viên' : 'Người dùng' }}
-                    </div>
+					<div class="role">
+						{{ Auth::user()->role_id == 1 ? 'Quản trị viên' : 'Người dùng' }}
+					</div>
 
-                    <div class="role mt-2">
-                        Trạng thái:
-                        {{ Auth::user()->status ? 'Đang hoạt động' : 'Bị khoá' }}
-                    </div>
+					<div class="role mt-1">
+						Trạng thái:
+						{{ Auth::user()->status ? 'Đang hoạt động' : 'Bị khoá' }}
+					</div>
 
                     <div class="nav-menu">
 
@@ -261,9 +261,39 @@
                                class="form-control">
 
                         <label>Tên đăng nhập</label>
-                        <input type="text" name="username"
-                               value="{{ Auth::user()->username }}"
-                               class="form-control">
+                        <div class="row">
+
+						<!-- USERNAME -->
+						<div class="col-md-6">
+
+								<label class="form-label">
+									Tên đăng nhập
+								</label>
+
+								<input type="text"
+									   name="username"
+									   class="form-control"
+									   value="{{ Auth::user()->username }}"
+									   placeholder="Tên đăng nhập">
+
+							</div>
+
+							<!-- ID -->
+							<div class="col-md-6">
+
+								<label class="form-label">
+									ID người dùng
+								</label>
+
+								<input type="number"
+									   name="user_id"
+									   class="form-control"
+									   value="{{ Auth::user()->id }}"
+									   placeholder="ID người dùng">
+
+							</div>
+
+						</div>
 
                         <label>Email</label>
                         <input type="email" name="email"
