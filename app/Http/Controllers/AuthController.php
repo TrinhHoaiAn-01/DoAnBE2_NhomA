@@ -43,7 +43,7 @@ class AuthController extends Controller
             $request->session()->regenerateToken();
 
             return back()->withErrors([
-                'email' => 'Tai khoan tam thoi khong duoc phep dang nhap.'
+                'email' => 'Tài khoản này đã bị khoá!'
             ]);
         }
 
