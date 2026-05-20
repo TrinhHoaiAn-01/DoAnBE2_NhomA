@@ -278,7 +278,7 @@
 
                     <!-- NAME -->
                     <h2 class="name">
-                        {{ Auth::user()->username }}#{{ Auth::user()->id }}
+                        {{ Auth::user()->username }} #{{ Auth::user()->id }}
                     </h2>
 
                     <!-- ROLE -->
