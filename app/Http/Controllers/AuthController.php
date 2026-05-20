@@ -28,7 +28,7 @@ class AuthController extends Controller
             return back()
                 ->withInput($request->except('password'))
                 ->withErrors([
-                    'email' => 'Thong tin dang nhap khong hop le.'
+                    'email' => 'Email và Mật khẩu không đúng!'
                 ]);
         }
 
@@ -48,8 +48,7 @@ class AuthController extends Controller
         }
 
         return redirect()
-            ->intended(route('home'))
-            ->with('status', 'Dang nhap thanh cong.');
+            ->intended(route('home'));
     }
 
     public function showRegister(): View
