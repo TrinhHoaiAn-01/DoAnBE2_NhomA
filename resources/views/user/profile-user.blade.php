@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile User</title>
+    <title>Hồ sơ người dùng</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
           rel="stylesheet">
 
     <style>
+
         *{
             margin:0;
             padding:0;
@@ -23,157 +23,222 @@
 
         body{
             min-height:100vh;
-            background:linear-gradient(135deg,#0f172a,#1e293b,#334155);
-            overflow-x:hidden;
+            background:linear-gradient(135deg,#0f172a,#1e293b,#111827);
+            color:white;
         }
 
-        .bg-circle{
+        .bg{
             position:absolute;
+            width:300px;
+            height:300px;
             border-radius:50%;
-            filter:blur(90px);
-            opacity:0.45;
+            filter:blur(100px);
+            opacity:0.4;
         }
 
-        .bg1{width:350px;height:350px;background:#2563eb;top:-100px;left:-100px;}
-        .bg2{width:320px;height:320px;background:#7c3aed;bottom:-100px;right:-100px;}
+        .bg1{background:#2563eb;top:-80px;left:-80px;}
+        .bg2{background:#7c3aed;bottom:-80px;right:-80px;}
 
-        .profile-wrapper{
+        .wrapper{
             position:relative;
             z-index:10;
             min-height:100vh;
             display:flex;
-            justify-content:center;
             align-items:center;
-            padding:40px 15px;
+            justify-content:center;
+            padding:40px 20px;
         }
 
-        .profile-card{
+        .card-profile{
             width:100%;
-            max-width:1150px;
-            background:rgba(255,255,255,0.08);
-            border:1px solid rgba(255,255,255,0.1);
-            backdrop-filter:blur(16px);
+            max-width:1200px;
             border-radius:30px;
             overflow:hidden;
-            box-shadow:0 20px 50px rgba(0,0,0,0.4);
+            background:rgba(255,255,255,0.06);
+            backdrop-filter:blur(18px);
+            border:1px solid rgba(255,255,255,0.1);
+            box-shadow:0 20px 60px rgba(0,0,0,0.5);
         }
 
-        .left-panel{
+        /* LEFT */
+        .left{
             background:linear-gradient(180deg,#2563eb,#1d4ed8);
+            padding:40px 25px;
             color:white;
-            padding:50px 30px;
+            height:100%;
         }
 
-        .avatar-box{text-align:center;margin-bottom:30px;}
-        .avatar-box img{
-            width:170px;height:170px;
-            object-fit:cover;
+        .avatar img{
+            width:140px;
+            height:140px;
             border-radius:50%;
-            border:6px solid rgba(255,255,255,0.3);
-            margin-bottom:20px;
+            object-fit:cover;
+            border:5px solid rgba(255,255,255,0.3);
         }
 
-        .user-name{font-size:28px;font-weight:700;}
-        .user-role{margin-top:10px;font-size:15px;opacity:0.9;}
+        .name{
+            font-size:22px;
+            font-weight:700;
+            margin-top:10px;
+        }
 
-        .menu-item{
-            width:100%;
+        .role{
+            font-size:14px;
+            opacity:0.9;
+        }
+
+        .nav-menu{
+            margin-top:30px;
+        }
+
+        .nav-item{
             display:flex;
+            gap:12px;
             align-items:center;
-            gap:15px;
-            padding:16px 20px;
-            border-radius:16px;
-            margin-bottom:15px;
-            text-decoration:none;
+            padding:14px 16px;
+            border-radius:14px;
             color:white;
-            background:rgba(255,255,255,0.08);
+            text-decoration:none;
+            background:rgba(255,255,255,0.1);
+            margin-bottom:12px;
+            transition:0.3s;
+            border:none;
+            width:100%;
         }
 
-        .right-panel{padding:50px;color:white;}
-        .section-title{font-size:32px;font-weight:700;margin-bottom:35px;}
+        .nav-item:hover{
+            transform:translateX(6px);
+            background:rgba(255,255,255,0.2);
+        }
+
+        .danger{
+            background:rgba(255,0,0,0.2);
+        }
+
+        .danger:hover{
+            background:#dc2626;
+        }
+
+        /* RIGHT */
+        .right{
+            padding:50px;
+        }
+
+        .title{
+            font-size:30px;
+            font-weight:700;
+            margin-bottom:25px;
+        }
+
+        label{
+            font-size:14px;
+            margin-bottom:6px;
+        }
 
         .form-control{
-            height:58px;
-            border:none;
-            border-radius:16px;
+            height:52px;
+            border-radius:14px;
             background:rgba(255,255,255,0.08);
+            border:none;
             color:white;
-            padding-left:20px;
-            margin-bottom:20px;
+            margin-bottom:18px;
         }
 
-        .save-btn{
+        .form-control:focus{
+            background:rgba(255,255,255,0.12);
+            box-shadow:none;
+            color:white;
+        }
+
+        textarea.form-control{
+            height:100px;
+        }
+
+        .btn-save{
+            padding:12px 30px;
             border:none;
-            padding:15px 40px;
-            border-radius:50px;
+            border-radius:30px;
             background:linear-gradient(135deg,#3b82f6,#2563eb);
             color:white;
             font-weight:600;
         }
+
     </style>
 
 </head>
 
 <body>
 
-<div class="bg-circle bg1"></div>
-<div class="bg-circle bg2"></div>
+<div class="bg bg1"></div>
+<div class="bg bg2"></div>
 
-<div class="profile-wrapper">
+<div class="wrapper">
 
-    <div class="profile-card">
+    <div class="card-profile">
 
         <div class="row g-0">
 
             <!-- LEFT -->
             <div class="col-lg-4">
-                <div class="left-panel">
 
-                    <div class="avatar-box">
+                <div class="left text-center">
 
+                    <div class="avatar mb-3">
                         <img src="{{ Auth::user()->avatar_url ? asset(Auth::user()->avatar_url) : 'https://i.pinimg.com/736x/4d/5e/7c/4d5e7c77bb9bcbcd1b4d6e8c6e0bff6d.jpg' }}">
-
-                        <h2 class="user-name">{{ Auth::user()->name }}</h2>
-
-                        <p class="user-role">
-                            {{ Auth::user()->role_id == 1 ? 'Admin' : 'User' }}
-                        </p>
-
-                        <p class="user-role">
-                            Status:
-                            {{ Auth::user()->status ? 'Active' : 'Locked' }}
-                        </p>
-
                     </div>
 
-                    <div class="menu-list">
+                    <div class="name">
+                        {{ Auth::user()->name }}
+                    </div>
 
-                        <a href="/" class="menu-item">
-                            <i class="fa-solid fa-house"></i> Home
+                    <div class="role">
+                        {{ Auth::user()->role_id == 1 ? 'Quản trị viên' : 'Người dùng' }}
+                    </div>
+
+                    <div class="role mt-2">
+                        Trạng thái:
+                        {{ Auth::user()->status ? 'Đang hoạt động' : 'Bị khoá' }}
+                    </div>
+
+                    <div class="nav-menu">
+
+                        <a href="/" class="nav-item">
+                            <i class="fa fa-home"></i> Trang chủ
                         </a>
 
-                        <a href="{{ route('change.password') }}" class="menu-item">
-                            <i class="fa-solid fa-key"></i> Change Password
+                        <a href="{{ route('change.password') }}" class="nav-item">
+                            <i class="fa fa-key"></i> Đổi mật khẩu
                         </a>
+
+                        <!-- DELETE ACCOUNT -->
+                        <button class="nav-item danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal">
+
+                            <i class="fa fa-trash"></i> Xoá tài khoản
+                        </button>
 
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button class="menu-item">
-                                <i class="fa-solid fa-right-from-bracket"></i> Logout
+                            <button class="nav-item">
+                                <i class="fa fa-right-from-bracket"></i> Đăng xuất
                             </button>
                         </form>
 
                     </div>
 
                 </div>
+
             </div>
 
             <!-- RIGHT -->
             <div class="col-lg-8">
 
-                <div class="right-panel">
+                <div class="right">
 
-                    <h2 class="section-title">Edit Profile</h2>
+                    <div class="title">
+                        Thông tin hồ sơ
+                    </div>
 
                     @if(session('success'))
                         <div class="alert alert-success">
@@ -181,49 +246,54 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('profile.update') }}"
+                          method="POST"
+                          enctype="multipart/form-data">
+
                         @csrf
 
-                        <!-- avatar -->
-                        <label>Avatar</label>
+                        <label>Ảnh đại diện</label>
                         <input type="file" name="avatar" class="form-control">
 
-                        <!-- name -->
-                        <label>Name</label>
-                        <input type="text" name="name" value="{{ Auth::user()->name }}" class="form-control">
+                        <label>Họ và tên</label>
+                        <input type="text" name="name"
+                               value="{{ Auth::user()->name }}"
+                               class="form-control">
 
-                        <!-- username -->
-                        <label>Username</label>
-                        <input type="text" name="username" value="{{ Auth::user()->username }}" class="form-control">
+                        <label>Tên đăng nhập</label>
+                        <input type="text" name="username"
+                               value="{{ Auth::user()->username }}"
+                               class="form-control">
 
-                        <!-- email -->
                         <label>Email</label>
-                        <input type="email" name="email" value="{{ Auth::user()->email }}" class="form-control">
+                        <input type="email" name="email"
+                               value="{{ Auth::user()->email }}"
+                               class="form-control">
 
-                        <!-- phone -->
-                        <label>Phone</label>
-                        <input type="text" name="phone" value="{{ Auth::user()->phone }}" class="form-control">
+                        <label>Số điện thoại</label>
+                        <input type="text" name="phone"
+                               value="{{ Auth::user()->phone }}"
+                               class="form-control">
 
-                        <!-- gender -->
-                        <label>Gender</label>
+                        <label>Giới tính</label>
                         <select name="gender" class="form-control">
-                            <option value="">Select</option>
-                            <option value="male" {{ Auth::user()->gender=='male'?'selected':'' }}>Male</option>
-                            <option value="female" {{ Auth::user()->gender=='female'?'selected':'' }}>Female</option>
-                            <option value="other" {{ Auth::user()->gender=='other'?'selected':'' }}>Other</option>
+                            <option value="">Chọn giới tính</option>
+                            <option value="male" {{ Auth::user()->gender=='male'?'selected':'' }}>Nam</option>
+                            <option value="female" {{ Auth::user()->gender=='female'?'selected':'' }}>Nữ</option>
+                            <option value="other" {{ Auth::user()->gender=='other'?'selected':'' }}>Khác</option>
                         </select>
 
-                        <!-- dob -->
-                        <label>Date of Birth</label>
-                        <input type="date" name="date_of_birth" value="{{ Auth::user()->date_of_birth }}" class="form-control">
+                        <label>Ngày sinh</label>
+                        <input type="date" name="date_of_birth"
+                               value="{{ Auth::user()->date_of_birth }}"
+                               class="form-control">
 
-                        <!-- address -->
-                        <label>Address</label>
-                        <textarea name="home_address" class="form-control">{{ Auth::user()->home_address }}</textarea>
+                        <label>Địa chỉ</label>
+                        <textarea name="home_address"
+                                  class="form-control">{{ Auth::user()->home_address }}</textarea>
 
-                        <!-- button -->
-                        <button class="save-btn mt-3">
-                            Save Changes
+                        <button class="btn-save mt-3">
+                            Lưu thay đổi
                         </button>
 
                     </form>
@@ -237,6 +307,48 @@
     </div>
 
 </div>
+
+<!-- DELETE MODAL -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content bg-dark text-white rounded-4">
+
+            <div class="modal-header border-0">
+                <h5>Xác nhận xoá tài khoản</h5>
+            </div>
+
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xoá tài khoản không?
+                <br>
+                <span class="text-danger">Hành động này không thể hoàn tác.</span>
+            </div>
+
+            <div class="modal-footer border-0">
+
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Huỷ
+                </button>
+
+                <form action="{{ route('profile.delete') }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+
+                    <button class="btn btn-danger">
+                        Xoá tài khoản
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
