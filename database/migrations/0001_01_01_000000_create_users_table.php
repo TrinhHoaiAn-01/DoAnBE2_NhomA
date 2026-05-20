@@ -18,11 +18,28 @@ return new class extends Migration
             // profile
             $table->string('name');
 
+            $table->string('username')->unique();
+
             $table->string('email')->unique();
 
             $table->string('phone')->nullable();
 
             $table->string('avatar_url')->nullable();
+
+            $table->text('home_address')->nullable();
+
+            // gender
+            // male
+            // female
+            // other
+            $table->string('gender')->nullable();
+
+            $table->date('date_of_birth')->nullable();
+
+            // status
+            // true = active
+            // false = inactive
+            $table->boolean('status')->default(true);
 
             // role
             // 1 = admin
