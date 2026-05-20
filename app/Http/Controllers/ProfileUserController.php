@@ -14,7 +14,7 @@ class ProfileUserController extends Controller
     // =========================
     public function index()
     {
-        return view('profile');
+        return view('profile-user.blade');
     }
 
     // =========================
