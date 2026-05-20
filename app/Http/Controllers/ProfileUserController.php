@@ -21,10 +21,54 @@ class ProfileUserController extends Controller
 
         $request->validate([
 
-            'name' => 'required|max:255',
-            'email' => 'required|email',
-            'phone' => 'nullable|max:20',
-            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'name' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:users,username,' . $user->id
+            ],
+
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                'unique:users,email,' . $user->id
+            ],
+
+            'phone' => [
+                'nullable',
+                'string',
+                'max:20'
+            ],
+
+            'home_address' => [
+                'nullable',
+                'string',
+                'max:1000'
+            ],
+
+            'gender' => [
+                'nullable',
+                'in:male,female,other'
+            ],
+
+            'date_of_birth' => [
+                'nullable',
+                'date'
+            ],
+
+            'avatar' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png',
+                'max:2048'
+            ],
 
         ]);
 
@@ -33,18 +77,35 @@ class ProfileUserController extends Controller
 
             $file = $request->file('avatar');
 
-            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $filename =
+                time() . '_' .
+                $file->getClientOriginalName();
 
-            $file->move(public_path('uploads/avatar'), $filename);
+            $file->move(
+                public_path('uploads/avatar'),
+                $filename
+            );
 
-            $user->avatar_url = 'uploads/avatar/' . $filename;
+            $user->avatar_url =
+                'uploads/avatar/' . $filename;
         }
 
+        // update profile
         $user->name = $request->name;
+
+        $user->username = $request->username;
 
         $user->email = $request->email;
 
         $user->phone = $request->phone;
+
+        $user->home_address =
+            $request->home_address;
+
+        $user->gender = $request->gender;
+
+        $user->date_of_birth =
+            $request->date_of_birth;
 
         $user->save();
 
@@ -80,7 +141,8 @@ class ProfileUserController extends Controller
         )) {
 
             return back()->withErrors([
-                'current_password' => 'Current password is incorrect.'
+                'current_password' =>
+                    'Current password is incorrect.'
             ]);
         }
 
@@ -96,20 +158,20 @@ class ProfileUserController extends Controller
             'Password changed successfully!'
         );
     }
-	
-	// REMOVE ACCOUNT
-	public function deleteAccount(Request $request)
-	{
-		$user = Auth::user();
 
-		Auth::logout();
+    // REMOVE ACCOUNT
+    public function deleteAccount(Request $request)
+    {
+        $user = Auth::user();
 
-		$user->delete();
+        Auth::logout();
 
-		$request->session()->invalidate();
+        $user->delete();
 
-		$request->session()->regenerateToken();
+        $request->session()->invalidate();
 
-		return redirect('/login');
-	}
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
+    }
 }
