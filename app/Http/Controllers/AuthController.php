@@ -43,7 +43,7 @@ class AuthController extends Controller
             $request->session()->regenerateToken();
 
             return back()->withErrors([
-                'email' => 'Tài khoản tạm thời không được phép đăng nhập.'
+                'email' => 'Tài khoản này đã bị khoá!'
             ]);
         }
 
@@ -58,7 +58,6 @@ class AuthController extends Controller
         return redirect()
             ->intended(route('home'))
             ->with('status', 'Đăng nhập thành công.');
-            ->intended(route('home'));
     }
 
     public function showRegister(): View
