@@ -28,7 +28,7 @@ class AuthController extends Controller
             return back()
                 ->withInput($request->except('password'))
                 ->withErrors([
-                    'email' => 'Thông tin đăng nhập không hợp lệ.'
+                    'email' => 'Email và Mật khẩu không đúng!'
                 ]);
         }
 
@@ -58,6 +58,7 @@ class AuthController extends Controller
         return redirect()
             ->intended(route('home'))
             ->with('status', 'Đăng nhập thành công.');
+            ->intended(route('home'));
     }
 
     public function showRegister(): View
