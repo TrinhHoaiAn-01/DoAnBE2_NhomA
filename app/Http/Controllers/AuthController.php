@@ -66,31 +66,98 @@ class AuthController extends Controller
     }
 
     public function register(Request $request): RedirectResponse
-    {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'password' => ['required', 'string', 'confirmed', 'min:8'],
-            'role_id' => ['required', 'integer', 'in:1,2'],
-        ]);
+	{
+		$data = $request->validate([
 
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
-            'password' => Hash::make($data['password']),
-            'role_id' => $data['role_id'],
-            'status' => 'active',
-        ]);
+			// profile
+			'name' => ['nullable', 'string', 'max:255'],
 
-        Auth::login($user);
+			'username' => [
+				'required',
+				'string',
+				'max:255',
+				'unique:users,username'
+			],
 
-        $request->session()->regenerate();
+			'email' => [
+				'required',
+				'email',
+				'max:255',
+				'unique:users,email'
+			],
 
-        return to_route('home')
-            ->with('status', 'Đăng ký tài khoản thành công.');
-    }
+			'phone' => [
+				'nullable',
+				'string',
+				'max:20'
+			],
+
+			'avatar_url' => [
+				'nullable',
+				'string',
+				'max:255'
+			],
+
+			'home_address' => [
+				'nullable',
+				'string'
+			],
+
+			// gender
+			'gender' => [
+				'nullable',
+				'in:male,female,other'
+			],
+
+			'date_of_birth' => [
+				'nullable',
+				'date'
+			],
+
+			// auth
+			'password' => [
+				'required',
+				'string',
+				'confirmed',
+				'min:8'
+			],
+
+		]);
+
+		$user = User::create([
+
+			'name' => $data['name'] ?? $data['username'],
+
+			'username' => $data['username'],
+
+			'email' => $data['email'],
+
+			'phone' => $data['phone'] ?? null,
+
+			'avatar_url' => $data['avatar_url'] ?? null,
+
+			'home_address' => $data['home_address'] ?? null,
+
+			'gender' => $data['gender'] ?? null,
+
+			'date_of_birth' => $data['date_of_birth'] ?? null,
+
+			'password' => Hash::make($data['password']),
+
+			// default
+			'role_id' => 2,
+
+			// boolean
+			'status' => true,
+		]);
+
+		Auth::login($user);
+
+		$request->session()->regenerate();
+
+		return to_route('home')
+			->with('status', 'Đăng ký thành công!');
+	}
 
 	public function logout(Request $request)
 	{
