@@ -2,13 +2,25 @@
 <html lang="vi">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hồ sơ người dùng</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
+    <title>
+        Hồ sơ người dùng
+    </title>
+
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+    <!-- FONT -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
           rel="stylesheet">
 
@@ -36,8 +48,17 @@
             opacity:0.4;
         }
 
-        .bg1{background:#2563eb;top:-80px;left:-80px;}
-        .bg2{background:#7c3aed;bottom:-80px;right:-80px;}
+        .bg1{
+            background:#2563eb;
+            top:-80px;
+            left:-80px;
+        }
+
+        .bg2{
+            background:#7c3aed;
+            bottom:-80px;
+            right:-80px;
+        }
 
         .wrapper{
             position:relative;
@@ -61,6 +82,7 @@
         }
 
         /* LEFT */
+
         .left{
             background:linear-gradient(180deg,#2563eb,#1d4ed8);
             padding:40px 25px;
@@ -120,6 +142,7 @@
         }
 
         /* RIGHT */
+
         .right{
             padding:50px;
         }
@@ -163,12 +186,29 @@
             font-weight:600;
         }
 
+        .text-danger{
+            font-size:13px;
+        }
+
+        /* REMOVE SPINNER */
+
+        .no-spinner::-webkit-outer-spin-button,
+        .no-spinner::-webkit-inner-spin-button{
+            -webkit-appearance:none;
+            margin:0;
+        }
+
+        .no-spinner{
+            -moz-appearance:textfield;
+        }
+
     </style>
 
 </head>
 
 <body>
 
+<!-- BACKGROUND -->
 <div class="bg bg1"></div>
 <div class="bg bg2"></div>
 
@@ -183,46 +223,85 @@
 
                 <div class="left text-center">
 
+                    <!-- AVATAR -->
                     <div class="avatar mb-3">
-                        <img src="{{ Auth::user()->avatar_url ? asset(Auth::user()->avatar_url) : 'https://i.pinimg.com/736x/4d/5e/7c/4d5e7c77bb9bcbcd1b4d6e8c6e0bff6d.jpg' }}">
+
+                        <img src="{{ Auth::user()->avatar_url
+                            ? asset(Auth::user()->avatar_url)
+                            : 'https://i.pinimg.com/736x/4d/5e/7c/4d5e7c77bb9bcbcd1b4d6e8c6e0bff6d.jpg' }}">
+
                     </div>
 
+                    <!-- NAME -->
                     <h2 class="name">
-						{{ Auth::user()->username }}#{{ Auth::user()->id }}
-					</h2>
+                        {{ Auth::user()->username }}#{{ Auth::user()->id }}
+                    </h2>
 
-					<div class="role">
-						{{ Auth::user()->role_id == 1 ? 'Quản trị viên' : 'Người dùng' }}
-					</div>
+                    <!-- ROLE -->
+                    <div class="role">
 
-					<div class="role mt-1">
-						Trạng thái:
-						{{ Auth::user()->status ? 'Đang hoạt động' : 'Bị khoá' }}
-					</div>
+                        {{ Auth::user()->role_id == 1
+                            ? 'Quản trị viên'
+                            : 'Người dùng' }}
 
+                    </div>
+
+                    <!-- STATUS -->
+                    <div class="role mt-1">
+
+                        Trạng thái:
+
+                        {{ Auth::user()->status
+                            ? 'Đang hoạt động'
+                            : 'Bị khoá' }}
+
+                    </div>
+
+                    <!-- MENU -->
                     <div class="nav-menu">
 
                         <a href="/" class="nav-item">
-                            <i class="fa fa-home"></i> Trang chủ
+
+                            <i class="fa fa-home"></i>
+
+                            Trang chủ
+
                         </a>
 
-                        <a href="{{ route('change.password') }}" class="nav-item">
-                            <i class="fa fa-key"></i> Đổi mật khẩu
+                        <a href="{{ route('change.password') }}"
+                           class="nav-item">
+
+                            <i class="fa fa-key"></i>
+
+                            Đổi mật khẩu
+
                         </a>
 
-                        <!-- DELETE ACCOUNT -->
+                        <!-- DELETE -->
                         <button class="nav-item danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
 
-                            <i class="fa fa-trash"></i> Xoá tài khoản
+                            <i class="fa fa-trash"></i>
+
+                            Xoá tài khoản
+
                         </button>
 
-                        <form action="{{ route('logout') }}" method="POST">
+                        <!-- LOGOUT -->
+                        <form action="{{ route('logout') }}"
+                              method="POST">
+
                             @csrf
+
                             <button class="nav-item">
-                                <i class="fa fa-right-from-bracket"></i> Đăng xuất
+
+                                <i class="fa fa-right-from-bracket"></i>
+
+                                Đăng xuất
+
                             </button>
+
                         </form>
 
                     </div>
@@ -236,94 +315,228 @@
 
                 <div class="right">
 
+                    <!-- TITLE -->
                     <div class="title">
                         Thông tin hồ sơ
                     </div>
 
+                    <!-- SUCCESS -->
                     @if(session('success'))
+
                         <div class="alert alert-success">
+
                             {{ session('success') }}
+
                         </div>
+
                     @endif
 
+                    <!-- FORM -->
                     <form action="{{ route('profile.update') }}"
                           method="POST"
                           enctype="multipart/form-data">
 
                         @csrf
 
-                        <label>Ảnh đại diện</label>
-                        <input type="file" name="avatar" class="form-control">
+                        <!-- AVATAR -->
+                        <label class="form-label">
+                            Ảnh đại diện
+                        </label>
 
-                        <label>Họ và tên</label>
-                        <input type="text" name="name"
-                               value="{{ Auth::user()->name }}"
+                        <input type="file"
+                               name="avatar"
                                class="form-control">
 
-                        <label>Tên đăng nhập</label>
+                        <!-- NAME -->
+                        <label class="form-label">
+                            Họ và tên
+                        </label>
+
+                        <input type="text"
+                               name="name"
+                               value="{{ Auth::user()->name }}"
+                               class="form-control"
+                               placeholder="Nhập họ và tên">
+
+                        <!-- USERNAME + ID -->
                         <div class="row">
 
-						<!-- USERNAME -->
-						<div class="col-md-6">
+                            <!-- USERNAME -->
+                            <div class="col-md-8">
 
-								<label class="form-label">
-									Tên đăng nhập
-								</label>
+                                <label class="form-label">
+                                    Tên đăng nhập
+                                </label>
 
-								<input type="text"
-									   name="username"
-									   class="form-control"
-									   value="{{ Auth::user()->username }}"
-									   placeholder="Tên đăng nhập">
+                                <input type="text"
+                                       name="username"
+                                       class="form-control"
+                                       value="{{ Auth::user()->username }}"
+                                       placeholder="Tên đăng nhập">
 
-							</div>
+                                @error('username')
 
-							<!-- ID -->
-							<div class="col-md-6">
+                                    <div class="text-danger mb-2">
 
-								<label class="form-label">
-									ID người dùng
-								</label>
+                                        {{ $message }}
 
-								<input type="number"
-									   name="user_id"
-									   class="form-control"
-									   value="{{ Auth::user()->id }}"
-									   placeholder="ID người dùng">
+                                    </div>
 
-							</div>
+                                @enderror
 
-						</div>
+                            </div>
 
-                        <label>Email</label>
-                        <input type="email" name="email"
-                               value="{{ Auth::user()->email }}"
-                               class="form-control">
+                            <!-- USER ID -->
+                            <div class="col-md-4">
 
-                        <label>Số điện thoại</label>
-                        <input type="text" name="phone"
-                               value="{{ Auth::user()->phone }}"
-                               class="form-control">
+                                <label class="form-label">
+                                    ID người dùng
+                                </label>
 
-                        <label>Giới tính</label>
-                        <select name="gender" class="form-control">
-                            <option value="">Chọn giới tính</option>
-                            <option value="male" {{ Auth::user()->gender=='male'?'selected':'' }}>Nam</option>
-                            <option value="female" {{ Auth::user()->gender=='female'?'selected':'' }}>Nữ</option>
-                            <option value="other" {{ Auth::user()->gender=='other'?'selected':'' }}>Khác</option>
-                        </select>
+                                <input type="number"
+                                       name="user_id"
+                                       class="form-control no-spinner"
+                                       value="{{ Auth::user()->id }}"
+                                       placeholder="ID">
 
-                        <label>Ngày sinh</label>
-                        <input type="date" name="date_of_birth"
-                               value="{{ Auth::user()->date_of_birth }}"
-                               class="form-control">
+                                @error('user_id')
 
-                        <label>Địa chỉ</label>
+                                    <div class="text-danger mb-2">
+
+                                        {{ $message }}
+
+                                    </div>
+
+                                @enderror
+
+                            </div>
+
+                        </div>
+
+                        <!-- EMAIL + PHONE -->
+                        <div class="row">
+
+                            <!-- EMAIL -->
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    Email
+                                </label>
+
+                                <input type="email"
+                                       name="email"
+                                       value="{{ Auth::user()->email }}"
+                                       class="form-control"
+                                       placeholder="Nhập email">
+
+                                @error('email')
+
+                                    <div class="text-danger mb-2">
+
+                                        {{ $message }}
+
+                                    </div>
+
+                                @enderror
+
+                            </div>
+
+                            <!-- PHONE -->
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    Số điện thoại
+                                </label>
+
+                                <input type="text"
+                                       name="phone"
+                                       value="{{ Auth::user()->phone }}"
+                                       class="form-control"
+                                       placeholder="Nhập số điện thoại">
+
+                            </div>
+
+                        </div>
+
+                        <!-- GENDER + DATE -->
+                        <div class="row">
+
+                            <!-- GENDER -->
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    Giới tính
+                                </label>
+
+                                <select name="gender"
+                                        class="form-control">
+
+                                    <option value="">
+                                        Chọn giới tính
+                                    </option>
+
+                                    <option value="male"
+                                        {{ Auth::user()->gender == 'male'
+                                            ? 'selected'
+                                            : '' }}>
+
+                                        Nam
+
+                                    </option>
+
+                                    <option value="female"
+                                        {{ Auth::user()->gender == 'female'
+                                            ? 'selected'
+                                            : '' }}>
+
+                                        Nữ
+
+                                    </option>
+
+                                    <option value="other"
+                                        {{ Auth::user()->gender == 'other'
+                                            ? 'selected'
+                                            : '' }}>
+
+                                        Khác
+
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <!-- DATE -->
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    Ngày sinh
+                                </label>
+
+                                <input type="date"
+                                       name="date_of_birth"
+                                       value="{{ Auth::user()->date_of_birth }}"
+                                       class="form-control">
+
+                            </div>
+
+                        </div>
+
+                        <!-- ADDRESS -->
+                        <label class="form-label">
+                            Địa chỉ
+                        </label>
+
                         <textarea name="home_address"
-                                  class="form-control">{{ Auth::user()->home_address }}</textarea>
+                                  class="form-control"
+                                  placeholder="Nhập địa chỉ">{{ Auth::user()->home_address }}</textarea>
 
-                        <button class="btn-save mt-3">
+                        <!-- BUTTON -->
+                        <button type="submit"
+                                class="btn-save mt-3">
+
                             Lưu thay đổi
+
                         </button>
 
                     </form>
@@ -339,35 +552,55 @@
 </div>
 
 <!-- DELETE MODAL -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
+<div class="modal fade"
+     id="deleteModal"
+     tabindex="-1">
 
     <div class="modal-dialog modal-dialog-centered">
 
         <div class="modal-content bg-dark text-white rounded-4">
 
             <div class="modal-header border-0">
-                <h5>Xác nhận xoá tài khoản</h5>
+
+                <h5>
+                    Xác nhận xoá tài khoản
+                </h5>
+
             </div>
 
             <div class="modal-body">
+
                 Bạn có chắc chắn muốn xoá tài khoản không?
+
                 <br>
-                <span class="text-danger">Hành động này không thể hoàn tác.</span>
+
+                <span class="text-danger">
+                    Hành động này không thể hoàn tác.
+                </span>
+
             </div>
 
             <div class="modal-footer border-0">
 
-                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                <button class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
                     Huỷ
+
                 </button>
 
-                <form action="{{ route('profile.delete') }}" method="POST">
+                <form action="{{ route('profile.delete') }}"
+                      method="POST">
+
                     @csrf
                     @method('DELETE')
 
                     <button class="btn btn-danger">
+
                         Xoá tài khoản
+
                     </button>
+
                 </form>
 
             </div>
@@ -378,7 +611,9 @@
 
 </div>
 
+<!-- BOOTSTRAP -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>
