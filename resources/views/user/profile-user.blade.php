@@ -37,6 +37,7 @@
             min-height:100vh;
             background:linear-gradient(135deg,#0f172a,#1e293b,#111827);
             color:white;
+            overflow-x:hidden;
         }
 
         .bg{
@@ -159,12 +160,12 @@
         }
 
         .form-control{
-            height:52px;
+            height:35px;
             border-radius:14px;
             background:rgba(255,255,255,0.08);
             border:none;
             color:white;
-            margin-bottom:18px;
+            margin-bottom:10px;
         }
 
         .form-control:focus{
@@ -173,21 +174,64 @@
             color:white;
         }
 
+        .form-control:disabled{
+            background:rgba(255,255,255,0.05);
+            color:rgba(255,255,255,0.6);
+        }
+
+        /* OPTION COLOR */
+
+        select.form-control option{
+            color:black;
+            background:white;
+        }
+
         textarea.form-control{
             height:100px;
         }
 
+        /* BUTTON */
+
+        .btn-wrapper{
+            display:flex;
+            justify-content:center;
+            margin-top:25px;
+        }
+
         .btn-save{
-            padding:12px 30px;
+            padding:12px 40px;
             border:none;
             border-radius:30px;
             background:linear-gradient(135deg,#3b82f6,#2563eb);
             color:white;
             font-weight:600;
+            transition:0.3s;
         }
 
-        .text-danger{
-            font-size:13px;
+        .btn-save:hover{
+            transform:translateY(-2px);
+        }
+
+        /* ALERT */
+
+        .custom-alert{
+            border:none;
+            border-radius:16px;
+            padding:14px 18px;
+        }
+
+        .alert-success{
+            background:rgba(34,197,94,0.15);
+            color:#4ade80;
+        }
+
+        .alert-danger{
+            background:rgba(239,68,68,0.15);
+            color:#f87171;
+        }
+
+        .btn-close{
+            filter:invert(1);
         }
 
         /* REMOVE SPINNER */
@@ -323,9 +367,40 @@
                     <!-- SUCCESS -->
                     @if(session('success'))
 
-                        <div class="alert alert-success">
+                        <div class="alert alert-success alert-dismissible fade show custom-alert"
+                             role="alert">
 
                             {{ session('success') }}
+
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert">
+                            </button>
+
+                        </div>
+
+                    @endif
+
+                    <!-- ERROR -->
+                    @if($errors->any())
+
+                        <div class="alert alert-danger alert-dismissible fade show custom-alert"
+                             role="alert">
+
+                            <ul class="mb-0">
+
+                                @foreach($errors->all() as $error)
+
+                                    <li>{{ $error }}</li>
+
+                                @endforeach
+
+                            </ul>
+
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert">
+                            </button>
 
                         </div>
 
@@ -337,6 +412,11 @@
                           enctype="multipart/form-data">
 
                         @csrf
+
+                        <!-- HIDDEN USERNAME -->
+                        <input type="hidden"
+                               name="username"
+                               value="{{ Auth::user()->username }}">
 
                         <!-- AVATAR -->
                         <label class="form-label">
@@ -369,20 +449,9 @@
                                 </label>
 
                                 <input type="text"
-                                       name="username"
                                        class="form-control"
                                        value="{{ Auth::user()->username }}"
-                                       placeholder="Tên đăng nhập">
-
-                                @error('username')
-
-                                    <div class="text-danger mb-2">
-
-                                        {{ $message }}
-
-                                    </div>
-
-                                @enderror
+                                       disabled>
 
                             </div>
 
@@ -398,16 +467,6 @@
                                        class="form-control no-spinner"
                                        value="{{ Auth::user()->id }}"
                                        placeholder="ID">
-
-                                @error('user_id')
-
-                                    <div class="text-danger mb-2">
-
-                                        {{ $message }}
-
-                                    </div>
-
-                                @enderror
 
                             </div>
 
@@ -428,16 +487,6 @@
                                        value="{{ Auth::user()->email }}"
                                        class="form-control"
                                        placeholder="Nhập email">
-
-                                @error('email')
-
-                                    <div class="text-danger mb-2">
-
-                                        {{ $message }}
-
-                                    </div>
-
-                                @enderror
 
                             </div>
 
@@ -479,27 +528,21 @@
                                         {{ Auth::user()->gender == 'male'
                                             ? 'selected'
                                             : '' }}>
-
                                         Nam
-
                                     </option>
 
                                     <option value="female"
                                         {{ Auth::user()->gender == 'female'
                                             ? 'selected'
                                             : '' }}>
-
                                         Nữ
-
                                     </option>
 
                                     <option value="other"
                                         {{ Auth::user()->gender == 'other'
                                             ? 'selected'
                                             : '' }}>
-
                                         Khác
-
                                     </option>
 
                                 </select>
@@ -515,7 +558,9 @@
 
                                 <input type="date"
                                        name="date_of_birth"
-                                       value="{{ Auth::user()->date_of_birth }}"
+                                       value="{{ Auth::user()->date_of_birth
+                                            ? \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d')
+                                            : '' }}"
                                        class="form-control">
 
                             </div>
@@ -531,13 +576,17 @@
                                   class="form-control"
                                   placeholder="Nhập địa chỉ">{{ Auth::user()->home_address }}</textarea>
 
-                        <!-- BUTTON -->
-                        <button type="submit"
-                                class="btn-save mt-3">
+                        <!-- BUTTON CENTER -->
+                        <div class="btn-wrapper">
 
-                            Lưu thay đổi
+                            <button type="submit"
+                                    class="btn-save">
 
-                        </button>
+                                Lưu thay đổi
+
+                            </button>
+
+                        </div>
 
                     </form>
 
