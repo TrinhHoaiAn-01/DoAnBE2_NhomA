@@ -147,11 +147,11 @@ Route::middleware('auth')->group(function (): void {
 Route::middleware('auth')->group(function () {
 
     // profile
-    Route::get('/profileuser',
+    Route::get('/profile',
         [ProfileUserController::class, 'index']
     )->name('profile');
 
-    Route::post('/profileuser/update',
+    Route::post('/profile/update',
         [ProfileUserController::class, 'update']
     )->name('profile.update');
 
@@ -166,7 +166,7 @@ Route::middleware('auth')->group(function () {
     )->name('password.update');
 	
 	// delete account
-	Route::delete('/delete-account',
+	Route::delete('/deleteaccount',
     [ProfileUserController::class, 'deleteAccount']
 )->name('profile.delete');
 
