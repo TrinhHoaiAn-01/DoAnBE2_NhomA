@@ -1,77 +1,137 @@
+@if (session('status') || session('success') || $errors->any())
+
+    <div class="flash-wrapper">
+
+        {{-- SUCCESS --}}
+        @if (session('status') || session('success'))
+
+            <div class="flash-alert success-alert">
+
+                <div class="flash-content">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    <span>
+                        {{ session('status') ?? session('success') }}
+                    </span>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="flash-close"
+                    onclick="this.parentElement.remove()"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+        @endif
+
+        {{-- ERROR --}}
+        @if ($errors->any())
+
+            @foreach ($errors->all() as $error)
+
+                <div class="flash-alert error-alert">
+
+                    <div class="flash-content">
+
+                        <i class="fa-solid fa-circle-exclamation"></i>
+
+                        <span>
+                            {{ $error }}
+                        </span>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="flash-close"
+                        onclick="this.parentElement.remove()"
+                    >
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                </div>
+
+            @endforeach
+
+        @endif
+
+    </div>
+
+@endif
+
 <style>
 
-    .custom-alert{
+    .flash-wrapper{
 
         width:100%;
 
         display:flex;
 
-        align-items:flex-start;
-        justify-content:space-between;
+        flex-direction:column;
 
-        gap:16px;
-
-        padding:18px 20px;
-
-        margin-bottom:22px;
-
-        border-radius:22px;
-
-        backdrop-filter:blur(14px);
-
-        border:1px solid rgba(255,255,255,0.08);
-
-        animation:fadeIn 0.25s ease;
-    }
-
-    .alert-content{
-
-        display:flex;
-
-        align-items:flex-start;
+        align-items:center;
 
         gap:14px;
 
-        flex:1;
+        margin-bottom: -10px;
+		
+		margin-top: -10px;
     }
 
-    .alert-content i{
+    .flash-alert{
 
-        font-size:18px;
+        width:fit-content;
 
-        margin-top:2px;
+        max-width:520px;
+
+        padding:14px 18px;
+
+        border-radius:18px;
+
+        display:flex;
+
+        align-items:center;
+
+        justify-content:space-between;
+
+        gap:20px;
+
+        backdrop-filter:blur(18px);
+
+        animation:fadeDown 0.35s ease;
+
+        box-shadow:
+            0 10px 30px rgba(0,0,0,0.22);
     }
 
-    .success-alert{
+    .flash-content{
 
-        background:
-            rgba(34,197,94,0.12);
+        display:flex;
 
-        border-color:
-            rgba(34,197,94,0.22);
+        align-items:center;
 
-        color:#dcfce7;
-    }
-
-    .error-alert{
-
-        background:
-            rgba(239,68,68,0.12);
-
-        border-color:
-            rgba(239,68,68,0.20);
-
-        color:#fecaca;
-    }
-
-    .alert-error-item{
+        gap:12px;
 
         font-size:14px;
 
-        line-height:1.7;
+        font-weight:500;
+
+        line-height:1.5;
     }
 
-    .alert-close{
+    .flash-content i{
+
+        font-size:16px;
+
+        flex-shrink:0;
+    }
+
+    .flash-close{
 
         border:none;
 
@@ -79,97 +139,63 @@
 
         color:inherit;
 
-        opacity:0.7;
-
         cursor:pointer;
 
-        transition:0.25s;
+        padding:0;
 
-        font-size:18px;
+        font-size:15px;
+
+        opacity:0.7;
+
+        transition:0.25s;
     }
 
-    .alert-close:hover{
+    .flash-close:hover{
 
         opacity:1;
 
         transform:scale(1.08);
     }
 
-    @keyframes fadeIn{
+    .success-alert{
+
+        background:
+            rgba(34,197,94,0.15);
+
+        border:
+            1px solid rgba(34,197,94,0.25);
+
+        color:#bbf7d0;
+    }
+
+    .error-alert{
+
+        background:
+            rgba(239,68,68,0.15);
+
+        border:
+            1px solid rgba(239,68,68,0.25);
+
+        color:#fecaca;
+    }
+
+    @keyframes fadeDown{
 
         from{
 
             opacity:0;
-            transform:translateY(-8px);
+
+            transform:
+                translateY(-12px);
         }
 
         to{
 
             opacity:1;
-            transform:translateY(0);
+
+            transform:
+                translateY(0);
         }
     }
 
 </style>
-
-@if (session('status') || session('success'))
-
-    <div class="custom-alert success-alert alert alert-dismissible fade show">
-
-        <div class="alert-content">
-
-            <i class="fa-solid fa-circle-check"></i>
-
-            <span>
-                {{ session('status') ?? session('success') }}
-            </span>
-
-        </div>
-
-        <button
-            type="button"
-            class="alert-close"
-            data-bs-dismiss="alert"
-            aria-label="Close"
-        >
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-
-    </div>
-
-@endif
-
-@if ($errors->any())
-
-    <div class="custom-alert error-alert alert alert-dismissible fade show">
-
-        <div class="alert-content">
-
-            <i class="fa-solid fa-triangle-exclamation"></i>
-
-            <div>
-
-                @foreach ($errors->all() as $error)
-
-                    <div class="alert-error-item">
-                        {{ $error }}
-                    </div>
-
-                @endforeach
-
-            </div>
-
-        </div>
-
-        <button
-            type="button"
-            class="alert-close"
-            data-bs-dismiss="alert"
-            aria-label="Close"
-        >
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-
-    </div>
-
-@endif
