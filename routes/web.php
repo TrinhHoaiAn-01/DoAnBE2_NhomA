@@ -174,7 +174,7 @@ Route::get('/home', function () {
 
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth', CheckRole::class . ':5,4,3,2'])
+    ->middleware(['auth', CheckRole::class . ':5'])
     ->group(function (): void {
 
         // DASHBOARD
