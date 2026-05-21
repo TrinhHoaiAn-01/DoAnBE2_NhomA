@@ -1,5 +1,5 @@
 protected $middlewareAliases = [
-    // các middleware có sẵn...
+    // Laravel default middleware...
 
     'role' => \App\Http\Middleware\CheckRole::class,
 ];

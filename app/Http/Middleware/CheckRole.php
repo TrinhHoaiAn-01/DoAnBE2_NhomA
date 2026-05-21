@@ -5,31 +5,25 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
-    public function handle(Request $request, Closure $next, $type)
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        $user = Auth::user();
-
-        if (!$user) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
-        $roleId = $user->role_id;
+        $userRole = (string) Auth::user()->role_id;
 
-        // ADMIN AREA
-        if ($type === 'admin') {
-            if ($roleId != 5) {
-                abort(403, 'Bạn không có quyền vào trang admin.');
-            }
-        }
-
-        // USER AREA
-        if ($type === 'user') {
-            if ($roleId == 5) {
-                abort(403, 'Admin không được vào trang user.');
-            }
+        if (!in_array($userRole, $roles, true)) {
+            abort(403, 'Truy cập bị hạn chế!');
         }
 
         return $next($request);
