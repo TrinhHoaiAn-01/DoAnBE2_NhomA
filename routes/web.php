@@ -306,3 +306,24 @@ Route::prefix('admin')
             Route::delete('/{id}', [\App\Http\Controllers\Admin\BannerController::class, 'destroy'])->name('destroy');
         });
     });
+	
+/*
+|--------------------------------------------------------------------------
+| BẢO VỆ LINK ADMIN
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/profile-admin', [AdminController::class, 'profile'])
+        ->name('profile.admin');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| BẢO VỆ LINK USER
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:user'])->group(function () {
+    Route::get('/profile', [UserController::class, 'profile'])
+        ->name('profile');
+});
