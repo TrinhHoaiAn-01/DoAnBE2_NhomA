@@ -18,7 +18,7 @@ class ProductController extends Controller
         $categoryId = $request->integer('category_id');
         $stockStatus = $request->string('stock_status')->toString();
 
-        return view('admin.products.index', [
+        return view('admin.products', [
             'products' => Product::query()
                 ->with('category')
                 ->when($search !== '', function ($query) use ($search): void {
@@ -63,7 +63,7 @@ class ProductController extends Controller
             'is_active' => (bool) ($data['is_active'] ?? false),
         ]);
 
-        return to_route('admin.products.index')->with('status', 'Da them san pham moi.');
+        return to_route('admin.products.index')->with('status', 'Đã thêm sản phẩm mới.');
     }
 
     public function update(Request $request, Product $product): RedirectResponse
@@ -75,14 +75,14 @@ class ProductController extends Controller
             'is_active' => (bool) ($data['is_active'] ?? false),
         ]);
 
-        return to_route('admin.products.index')->with('status', 'Da cap nhat san pham.');
+        return to_route('admin.products.index')->with('status', 'Đã cập nhật sản phẩm.');
     }
 
     public function destroy(Product $product): RedirectResponse
     {
         $product->delete();
 
-        return to_route('admin.products.index')->with('status', 'Da xoa san pham.');
+        return to_route('admin.products.index')->with('status', 'Đã xóa sản phẩm.');
     }
 
     private function validateProduct(Request $request, ?Product $product = null): array

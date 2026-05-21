@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Support\ShippingFeeCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -48,6 +49,8 @@ class OrderController extends Controller
         return view('admin.orders.show', [
             'order' => $order->load('items.product', 'user'),
             'statusOptions' => $this->statusOptions(),
+            'shippingDistrictLabel' => ShippingFeeCalculator::districtLabel($order->shipping_district),
+            'shippingServiceLabel' => ShippingFeeCalculator::serviceLabel($order->shipping_service),
         ]);
     }
 
@@ -59,17 +62,17 @@ class OrderController extends Controller
 
         $order->update($data);
 
-        return to_route('admin.orders.show', $order)->with('status', 'Da cap nhat trang thai don hang.');
+        return to_route('admin.orders.show', $order)->with('status', 'Đã cập nhật trạng thái đơn hàng.');
     }
 
     private function statusOptions(): array
     {
         return [
-            'pending' => 'Cho xu ly',
-            'processing' => 'Dang xu ly',
-            'shipping' => 'Dang giao',
-            'completed' => 'Hoan tat',
-            'cancelled' => 'Da huy',
+            'pending' => 'Chờ xử lý',
+            'processing' => 'Đang xử lý',
+            'shipping' => 'Đang giao',
+            'completed' => 'Hoàn tất',
+            'cancelled' => 'Đã hủy',
         ];
     }
 }

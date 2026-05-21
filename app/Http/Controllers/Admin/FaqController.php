@@ -11,7 +11,7 @@ class FaqController extends Controller
     public function index()
     {
         $faqs = Faq::orderBy('sort_order', 'asc')->orderBy('created_at', 'desc')->get();
-        return view('admin.faqs.index', compact('faqs'));
+        return view('admin.faqs', compact('faqs'));
     }
 
     public function store(Request $request)

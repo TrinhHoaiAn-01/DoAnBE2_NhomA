@@ -68,10 +68,12 @@
                         <table class="table" id="itemsTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th width="40%">Sản phẩm</th>
-                                    <th width="20%">Số lượng</th>
-                                    <th width="25%">Giá nhập (đ)</th>
-                                    <th width="10%">Thành tiền</th>
+                                    <th width="30%">Sản phẩm</th>
+                                    <th width="15%">Mã lô (Tùy chọn)</th>
+                                    <th width="15%">HSD (Tùy chọn)</th>
+                                    <th width="15%">Số lượng</th>
+                                    <th width="15%">Giá nhập (đ)</th>
+                                    <th width="5%">Thành tiền</th>
                                     <th width="5%"></th>
                                 </tr>
                             </thead>
@@ -85,6 +87,12 @@
                                                 <option value="{{ $p->id }}" data-price="{{ $p->price }}">{{ $p->name }} (Kho: {{ $p->stock }})</option>
                                             @endforeach
                                         </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="products[0][batch_code]" class="form-control" placeholder="Mã lô...">
+                                    </td>
+                                    <td>
+                                        <input type="date" name="products[0][expires_at]" class="form-control">
                                     </td>
                                     <td>
                                         <input type="number" name="products[0][quantity]" class="form-control qty-input" value="1" min="1" required>
@@ -145,6 +153,8 @@
                         ${productOptions}
                     </select>
                 </td>
+                <td><input type="text" name="products[${rowCount}][batch_code]" class="form-control" placeholder="Mã lô..."></td>
+                <td><input type="date" name="products[${rowCount}][expires_at]" class="form-control"></td>
                 <td><input type="number" name="products[${rowCount}][quantity]" class="form-control qty-input" value="1" min="1" required></td>
                 <td><input type="number" name="products[${rowCount}][price]" class="form-control price-input" value="0" min="0" step="1000" required></td>
                 <td class="align-middle fw-medium subtotal-col text-end">0đ</td>

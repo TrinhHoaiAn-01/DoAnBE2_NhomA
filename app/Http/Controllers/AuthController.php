@@ -28,28 +28,37 @@ class AuthController extends Controller
             return back()
                 ->withInput($request->except('password'))
                 ->withErrors([
-                    'email' => 'Thong tin dang nhap khong hop le.'
+                    'email' => 'Email và Mật khẩu không đúng!'
                 ]);
         }
 
         $request->session()->regenerate();
 
         // CHECK STATUS
-        if (Auth::user()?->status !== 'active') {
+		if (!Auth::user()?->status) {
 
-            Auth::logout();
+			Auth::logout();
 
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+			$request->session()->invalidate();
 
-            return back()->withErrors([
-                'email' => 'Tai khoan tam thoi khong duoc phep dang nhap.'
-            ]);
-        }
+			$request->session()->regenerateToken();
+
+			return back()->withErrors([
+				'email' => 'Tài khoản này đã bị khoá!'
+			]);
+		}
+
+        \App\Models\SystemLog::create([
+            'user_name' => Auth::user()->name,
+            'action' => 'Đăng nhập hệ thống',
+            'target_type' => 'Tài khoản',
+            'old_data' => null,
+            'new_data' => ['ip' => $request->ip(), 'user_agent' => $request->userAgent()],
+        ]);
 
         return redirect()
             ->intended(route('home'))
-            ->with('status', 'Dang nhap thanh cong.');
+            ->with('status', 'Đăng nhập thành công.');
     }
 
     public function showRegister(): View
@@ -58,31 +67,98 @@ class AuthController extends Controller
     }
 
     public function register(Request $request): RedirectResponse
-    {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'password' => ['required', 'string', 'confirmed', 'min:8'],
-            'role_id' => ['required', 'integer', 'in:1,2'],
-        ]);
+	{
+		$data = $request->validate([
 
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
-            'password' => Hash::make($data['password']),
-            'role_id' => $data['role_id'],
-            'status' => 'active',
-        ]);
+			// profile
+			'name' => ['nullable', 'string', 'max:255'],
 
-        Auth::login($user);
+			'username' => [
+				'required',
+				'string',
+				'max:255',
+				'unique:users,username'
+			],
 
-        $request->session()->regenerate();
+			'email' => [
+				'required',
+				'email',
+				'max:255',
+				'unique:users,email'
+			],
 
-        return to_route('home')
-            ->with('status', 'Dang ky tai khoan thanh cong.');
-    }
+			'phone' => [
+				'nullable',
+				'string',
+				'max:20'
+			],
+
+			'avatar_url' => [
+				'nullable',
+				'string',
+				'max:255'
+			],
+
+			'home_address' => [
+				'nullable',
+				'string'
+			],
+
+			// gender
+			'gender' => [
+				'nullable',
+				'in:male,female,other'
+			],
+
+			'date_of_birth' => [
+				'nullable',
+				'date'
+			],
+
+			// auth
+			'password' => [
+				'required',
+				'string',
+				'confirmed',
+				'min:8'
+			],
+
+		]);
+
+		$user = User::create([
+
+			'name' => $data['name'] ?? $data['username'],
+
+			'username' => $data['username'],
+
+			'email' => $data['email'],
+
+			'phone' => $data['phone'] ?? null,
+
+			'avatar_url' => $data['avatar_url'] ?? null,
+
+			'home_address' => $data['home_address'] ?? null,
+
+			'gender' => $data['gender'] ?? null,
+
+			'date_of_birth' => $data['date_of_birth'] ?? null,
+
+			'password' => Hash::make($data['password']),
+
+			// default
+			'role_id' => 2,
+
+			// boolean
+			'status' => true,
+		]);
+
+		Auth::login($user);
+
+		$request->session()->regenerate();
+
+		return to_route('home')
+			->with('status', 'Đăng ký thành công!');
+	}
 
 	public function logout(Request $request)
 	{
@@ -94,4 +170,32 @@ class AuthController extends Controller
 
 		return redirect()->route('login');
 	}
+
+    public function showForgetPassword(): View
+    {
+        return view('auth.forget-password');
+    }
+
+    public function forgetPassword(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'min:6', 'confirmed'],
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'Email khong ton tai'
+            ]);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()
+            ->route('login')
+            ->with('success', 'Doi mat khau thanh cong!');
+    }
 }
