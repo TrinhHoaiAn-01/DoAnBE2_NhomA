@@ -8,15 +8,21 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, ...$roles)
+    public function handle(Request $request, Closure $next, $role)
     {
-        if (!Auth::check()) {
-            return redirect('/login');
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login');
         }
 
-        $userRole = Auth::user()->role_id;
+        // admin = role_id 5
+        if ($role === 'admin' && $user->role_id != 5) {
+            abort(403, 'Bạn không có quyền truy cập');
+        }
 
-        if (!in_array($userRole, $roles)) {
+        // user = role_id 1-4
+        if ($role === 'user' && $user->role_id == 5) {
             abort(403, 'Bạn không có quyền truy cập');
         }
 
