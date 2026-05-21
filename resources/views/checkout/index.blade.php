@@ -91,7 +91,10 @@
                         <div class="soft-surface rounded-3 p-3 small text-secondary" id="deliverySlotHelp"></div>
                     </div>
                     <div class="col-12">
-                        <label class="form-label" for="note">Ghi chú đơn hàng</label>
+                        <div class="d-flex justify-content-between gap-3">
+                            <label class="form-label" for="note">Ghi chú đơn hàng</label>
+                            <span class="small text-secondary" id="noteCounter">0/1000</span>
+                        </div>
                         <textarea
                             class="form-control @error('note') is-invalid @enderror"
                             id="note"
@@ -189,6 +192,8 @@
         const slotHelp = document.getElementById('deliverySlotHelp');
         const slotSelect = document.getElementById('delivery_time_slot');
         const slotDescriptions = @json(collect($deliveryTimeSlots)->mapWithKeys(fn ($slot, $value) => [$value => $slot['description']]));
+        const noteInput = document.getElementById('note');
+        const noteCounter = document.getElementById('noteCounter');
 
         function updateShippingFee() {
             const districtFee = Number(districtSelect.selectedOptions[0].dataset.fee || 0);
@@ -203,10 +208,16 @@
             slotHelp.textContent = slotDescriptions[slotSelect.value] || 'Chọn khung giờ phù hợp để nhân viên giao hàng liên hệ trước khi đến.';
         }
 
+        function updateNoteCounter() {
+            noteCounter.textContent = noteInput.value.length + '/1000';
+        }
+
         districtSelect.addEventListener('change', updateShippingFee);
         serviceSelect.addEventListener('change', updateShippingFee);
         slotSelect.addEventListener('change', updateSlotHelp);
+        noteInput.addEventListener('input', updateNoteCounter);
         updateShippingFee();
         updateSlotHelp();
+        updateNoteCounter();
     </script>
 @endsection
