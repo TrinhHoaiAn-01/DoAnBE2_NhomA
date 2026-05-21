@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Support\DeliveryTimeSlot;
 use App\Support\ShippingFeeCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -51,6 +52,7 @@ class OrderController extends Controller
             'statusOptions' => $this->statusOptions(),
             'shippingDistrictLabel' => ShippingFeeCalculator::districtLabel($order->shipping_district),
             'shippingServiceLabel' => ShippingFeeCalculator::serviceLabel($order->shipping_service),
+            'deliveryTimeSlotLabel' => DeliveryTimeSlot::label($order->delivery_time_slot),
         ]);
     }
 

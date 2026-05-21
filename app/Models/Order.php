@@ -21,6 +21,8 @@ class Order extends Model
         'shipping_address',
         'shipping_district',
         'shipping_service',
+        'delivery_date',
+        'delivery_time_slot',
         'note',
         'promotion_code',
         'payment_method',
@@ -33,6 +35,7 @@ class Order extends Model
     ];
 
     protected $casts = [
+        'delivery_date' => 'date',
         'subtotal' => 'decimal:2',
         'shipping_fee' => 'decimal:2',
         'discount_total' => 'decimal:2',

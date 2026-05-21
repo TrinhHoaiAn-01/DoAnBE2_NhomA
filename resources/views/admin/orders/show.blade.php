@@ -70,8 +70,13 @@
                     <div>{{ $order->customer_email ?: 'Chưa có email' }}</div>
                     <div>{{ $order->shipping_address }}</div>
                     <div>Vận chuyển: {{ $shippingDistrictLabel }} - {{ $shippingServiceLabel }}</div>
+                    <div>
+                        Lịch giao:
+                        {{ $order->delivery_date?->format('d/m/Y') ?: 'Chưa chọn ngày' }}
+                        - {{ $deliveryTimeSlotLabel }}
+                    </div>
                     @if ($order->note)
-                        <div>Ghi chú: {{ $order->note }}</div>
+                        <div class="text-break">Ghi chú: {{ $order->note }}</div>
                     @endif
                 </div>
             </div>
