@@ -236,6 +236,51 @@
                 </div>
             </div>
         </div>
+
+        <div class="dashboard-panel">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                <h2 class="h5 fw-bold mb-0">Đơn hàng mới nhất</h2>
+                <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-outline-primary">Xem đơn hàng</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Trạng thái</th>
+                            <th class="text-end">Tổng tiền</th>
+                            <th class="text-end">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($recentOrders as $order)
+                            @php($color = $statusColors[$order->status] ?? 'secondary')
+                            <tr>
+                                <td class="fw-semibold">{{ $order->code }}</td>
+                                <td>
+                                    <div class="fw-semibold">{{ $order->customer_name }}</div>
+                                    <div class="text-muted small">{{ $order->customer_phone }}</div>
+                                </td>
+                                <td>
+                                    <span class="badge text-bg-{{ $color }}">
+                                        {{ $orderStatusStats->firstWhere('status', $order->status)['label'] ?? $order->status }}
+                                    </span>
+                                </td>
+                                <td class="text-end fw-semibold">{{ $money($order->total) }}</td>
+                                <td class="text-end">
+                                    <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-outline-secondary">Chi tiết</a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td class="text-center py-4 text-muted" colspan="5">Chưa có đơn hàng nào.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 @endsection
 

@@ -70,6 +70,10 @@ class AdminController extends Controller
             ->orderBy('stock', 'asc')
             ->take(5)
             ->get();
+        $recentOrders = Order::query()
+            ->latest()
+            ->take(5)
+            ->get();
         $recentLogs = SystemLog::latest()->take(5)->get();
 
         // Thống kê doanh thu 7 ngày gần nhất
@@ -96,7 +100,7 @@ class AdminController extends Controller
             'usersCount', 'productsCount', 'ordersCount', 'lowStockCount', 'pendingOrdersCount',
             'completedOrdersCount', 'outOfStockCount', 'stockValue', 'todayRevenue', 'monthRevenue',
             'weeklyRevenueTotal', 'averageDailyRevenue', 'orderStatusStats',
-            'lowStockProducts', 'recentLogs', 'dates', 'revenues'
+            'lowStockProducts', 'recentOrders', 'recentLogs', 'dates', 'revenues'
         ));
     }
 
