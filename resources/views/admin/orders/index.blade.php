@@ -62,6 +62,7 @@
                         <th>Sản phẩm</th>
                         <th>Tổng tiền</th>
                         <th>Trạng thái</th>
+                        <th>Ghi chú</th>
                         <th>Ngày tạo</th>
                         <th></th>
                     </tr>
@@ -75,8 +76,15 @@
                                 <div class="small text-secondary">{{ $order->customer_phone }}</div>
                             </td>
                             <td>{{ $order->items_count }}</td>
-                            <td class="fw-semibold">{{ number_format((float) $order->total, 0, ',', '.') }}d</td>
+                            <td class="fw-semibold">{{ number_format((float) $order->total, 0, ',', '.') }}đ</td>
                             <td>{{ $statusOptions[$order->status] ?? $order->status }}</td>
+                            <td style="min-width: 180px">
+                                @if ($order->note)
+                                    <span class="small text-secondary text-break">{{ \Illuminate\Support\Str::limit($order->note, 70) }}</span>
+                                @else
+                                    <span class="small text-secondary">Không có</span>
+                                @endif
+                            </td>
                             <td>{{ $order->created_at?->format('d/m/Y H:i') }}</td>
                             <td class="text-end">
                                 <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.orders.show', $order) }}">Chi tiết</a>
@@ -84,7 +92,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-secondary py-4">Chưa có đơn hàng nào.</td>
+                            <td colspan="8" class="text-center text-secondary py-4">Chưa có đơn hàng nào.</td>
                         </tr>
                     @endforelse
                 </tbody>
