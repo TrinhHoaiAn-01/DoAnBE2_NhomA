@@ -69,6 +69,7 @@ class CheckoutController extends Controller
         $shippingFee = ShippingFeeCalculator::calculate($subtotal, $data['shipping_district'], $data['shipping_service']);
         $promotion = $this->promotionFromCode((string) ($data['promotion_code'] ?? ''), $subtotal);
         $discountTotal = $promotion?->discountFor($subtotal) ?? 0;
+        $data['note'] = $this->normalizeOrderNote($data['note'] ?? null);
 
         if (($data['promotion_code'] ?? '') !== '' && ! $promotion) {
             return back()->withInput()->with('error', 'Mã giảm giá không hợp lệ hoặc chưa đủ điều kiện áp dụng.');
@@ -140,6 +141,14 @@ class CheckoutController extends Controller
                     ->orWhereColumn('used_count', '<', 'usage_limit');
             })
             ->first();
+    }
+
+    private function normalizeOrderNote(?string $note): ?string
+    {
+        // Chuan hoa ghi chu de khong luu chuoi rong vao don hang.
+        $note = trim((string) $note);
+
+        return $note === '' ? null : $note;
     }
 
     public function success(Order $order): View
