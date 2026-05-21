@@ -91,8 +91,16 @@
                         <div class="soft-surface rounded-3 p-3 small text-secondary" id="deliverySlotHelp"></div>
                     </div>
                     <div class="col-12">
-                        <label class="form-label" for="note">Ghi chú</label>
-                        <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" rows="3">{{ old('note') }}</textarea>
+                        <label class="form-label" for="note">Ghi chú đơn hàng</label>
+                        <textarea
+                            class="form-control @error('note') is-invalid @enderror"
+                            id="note"
+                            name="note"
+                            rows="3"
+                            maxlength="1000"
+                            placeholder="Ví dụ: gọi trước khi giao, để hàng ở bảo vệ, không giao giờ nghỉ trưa..."
+                        >{{ old('note') }}</textarea>
+                        <div class="form-text">NeoMart sẽ chuyển ghi chú này cho nhân viên xử lý đơn.</div>
                         @error('note')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
