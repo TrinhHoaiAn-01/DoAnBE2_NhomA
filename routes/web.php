@@ -177,9 +177,7 @@ Route::get('/settings', function () {
 */
 
 Route::get('/profile-admin', function () {
-
     return view('admin.profile-admin');
-
 })->middleware('auth')->name('profile.admin');
 
 /*
