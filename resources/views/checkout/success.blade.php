@@ -23,7 +23,15 @@
                     <div class="col-md-6">
                         <div class="soft-surface rounded-3 p-3">
                             <div class="small text-secondary">Thanh toan</div>
-                            <div class="fw-semibold">{{ $order->payment_status }}</div>
+                            <div class="fw-semibold">
+                                {{ $order->payment_status === 'unpaid' ? 'Chua thanh toan' : $order->payment_status }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="soft-surface rounded-3 p-3">
+                            <div class="small text-secondary">Vận chuyển</div>
+                            <div class="fw-semibold">{{ $shippingDistrictLabel }} - {{ $shippingServiceLabel }}</div>
                         </div>
                     </div>
                 </div>
@@ -41,6 +49,12 @@
                         <span>Tong cong</span>
                         <strong>{{ number_format((float) $order->total, 0, ',', '.') }}d</strong>
                     </div>
+                    @if ((float) $order->discount_total > 0)
+                        <div class="d-flex justify-content-between text-success mt-2">
+                            <span>Mã {{ $order->promotion_code }}</span>
+                            <strong>-{{ number_format((float) $order->discount_total, 0, ',', '.') }}đ</strong>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

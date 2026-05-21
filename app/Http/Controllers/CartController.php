@@ -30,7 +30,7 @@ class CartController extends Controller
 
         $request->session()->put('cart', $cart);
 
-        return to_route('cart.index')->with('status', 'Da them san pham vao gio hang.');
+        return to_route('cart.index')->with('status', 'Đã thêm sản phẩm vào giỏ hàng.');
     }
 
     public function buyNow(Request $request, Product $product): RedirectResponse
@@ -45,7 +45,7 @@ class CartController extends Controller
             $product->id => $quantity,
         ]);
 
-        return to_route('checkout.index')->with('status', 'San pham da san sang de dat hang.');
+        return to_route('checkout.index')->with('status', 'Sản phẩm đã sẵn sàng để đặt hàng.');
     }
 
     public function update(Request $request, Product $product): RedirectResponse
@@ -59,7 +59,7 @@ class CartController extends Controller
 
         $request->session()->put('cart', $cart);
 
-        return to_route('cart.index')->with('status', 'Da cap nhat gio hang.');
+        return to_route('cart.index')->with('status', 'Đã cập nhật giỏ hàng.');
     }
 
     public function remove(Request $request, Product $product): RedirectResponse
@@ -69,7 +69,7 @@ class CartController extends Controller
 
         $request->session()->put('cart', $cart);
 
-        return to_route('cart.index')->with('status', 'Da xoa san pham khoi gio hang.');
+        return to_route('cart.index')->with('status', 'Đã xóa sản phẩm khỏi giỏ hàng.');
     }
 
     private function cartItems(Request $request): array

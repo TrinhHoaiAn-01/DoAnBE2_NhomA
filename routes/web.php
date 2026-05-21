@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductReviewController;
+use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
@@ -12,6 +14,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController as ShopProductController;
+use App\Http\Controllers\ProfileUserController;
 
 use App\Http\Middleware\CheckRole;
 
@@ -36,6 +39,9 @@ Route::get('/san-pham', [ShopProductController::class, 'index'])
 
 Route::get('/san-pham/{product:slug}', [ShopProductController::class, 'show'])
     ->name('products.show');
+
+Route::post('/san-pham/{product:slug}/danh-gia', [ShopProductController::class, 'storeReview'])
+    ->name('products.reviews.store');
 
 // CART
 Route::get('/gio-hang', [CartController::class, 'index'])
@@ -80,47 +86,25 @@ Route::post('/thanh-toan-demo/{order}', [PaymentController::class, 'confirm'])
 Route::middleware('guest')->group(function (): void {
 
     // LOGIN
-    Route::get('/dang-nhap', [AuthController::class, 'showLogin'])
+    Route::get('/login', [AuthController::class, 'showLogin'])
         ->name('login');
 
-    Route::post('/dang-nhap', [AuthController::class, 'login'])
+    Route::post('/login', [AuthController::class, 'login'])
         ->name('login.submit');
 
     // REGISTER
-    Route::get('/dang-ky', [AuthController::class, 'showRegister'])
+    Route::get('/register', [AuthController::class, 'showRegister'])
         ->name('register');
 
-    Route::post('/dang-ky', [AuthController::class, 'register'])
+    Route::post('/register', [AuthController::class, 'register'])
         ->name('register.submit');
 
     // FORGOT PASSWORD
-    Route::get('/quen-mat-khau', function () {
-        return view('auth.forget-password');
-    })->name('password.request');
+    Route::get('/forgetpassword', [AuthController::class, 'showForgetPassword'])
+        ->name('password.request');
 
-    Route::post('/quen-mat-khau', function (Request $request) {
-
-        $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'min:6', 'confirmed'],
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user) {
-            return back()->withErrors([
-                'email' => 'Email khong ton tai'
-            ]);
-        }
-
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-        return redirect()
-            ->route('login')
-            ->with('success', 'Doi mat khau thanh cong!');
-
-    })->name('password.update.fake');
+    Route::post('/forgetpassword', [AuthController::class, 'forgetPassword'])
+        ->name('password.update.fake');
 });
 
 
@@ -132,10 +116,44 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
 
-    Route::post('/dang-xuat', [AuthController::class, 'logout'])
+Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
+
 });
 
+/*
+|--------------------------------------------------------------------------
+| PROFILE USER
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+
+    // profile
+    Route::get('/profile',
+        [ProfileUserController::class, 'index']
+    )->name('profile');
+
+    Route::post('/profile/update',
+        [ProfileUserController::class, 'update']
+    )->name('profile.update');
+
+    // change password page
+    Route::get('/changepassword',
+        [ProfileUserController::class, 'showChangePassword']
+    )->name('change.password');
+
+    // update password
+    Route::post('/changepassword',
+        [ProfileUserController::class, 'changePassword']
+    )->name('password.update');
+	
+	// delete account
+	Route::delete('/deleteaccount',
+    [ProfileUserController::class, 'deleteAccount']
+)->name('profile.delete');
+
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -184,6 +202,14 @@ Route::prefix('admin')
         Route::resource('products', ProductController::class)
             ->except(['show', 'create', 'edit']);
 
+        // PROMOTIONS
+        Route::resource('promotions', PromotionController::class)
+            ->except(['show', 'create', 'edit']);
+
+        // REVIEWS
+        Route::resource('reviews', ProductReviewController::class)
+            ->only(['index', 'update', 'destroy']);
+
         // ORDERS
         Route::get('/orders', [OrderController::class, 'index'])
             ->name('orders.index');
@@ -220,6 +246,17 @@ Route::prefix('admin')
             Route::get('/receipts/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showReceipt'])->name('receipts.show');
             
             Route::get('/inventory', [\App\Http\Controllers\Admin\WarehouseController::class, 'inventory'])->name('inventory');
+            Route::get('/inventory/{id}/history', [\App\Http\Controllers\Admin\WarehouseController::class, 'stockHistory'])->name('inventory.history');
+            
+            Route::get('/issues', [\App\Http\Controllers\Admin\WarehouseController::class, 'issues'])->name('issues');
+            Route::get('/issues/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createIssue'])->name('issues.create');
+            Route::post('/issues', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeIssue'])->name('issues.store');
+            Route::get('/issues/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showIssue'])->name('issues.show');
+            
+            Route::get('/checks', [\App\Http\Controllers\Admin\WarehouseController::class, 'checks'])->name('checks');
+            Route::get('/checks/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createCheck'])->name('checks.create');
+            Route::post('/checks', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeCheck'])->name('checks.store');
+            Route::get('/checks/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showCheck'])->name('checks.show');
         });
 
         // CONTACTS (Hỗ trợ - Task 46)
