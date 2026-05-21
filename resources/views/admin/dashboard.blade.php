@@ -63,9 +63,14 @@
                 <h1 class="h3 fw-bold mb-1">Dashboard quản trị tổng quan</h1>
                 <p class="text-muted mb-0">Theo dõi nhanh doanh thu, đơn hàng, tồn kho và hoạt động hệ thống.</p>
             </div>
-            <a href="{{ route('admin.orders.index') }}" class="btn btn-primary">
-                <i class="bi bi-receipt me-1"></i> Quản lý đơn hàng
-            </a>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ route('admin.statistics') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-bar-chart-line me-1"></i> Thống kê cơ bản
+                </a>
+                <a href="{{ route('admin.orders.index') }}" class="btn btn-primary">
+                    <i class="bi bi-receipt me-1"></i> Quản lý đơn hàng
+                </a>
+            </div>
         </div>
 
         <div class="row g-3">
@@ -154,6 +159,11 @@
                                 <div class="text-muted small text-uppercase fw-semibold">Trung bình mỗi ngày</div>
                                 <div class="fs-5 fw-bold">{{ $money($averageDailyRevenue) }}</div>
                             </div>
+                        </div>
+                        <div class="col-12">
+                            <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.statistics', ['period' => 7]) }}">
+                                Xem thống kê chi tiết 7 ngày
+                            </a>
                         </div>
                     </div>
                 </div>

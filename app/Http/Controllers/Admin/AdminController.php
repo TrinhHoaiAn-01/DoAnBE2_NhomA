@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\SystemLog;
 use App\Models\RolePermission;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
@@ -115,6 +116,91 @@ class AdminController extends Controller
             'completedOrdersCount', 'outOfStockCount', 'stockValue', 'todayRevenue', 'monthRevenue',
             'weeklyRevenueTotal', 'averageDailyRevenue', 'orderStatusStats',
             'lowStockProducts', 'recentOrders', 'topProducts', 'recentLogs', 'dates', 'revenues'
+        ));
+    }
+
+    public function statistics(Request $request)
+    {
+        $filters = $request->validate([
+            'from_date' => ['nullable', 'date'],
+            'to_date' => ['nullable', 'date'],
+            'period' => ['nullable', 'integer', 'in:7,30,90'],
+        ]);
+        $period = (int) ($filters['period'] ?? 7);
+
+        $fromDate = isset($filters['from_date'])
+            ? Carbon::parse($filters['from_date'])->startOfDay()
+            : now()->subDays($period - 1)->startOfDay();
+        $toDate = isset($filters['to_date'])
+            ? Carbon::parse($filters['to_date'])->endOfDay()
+            : now()->endOfDay();
+
+        if ($fromDate->greaterThan($toDate)) {
+            [$fromDate, $toDate] = [$toDate->copy()->startOfDay(), $fromDate->copy()->endOfDay()];
+        }
+
+        $ordersQuery = $this->payableOrderQuery()
+            ->whereBetween('created_at', [$fromDate, $toDate]);
+
+        $ordersCount = (clone $ordersQuery)->count();
+        $totalRevenue = (clone $ordersQuery)->sum('total');
+        $averageOrderValue = $ordersCount > 0 ? $totalRevenue / $ordersCount : 0;
+        $paidOrdersCount = (clone $ordersQuery)->where('payment_status', 'paid')->count();
+        $pendingPaymentCount = (clone $ordersQuery)->where('payment_status', 'pending')->count();
+        $completedRevenue = (clone $ordersQuery)
+            ->where('status', 'completed')
+            ->sum('total');
+        $dailyRevenueRows = (clone $ordersQuery)
+            ->selectRaw('DATE(created_at) as report_date, SUM(total) as revenue')
+            ->groupBy('report_date')
+            ->orderBy('report_date')
+            ->pluck('revenue', 'report_date');
+        $dailyLabels = [];
+        $dailyRevenue = [];
+        $cursor = $fromDate->copy();
+
+        while ($cursor->lte($toDate)) {
+            $key = $cursor->format('Y-m-d');
+            $dailyLabels[] = $cursor->format('d/m');
+            $dailyRevenue[] = (float) ($dailyRevenueRows[$key] ?? 0);
+            $cursor->addDay();
+        }
+
+        $bestSellingProducts = OrderItem::query()
+            ->select(
+                'product_name',
+                'sku',
+                DB::raw('SUM(quantity) as sold_quantity'),
+                DB::raw('SUM(subtotal) as sold_revenue')
+            )
+            ->whereHas('order', function ($query) use ($fromDate, $toDate): void {
+                $query->where('status', '!=', 'cancelled')
+                    ->whereBetween('created_at', [$fromDate, $toDate]);
+            })
+            ->groupBy('product_name', 'sku')
+            ->orderByDesc('sold_quantity')
+            ->take(10)
+            ->get();
+        $paymentStats = (clone $ordersQuery)
+            ->select('payment_method', DB::raw('COUNT(*) as total_orders'), DB::raw('SUM(total) as total_revenue'))
+            ->groupBy('payment_method')
+            ->orderByDesc('total_orders')
+            ->get();
+
+        return view('admin.statistics', compact(
+            'fromDate',
+            'toDate',
+            'period',
+            'ordersCount',
+            'totalRevenue',
+            'averageOrderValue',
+            'paidOrdersCount',
+            'pendingPaymentCount',
+            'completedRevenue',
+            'dailyLabels',
+            'dailyRevenue',
+            'bestSellingProducts',
+            'paymentStats'
         ));
     }
 
