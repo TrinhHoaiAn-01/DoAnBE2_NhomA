@@ -207,4 +207,38 @@
         </div>
     </section>
 @endif
+
+<!-- Sản phẩm đã xem gần đây -->
+@if (isset($recentlyViewedProducts) && $recentlyViewedProducts->isNotEmpty())
+    <section class="mt-5">
+        <h2 class="h4 fw-bold mb-4" style="padding-left: 1.25rem; border-left: 4px solid #198754; border-radius: 2px;">
+            Sản phẩm đã xem gần đây
+        </h2>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4">
+            @foreach ($recentlyViewedProducts as $recentProduct)
+                <div class="col">
+                    <div class="bg-white shadow-sm related-card h-100">
+                        <a href="{{ route('products.show', $recentProduct) }}" class="text-decoration-none d-block">
+                            <img class="w-100" src="{{ $recentProduct->image_url ?: 'https://placehold.co/400x300?text='.urlencode($recentProduct->name) }}" alt="{{ $recentProduct->name }}">
+                        </a>
+                        <div class="p-3">
+                            <a href="{{ route('products.show', $recentProduct) }}" class="text-decoration-none text-dark">
+                                <div class="fw-semibold mb-1" style="min-height: 2.5rem; line-height: 1.3;">{{ $recentProduct->name }}</div>
+                            </a>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-primary fw-bold">{{ number_format((float) $recentProduct->price, 0, ',', '.') }}đ</div>
+                                <form method="post" action="{{ route('cart.add', $recentProduct) }}">
+                                    @csrf
+                                    <button class="btn btn-sm btn-outline-primary rounded-pill" type="submit" @disabled($recentProduct->stock <= 0)>
+                                        <i class="bi bi-cart-plus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </section>
+@endif
 @endsection

@@ -10,6 +10,8 @@ class HomeController extends Controller
 {
     public function __invoke(): View
     {
+        // Ensure suggested products variable always exists as a collection
+        $suggested_products = collect();
         // Danh mục đang hoạt động (kèm số lượng sản phẩm)
         $categories = Category::query()
             ->withCount(['products' => fn($q) => $q->where('is_active', true)])
@@ -26,6 +28,18 @@ class HomeController extends Controller
             ->latest()
             ->take(8)
             ->get();
+
+        // Đề xuất sản phẩm (gợi ý) – lấy ngẫu nhiên 8 sản phẩm đang bán
+        $suggested_products = Product::query()
+            ->with('category')
+            ->where('is_active', true)
+            ->where('stock', '>', 0)
+            ->inRandomOrder()
+            ->take(8)
+            ->get(); // always a collection (empty if no rows)
+
+
+
 
         // Flash Sale: sản phẩm có giá gốc cao hơn giá bán (đang giảm giá)
         $flash_sales = Product::query()
@@ -50,6 +64,7 @@ class HomeController extends Controller
             'featured_products' => $featured_products,
             'flash_sales' => $flash_sales,
             'flash_sale_end' => $flash_sale_end,
+            'suggested_products' => $suggested_products,
             'banners' => $banners,
         ]);
     }

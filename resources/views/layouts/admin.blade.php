@@ -19,62 +19,100 @@
 
     <style>
         body {
-            background-color: #f4f6f9;
+            background-color: #f8fafc;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
-            color: #333;
+            color: #1e293b;
         }
         
         /* Sidebar Styling */
         #sidebar {
-            min-width: 250px;
-            max-width: 250px;
+            min-width: 260px;
+            max-width: 260px;
             min-height: 100vh;
-            background-color: #212529; /* Dark theme */
-            transition: all 0.3s;
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            box-shadow: 4px 0 25px rgba(15, 23, 42, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
         }
         #sidebar .sidebar-header {
-            padding: 20px;
-            background: #1a1e21;
+            padding: 24px 20px;
+            background: rgba(15, 23, 42, 0.4);
             color: #fff;
-            font-weight: bold;
-            font-size: 1.2rem;
-            border-bottom: 1px solid #343a40;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         #sidebar ul.components {
-            padding: 20px 0;
-        }
-        #sidebar ul p {
-            color: #6c757d;
-            padding: 10px 20px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: bold;
+            padding: 20px 12px;
+            flex-grow: 1;
+            overflow-y: auto;
             margin-bottom: 0;
         }
-        #sidebar ul li a {
-            padding: 12px 20px;
-            font-size: 1rem;
-            display: block;
-            color: #adb5bd;
-            text-decoration: none;
-            transition: 0.2s;
+        #sidebar ul p {
+            color: #64748b;
+            padding: 10px 16px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 4px;
         }
-        #sidebar ul li a:hover, #sidebar ul li.active > a {
-            color: #fff;
-            background: #0d6efd; /* Primary color */
+        #sidebar ul li {
+            margin-bottom: 4px;
+        }
+        #sidebar ul li a {
+            padding: 10px 16px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.2s ease;
         }
         #sidebar ul li a i {
-            margin-right: 10px;
-            font-size: 1.1rem;
+            margin-right: 12px;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+        #sidebar ul li a:hover {
+            color: #f8fafc;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        #sidebar ul li a:hover i {
+            transform: translateX(3px);
+        }
+        #sidebar ul li.active > a {
+            color: #fff;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            font-weight: 600;
+        }
+        #sidebar ul li.active > a i {
+            color: #fff;
         }
 
         /* User Profile in Sidebar */
         .sidebar-profile {
-            padding: 15px 20px;
-            border-top: 1px solid #343a40;
-            background: #1a1e21;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(15, 23, 42, 0.4);
             color: #fff;
+            margin-top: auto;
+        }
+        .sidebar-profile .avatar-circle {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .sidebar-profile:hover .avatar-circle {
+            transform: scale(1.05) rotate(5deg);
         }
 
         /* Main Content */
@@ -83,44 +121,61 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            background-color: #f8fafc;
         }
         
         /* Top Navbar */
         .top-navbar {
-            background: #fff;
-            border-bottom: 1px solid #dee2e6;
-            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .top-navbar .navbar-brand {
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.5px;
         }
 
         .main-container {
-            padding: 24px;
+            padding: 30px;
             flex-grow: 1;
         }
 
-        /* Utility Classes cho các module khác (Categories, Products, Users, Orders) */
+        /* Utility Cards */
         .surface {
             background-color: #ffffff;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.04);
-            border: 1px solid #eef0f3;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+        .surface:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            transform: translateY(-2px);
         }
         .soft-surface {
-            background-color: #fdfdfd;
-            border: 1px solid #e9ecef;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
         }
         
-        /* Đồng bộ Table Header */
+        /* Table Styling */
         .table-light th {
-            background-color: #f8f9fa;
-            color: #495057;
-            font-weight: 600;
-            border-bottom: 1px solid #dee2e6;
+            background-color: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+            border-bottom: 1px solid #e2e8f0;
             text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.5px;
+            font-size: 0.75rem;
+            letter-spacing: 0.8px;
         }
         .table > :not(caption) > * > * {
-            padding: 1rem 0.75rem;
+            padding: 1.1rem 0.85rem;
+            border-bottom-color: #f1f5f9;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f8fafc;
         }
     </style>
 </head>
@@ -205,13 +260,16 @@
                 </li>
             </ul>
 
-            <div class="sidebar-profile d-flex align-items-center mt-auto">
-                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center fw-bold text-uppercase" style="width: 40px; height: 40px;">
+            <div class="sidebar-profile d-flex align-items-center">
+                <div class="avatar-circle text-white rounded-circle d-flex justify-content-center align-items-center fw-bold text-uppercase" style="width: 42px; height: 42px; font-size: 1.1rem;">
                     {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
                 </div>
                 <div class="ms-3">
-                    <div class="fw-bold fs-6">{{ Auth::check() ? Auth::user()->name : 'Người dùng' }}</div>
-                    <div class="text-success small"><i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> Online</div>
+                    <div class="fw-semibold fs-6 text-white">{{ Auth::check() ? Auth::user()->name : 'Người dùng' }}</div>
+                    <div class="text-success small d-flex align-items-center gap-1.5" style="font-size: 0.78rem; opacity: 0.95;">
+                        <span class="d-inline-block bg-success rounded-circle" style="width: 6px; height: 6px;"></span>
+                        Online
+                    </div>
                 </div>
             </div>
         </nav>

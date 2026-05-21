@@ -3,18 +3,38 @@
 @section('title', 'Tổng quan hệ thống')
 
 @section('content')
+    <style>
+        .dashboard-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #f1f5f9 !important;
+            border-radius: 18px !important;
+            background: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px -5px rgba(15, 23, 42, 0.08), 0 8px 8px -5px rgba(15, 23, 42, 0.04) !important;
+        }
+        .icon-box {
+            transition: transform 0.3s ease;
+        }
+        .dashboard-card:hover .icon-box {
+            transform: scale(1.1) rotate(4deg);
+        }
+    </style>
+
     <div class="row g-4 mb-4">
         <!-- Card 1 -->
         <div class="col-12 col-md-6 col-lg-3">
-            <div class="card h-100 border-0 shadow-sm rounded-3">
-                <div class="card-body d-flex align-items-center">
-                    <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-3 me-3 d-flex align-items-center justify-content-center"
-                        style="width: 60px; height: 60px;">
-                        <i class="bi bi-people fs-3"></i>
+            <div class="card h-100 border-0 dashboard-card">
+                <div class="card-body d-flex align-items-center py-4">
+                    <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-3 p-3 me-3 d-flex align-items-center justify-content-center"
+                        style="width: 58px; height: 58px;">
+                        <i class="bi bi-people-fill fs-3"></i>
                     </div>
                     <div>
-                        <p class="text-muted mb-1 small fw-bold text-uppercase">Khách hàng</p>
-                        <h3 class="mb-0 fw-bold">{{ number_format($usersCount) }}</h3>
+                        <p class="text-secondary mb-1 small fw-bold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.75rem;">Khách hàng</p>
+                        <h3 class="mb-0 fw-bold text-dark">{{ number_format($usersCount) }}</h3>
                     </div>
                 </div>
             </div>
@@ -22,15 +42,15 @@
 
         <!-- Card 2 -->
         <div class="col-12 col-md-6 col-lg-3">
-            <div class="card h-100 border-0 shadow-sm rounded-3">
-                <div class="card-body d-flex align-items-center">
-                    <div class="bg-success bg-opacity-10 text-success rounded-3 p-3 me-3 d-flex align-items-center justify-content-center"
-                        style="width: 60px; height: 60px;">
-                        <i class="bi bi-box-seam fs-3"></i>
+            <div class="card h-100 border-0 dashboard-card">
+                <div class="card-body d-flex align-items-center py-4">
+                    <div class="icon-box bg-success bg-opacity-10 text-success rounded-3 p-3 me-3 d-flex align-items-center justify-content-center"
+                        style="width: 58px; height: 58px;">
+                        <i class="bi bi-box-seam-fill fs-3"></i>
                     </div>
                     <div>
-                        <p class="text-muted mb-1 small fw-bold text-uppercase">Sản phẩm</p>
-                        <h3 class="mb-0 fw-bold">{{ number_format($productsCount) }}</h3>
+                        <p class="text-secondary mb-1 small fw-bold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.75rem;">Sản phẩm</p>
+                        <h3 class="mb-0 fw-bold text-dark">{{ number_format($productsCount) }}</h3>
                     </div>
                 </div>
             </div>
@@ -38,15 +58,15 @@
 
         <!-- Card 3 -->
         <div class="col-12 col-md-6 col-lg-3">
-            <div class="card h-100 border-0 shadow-sm rounded-3">
-                <div class="card-body d-flex align-items-center">
-                    <div class="bg-warning bg-opacity-10 text-warning rounded-3 p-3 me-3 d-flex align-items-center justify-content-center"
-                        style="width: 60px; height: 60px;">
-                        <i class="bi bi-exclamation-triangle fs-3"></i>
+            <div class="card h-100 border-0 dashboard-card">
+                <div class="card-body d-flex align-items-center py-4">
+                    <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-3 p-3 me-3 d-flex align-items-center justify-content-center"
+                        style="width: 58px; height: 58px;">
+                        <i class="bi bi-exclamation-triangle-fill fs-3"></i>
                     </div>
                     <div>
-                        <p class="text-muted mb-1 small fw-bold text-uppercase">Sắp hết hàng</p>
-                        <h3 class="mb-0 fw-bold">{{ number_format($lowStockCount) }}</h3>
+                        <p class="text-secondary mb-1 small fw-bold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.75rem;">Sắp hết hàng</p>
+                        <h3 class="mb-0 fw-bold text-dark">{{ number_format($lowStockCount) }}</h3>
                     </div>
                 </div>
             </div>
@@ -54,15 +74,15 @@
 
         <!-- Card 4 -->
         <div class="col-12 col-md-6 col-lg-3">
-            <div class="card h-100 border-0 shadow-sm rounded-3">
-                <div class="card-body d-flex align-items-center">
-                    <div class="bg-info bg-opacity-10 text-info rounded-3 p-3 me-3 d-flex align-items-center justify-content-center"
-                        style="width: 60px; height: 60px;">
-                        <i class="bi bi-cart fs-3"></i>
+            <div class="card h-100 border-0 dashboard-card">
+                <div class="card-body d-flex align-items-center py-4">
+                    <div class="icon-box bg-info bg-opacity-10 text-info rounded-3 p-3 me-3 d-flex align-items-center justify-content-center"
+                        style="width: 58px; height: 58px;">
+                        <i class="bi bi-cart-fill fs-3"></i>
                     </div>
                     <div>
-                        <p class="text-muted mb-1 small fw-bold text-uppercase">Đơn chờ xử lý</p>
-                        <h3 class="mb-0 fw-bold">{{ number_format($pendingOrdersCount) }}</h3>
+                        <p class="text-secondary mb-1 small fw-bold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.75rem;">Đơn chờ xử lý</p>
+                        <h3 class="mb-0 fw-bold text-dark">{{ number_format($pendingOrdersCount) }}</h3>
                     </div>
                 </div>
             </div>

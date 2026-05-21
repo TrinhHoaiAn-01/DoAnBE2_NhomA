@@ -155,56 +155,56 @@
     </div>
     @endif
 
-    <!-- 5. Sản phẩm nổi bật (từ Database) -->
-    @if($featured_products->isNotEmpty())
-    <div class="mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="section-title mb-0">Sản phẩm gợi ý cho bạn</h3>
-            <a href="{{ route('products.index') }}" class="btn btn-link text-primary fw-bold text-decoration-none">
-                Xem tất cả <i class="bi bi-arrow-right ms-1"></i>
-            </a>
-        </div>
-        <div class="row g-4">
-            @foreach($featured_products as $product)
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="product-card h-100 d-flex flex-column">
-                        <a href="{{ route('products.show', $product) }}" class="product-img-wrapper d-block text-decoration-none">
-                            @if($product->original_price && $product->original_price > $product->price)
-                                <span class="badge badge-custom bg-danger">
-                                    -{{ round((1 - $product->price / $product->original_price) * 100) }}%
-                                </span>
-                            @elseif($product->created_at->gt(now()->subDays(7)))
-                                <span class="badge badge-custom bg-success">Mới</span>
-                            @endif
-                            <img src="{{ $product->image_url ?: 'https://placehold.co/400x300?text='.urlencode($product->name) }}" alt="{{ $product->name }}">
-                        </a>
-                        <div class="product-info flex-grow-1">
-                            <div class="text-muted small mb-1">{{ $product->category?->name }}</div>
-                            <a href="{{ route('products.show', $product) }}" class="product-name" title="{{ $product->name }}">
-                                {{ $product->name }}
+    <!-- 5. Sản phẩm gợi ý -->
+    @if($suggested_products->isNotEmpty())
+        <div class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="section-title mb-0">Sản phẩm gợi ý cho bạn</h3>
+                <a href="{{ route('products.index') }}" class="btn btn-link text-primary fw-bold text-decoration-none">
+                    Xem tất cả <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="row g-4">
+                @foreach($suggested_products as $product)
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="product-card h-100 d-flex flex-column">
+                            <a href="{{ route('products.show', $product) }}" class="product-img-wrapper d-block text-decoration-none">
+                                @if($product->original_price && $product->original_price > $product->price)
+                                    <span class="badge badge-custom bg-danger">
+                                        -{{ round((1 - $product->price / $product->original_price) * 100) }}%
+                                    </span>
+                                @elseif($product->created_at->gt(now()->subDays(7)))
+                                    <span class="badge badge-custom bg-success">Mới</span>
+                                @endif
+                                <img src="{{ $product->image_url ?: 'https://placehold.co/400x300?text='.urlencode($product->name) }}" alt="{{ $product->name }}">
                             </a>
-                            <div class="d-flex justify-content-between align-items-end mt-3">
-                                <div>
-                                    <div class="product-price">{{ number_format((float)$product->price, 0, ',', '.') }}đ</div>
-                                    @if($product->original_price)
-                                        <div class="text-muted small text-decoration-line-through">
-                                            {{ number_format((float)$product->original_price, 0, ',', '.') }}đ
-                                        </div>
-                                    @endif
+                            <div class="product-info flex-grow-1">
+                                <div class="text-muted small mb-1">{{ $product->category?->name }}</div>
+                                <a href="{{ route('products.show', $product) }}" class="product-name" title="{{ $product->name }}">
+                                    {{ $product->name }}
+                                </a>
+                                <div class="d-flex justify-content-between align-items-end mt-3">
+                                    <div>
+                                        <div class="product-price">{{ number_format((float)$product->price, 0, ',', '.') }}đ</div>
+                                        @if($product->original_price)
+                                            <div class="text-muted small text-decoration-line-through">
+                                                {{ number_format((float)$product->original_price, 0, ',', '.') }}đ
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <form method="post" action="{{ route('cart.add', $product) }}">
+                                        @csrf
+                                        <button type="submit" class="btn-cart" title="Thêm vào giỏ" @disabled($product->stock <= 0)>
+                                            <i class="bi bi-plus-lg"></i>
+                                        </button>
+                                    </form>
                                 </div>
-                                <form method="post" action="{{ route('cart.add', $product) }}">
-                                    @csrf
-                                    <button type="submit" class="btn-cart" title="Thêm vào giỏ" @disabled($product->stock <= 0)>
-                                        <i class="bi bi-plus-lg"></i>
-                                    </button>
-                                </form>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
-    </div>
     @endif
 
     <!-- 6. Tiện ích -->

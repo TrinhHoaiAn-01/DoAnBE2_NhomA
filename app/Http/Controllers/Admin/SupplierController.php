@@ -15,7 +15,7 @@ class SupplierController extends Controller
     {
         $suppliers = Supplier::latest()->get();
 
-        return view('admin.suppliers.index', compact('suppliers'));
+        return view('admin.suppliers', compact('suppliers'));
     }
 
     // Lưu NCC mới

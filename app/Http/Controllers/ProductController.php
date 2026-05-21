@@ -64,6 +64,28 @@ class ProductController extends Controller
             ->latest()
             ->get();
 
+        // Lấy lịch sử xem từ session
+        $recentlyViewedIds = session()->get('recently_viewed', []);
+
+        // Lấy danh sách ID để hiển thị (loại bỏ sản phẩm hiện tại đang xem)
+        $displayIds = array_filter($recentlyViewedIds, fn($id) => $id !== $product->id);
+
+        $recentlyViewedProducts = collect();
+        if (!empty($displayIds)) {
+            $recentlyViewedProducts = Product::query()
+                ->whereIn('id', $displayIds)
+                ->where('is_active', true)
+                ->get()
+                ->sortBy(fn($item) => array_search($item->id, $displayIds))
+                ->values();
+        }
+
+        // Lưu sản phẩm hiện tại vào đầu danh sách đã xem
+        $recentlyViewedIds = array_values(array_unique(array_merge([$product->id], $recentlyViewedIds)));
+        // Giới hạn lưu tối đa 5 sản phẩm gần nhất
+        $recentlyViewedIds = array_slice($recentlyViewedIds, 0, 5);
+        session()->put('recently_viewed', $recentlyViewedIds);
+
         return view('products.show', [
             'product' => $product->load('category'),
             'approvedReviews' => $approvedReviews,
@@ -75,6 +97,7 @@ class ProductController extends Controller
                 ->latest()
                 ->limit(4)
                 ->get(),
+            'recentlyViewedProducts' => $recentlyViewedProducts,
         ]);
     }
 
