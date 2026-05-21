@@ -313,8 +313,11 @@ Route::prefix('admin')
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/profile-admin', [AdminController::class, 'profile'])
-        ->name('profile.admin');
+
+    Route::get('/profile-admin', function () {
+        return view('admin.profile-admin');
+    })->name('profile.admin');
+
 });
 
 
@@ -324,6 +327,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/profile', [UserController::class, 'profile'])
-        ->name('profile');
+
+    Route::get('/profile', function () {
+        return view('profile');
+    })->name('profile');
+
 });
