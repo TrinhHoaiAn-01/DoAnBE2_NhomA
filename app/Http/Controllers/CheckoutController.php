@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Promotion;
+use App\Support\DeliveryTimeSlot;
 use App\Support\ShippingFeeCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class CheckoutController extends Controller
         $items = $this->cartItems($request);
 
         if (count($items) === 0) {
-            return to_route('cart.index')->with('error', 'Gio hang dang trong.');
+            return to_route('cart.index')->with('error', 'Giỏ hàng đang trống.');
         }
 
         $selectedDistrict = $request->old('shipping_district', 'noi_thanh');
@@ -35,6 +36,9 @@ class CheckoutController extends Controller
             'discountTotal' => $discountTotal,
             'shippingDistricts' => ShippingFeeCalculator::districts(),
             'shippingServices' => ShippingFeeCalculator::services(),
+            'deliveryTimeSlots' => DeliveryTimeSlot::slots(),
+            'defaultDeliveryDate' => now()->addDay()->toDateString(),
+            'defaultDeliveryTimeSlot' => DeliveryTimeSlot::defaultSlot(),
             'user' => $request->user(),
         ]);
     }
@@ -44,7 +48,7 @@ class CheckoutController extends Controller
         $items = $this->cartItems($request);
 
         if (count($items) === 0) {
-            return to_route('cart.index')->with('error', 'Gio hang dang trong.');
+            return to_route('cart.index')->with('error', 'Giỏ hàng đang trống.');
         }
 
         $data = $request->validate([
@@ -54,6 +58,8 @@ class CheckoutController extends Controller
             'shipping_address' => ['required', 'string', 'max:500'],
             'shipping_district' => ['required', 'in:noi_thanh,ngoai_thanh,tinh_thanh'],
             'shipping_service' => ['required', 'in:standard,express'],
+            'delivery_date' => ['required', 'date', 'after_or_equal:today', 'before_or_equal:'.now()->addDays(14)->toDateString()],
+            'delivery_time_slot' => ['required', 'in:'.implode(',', DeliveryTimeSlot::values())],
             'note' => ['nullable', 'string', 'max:1000'],
             'promotion_code' => ['nullable', 'string', 'max:40'],
             'payment_method' => ['required', 'in:cod,bank_transfer,wallet'],
@@ -103,10 +109,10 @@ class CheckoutController extends Controller
         $request->session()->forget('cart');
 
         if ($order->payment_method !== 'cod') {
-            return to_route('payment.demo', $order)->with('status', 'Vui long xac nhan thanh toan demo.');
+            return to_route('payment.demo', $order)->with('status', 'Vui lòng xác nhận thanh toán demo.');
         }
 
-        return to_route('checkout.success', $order)->with('status', 'Dat hang thanh cong.');
+        return to_route('checkout.success', $order)->with('status', 'Đặt hàng thành công.');
     }
 
     private function promotionFromCode(string $code, float $subtotal): ?Promotion
@@ -142,6 +148,7 @@ class CheckoutController extends Controller
             'order' => $order->load('items'),
             'shippingDistrictLabel' => ShippingFeeCalculator::districtLabel($order->shipping_district),
             'shippingServiceLabel' => ShippingFeeCalculator::serviceLabel($order->shipping_service),
+            'deliveryTimeSlotLabel' => DeliveryTimeSlot::label($order->delivery_time_slot),
         ]);
     }
 
@@ -177,5 +184,4 @@ class CheckoutController extends Controller
     {
         return collect($items)->sum('subtotal');
     }
-
 }
