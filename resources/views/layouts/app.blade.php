@@ -161,26 +161,83 @@
                         <i class="bi bi-gear me-1"></i>Quản trị
                     </a>
                 </div>
-                <div class="d-flex align-items-center gap-2">
-                    @auth
-                        <span class="small text-secondary d-none d-lg-inline">
-                            <i class="bi bi-person-circle me-1"></i>Xin chào, {{ auth()->user()->name }}
-                        </span>
-                        <form method="post" action="{{ route('logout') }}" class="m-0">
-                            @csrf
-                            <button class="btn btn-outline-dark btn-sm rounded-pill px-3" type="submit">
-                                <i class="bi bi-box-arrow-right me-1"></i>Đăng xuất
-                            </button>
-                        </form>
-                    @else
-                        <a class="btn btn-outline-dark btn-sm rounded-pill px-3" href="{{ route('login') }}">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>Đăng nhập
-                        </a>
-                        <a class="btn btn-primary btn-sm rounded-pill px-3" href="{{ route('register') }}">
-                            <i class="bi bi-person-plus me-1"></i>Đăng ký
-                        </a>
-                    @endauth
-                </div>
+                <div class="dropdown">
+    @auth
+        @php
+            $user = auth()->user();
+            $initial = strtoupper(substr($user->name, 0, 1));
+        @endphp
+
+        <!-- AVATAR BUTTON -->
+        <button class="btn d-flex align-items-center gap-2 dropdown-toggle border-0 bg-transparent"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+
+            <!-- avatar circle -->
+            <div style="
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                background: #0d6efd;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                font-size: 14px;
+            ">
+                {{ $initial }}
+            </div>
+
+            <!-- text -->
+            <div class="text-start d-none d-lg-block">
+                <div class="small text-muted">Xin chào</div>
+                <div class="fw-semibold">{{ $user->name }}</div>
+            </div>
+
+        </button>
+
+        <!-- DROPDOWN -->
+		<ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3">
+
+			@php
+				$user = auth()->user();
+				$isAdmin = $user->role_id == 5;
+			@endphp
+
+			<li>
+				@if($isAdmin)
+					<a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+						<i class="bi bi-gear me-2"></i>Quản trị
+					</a>
+				@else
+					<a class="dropdown-item" href="{{ route('profile') }}">
+						<i class="bi bi-person me-2"></i>Hồ sơ
+					</a>
+				@endif
+			</li>
+
+			<li><hr class="dropdown-divider"></li>
+
+			<li>
+				<form method="POST" action="{{ route('logout') }}">
+					@csrf
+					<button class="dropdown-item text-danger">
+						<i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+					</button>
+				</form>
+			</li>
+
+		</ul>
+    @endauth
+
+    @guest
+        <a class="btn btn-outline-dark btn-sm rounded-pill px-3" href="{{ route('login') }}">
+            <i class="bi bi-box-arrow-in-right me-1"></i>Đăng nhập
+        </a>
+    @endguest
+</div>
             </div>
         </div>
     </nav>
