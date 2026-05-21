@@ -39,6 +39,10 @@ class AdminController extends Controller
         $productsCount = Product::count();
         $ordersCount = Order::count();
         $lowStockCount = Product::where('stock', '<=', 10)->count();
+        $outOfStockCount = Product::where('stock', 0)->count();
+        $stockValue = Product::query()
+            ->selectRaw('SUM(price * stock) as total_value')
+            ->value('total_value') ?? 0;
         $pendingOrdersCount = Order::where('status', 'pending')->count();
         $completedOrdersCount = Order::where('status', 'completed')->count();
         $todayRevenue = (clone $this->payableOrderQuery())
@@ -62,7 +66,10 @@ class AdminController extends Controller
             })
             ->values();
         
-        $lowStockProducts = Product::where('stock', '<=', 10)->orderBy('stock', 'asc')->take(5)->get();
+        $lowStockProducts = Product::where('stock', '<=', 10)
+            ->orderBy('stock', 'asc')
+            ->take(5)
+            ->get();
         $recentLogs = SystemLog::latest()->take(5)->get();
 
         // Thống kê doanh thu 7 ngày gần nhất
@@ -80,7 +87,7 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact(
             'usersCount', 'productsCount', 'ordersCount', 'lowStockCount', 'pendingOrdersCount',
-            'completedOrdersCount', 'todayRevenue', 'monthRevenue',
+            'completedOrdersCount', 'outOfStockCount', 'stockValue', 'todayRevenue', 'monthRevenue',
             'orderStatusStats', 'lowStockProducts', 'recentLogs', 'dates', 'revenues'
         ));
     }
