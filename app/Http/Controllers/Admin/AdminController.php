@@ -9,11 +9,30 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\SystemLog;
 use App\Models\RolePermission;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
+    private function orderStatusLabels(): array
+    {
+        return [
+            'pending' => 'Chờ xử lý',
+            'processing' => 'Đang xử lý',
+            'shipping' => 'Đang giao',
+            'completed' => 'Hoàn thành',
+            'cancelled' => 'Đã hủy',
+        ];
+    }
+
+    private function payableOrderQuery()
+    {
+        // Don hang bi huy khong tinh vao doanh thu va bao cao ban hang.
+        return Order::query()->where('status', '!=', 'cancelled');
+    }
+
     public function dashboard()
     {
         $usersCount = User::count();
