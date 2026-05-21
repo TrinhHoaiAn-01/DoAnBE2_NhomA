@@ -5,7 +5,7 @@
         {{-- SUCCESS --}}
         @if (session('status') || session('success'))
 
-            <div class="flash-alert success-alert">
+            <div class="flash-alert success-alert flash-auto-hide">
 
                 <div class="flash-content">
 
@@ -34,7 +34,7 @@
 
             @foreach ($errors->all() as $error)
 
-                <div class="flash-alert error-alert">
+                <div class="flash-alert error-alert flash-auto-hide">
 
                     <div class="flash-content">
 
@@ -199,3 +199,15 @@
     }
 
 </style>
+
+<script>
+    setTimeout(() => {
+        document.querySelectorAll('.flash-auto-hide').forEach(el => {
+            el.style.transition = "0.5s";
+            el.style.opacity = "0";
+            el.style.transform = "translateY(-10px)";
+
+            setTimeout(() => el.remove(), 500);
+        });
+    }, 3000);
+</script>
