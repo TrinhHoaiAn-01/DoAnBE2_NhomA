@@ -48,6 +48,19 @@ class AdminController extends Controller
             ->whereYear('created_at', now()->year)
             ->whereMonth('created_at', now()->month)
             ->sum('total');
+        $orderStatusCounts = Order::query()
+            ->select('status', DB::raw('COUNT(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
+        $orderStatusStats = collect($this->orderStatusLabels())
+            ->map(function (string $label, string $status) use ($orderStatusCounts) {
+                return [
+                    'status' => $status,
+                    'label' => $label,
+                    'total' => (int) ($orderStatusCounts[$status] ?? 0),
+                ];
+            })
+            ->values();
         
         $lowStockProducts = Product::where('stock', '<=', 10)->orderBy('stock', 'asc')->take(5)->get();
         $recentLogs = SystemLog::latest()->take(5)->get();
@@ -68,7 +81,7 @@ class AdminController extends Controller
         return view('admin.dashboard', compact(
             'usersCount', 'productsCount', 'ordersCount', 'lowStockCount', 'pendingOrdersCount',
             'completedOrdersCount', 'todayRevenue', 'monthRevenue',
-            'lowStockProducts', 'recentLogs', 'dates', 'revenues'
+            'orderStatusStats', 'lowStockProducts', 'recentLogs', 'dates', 'revenues'
         ));
     }
 
