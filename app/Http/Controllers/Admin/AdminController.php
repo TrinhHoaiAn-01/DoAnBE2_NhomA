@@ -139,13 +139,29 @@ class AdminController extends Controller
         $ordersCount = (clone $ordersQuery)->count();
         $totalRevenue = (clone $ordersQuery)->sum('total');
         $averageOrderValue = $ordersCount > 0 ? $totalRevenue / $ordersCount : 0;
+        $bestSellingProducts = OrderItem::query()
+            ->select(
+                'product_name',
+                'sku',
+                DB::raw('SUM(quantity) as sold_quantity'),
+                DB::raw('SUM(subtotal) as sold_revenue')
+            )
+            ->whereHas('order', function ($query) use ($fromDate, $toDate): void {
+                $query->where('status', '!=', 'cancelled')
+                    ->whereBetween('created_at', [$fromDate, $toDate]);
+            })
+            ->groupBy('product_name', 'sku')
+            ->orderByDesc('sold_quantity')
+            ->take(10)
+            ->get();
 
         return view('admin.statistics', compact(
             'fromDate',
             'toDate',
             'ordersCount',
             'totalRevenue',
-            'averageOrderValue'
+            'averageOrderValue',
+            'bestSellingProducts'
         ));
     }
 
