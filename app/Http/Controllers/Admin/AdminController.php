@@ -76,7 +76,7 @@ class AdminController extends Controller
             ->get();
         $recentLogs = SystemLog::latest()->take(5)->get();
 
-        // Thống kê doanh thu 7 ngày gần nhất
+        // Thong ke doanh thu 7 ngay gan nhat.
         $dates = collect();
         $revenues = collect();
         
@@ -114,7 +114,7 @@ class AdminController extends Controller
     {
         $query = SystemLog::query();
 
-        // Sắp xếp
+        // Sap xep ban ghi nhat ky theo lua chon cua nguoi dung.
         $sort = $request->get('sort', 'latest');
         if ($sort == 'oldest') {
             $query->oldest();
@@ -136,10 +136,10 @@ class AdminController extends Controller
         foreach ($permissions as $roleId => $data) {
             $role = RolePermission::find($roleId);
             if ($role) {
-                // Lưu lại dữ liệu cũ trước khi sửa
+                // Luu lai du lieu cu truoc khi sua.
                 $oldData[$role->role_name] = $role->toArray();
                 
-                // Cập nhật dữ liệu mới
+                // Cap nhat du lieu moi.
                 $role->update([
                     'can_view' => isset($data['can_view']) ? $data['can_view'] : 0,
                     'can_add' => isset($data['can_add']) ? $data['can_add'] : 0,
@@ -148,12 +148,12 @@ class AdminController extends Controller
                     'can_approve' => isset($data['can_approve']) ? $data['can_approve'] : 0,
                 ]);
 
-                // Lưu lại dữ liệu sau khi sửa
+                // Luu lai du lieu sau khi sua.
                 $newData[$role->role_name] = $role->toArray();
             }
         }
 
-        // Ghi vào Nhật ký hệ thống (Task 50)
+        // Ghi vao nhat ky he thong (Task 50).
         SystemLog::create([
             'user_name' => Auth::user()->name ?? 'Quản trị viên',
             'action' => 'Cập nhật Phân quyền hệ thống',
