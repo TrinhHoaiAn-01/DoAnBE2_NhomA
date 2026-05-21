@@ -84,11 +84,14 @@ class AdminController extends Controller
             $dates->push(now()->subDays($i)->format('d/m'));
             $revenues->push((float)$revenue);
         }
+        $weeklyRevenueTotal = $revenues->sum();
+        $averageDailyRevenue = $revenues->avg() ?? 0;
 
         return view('admin.dashboard', compact(
             'usersCount', 'productsCount', 'ordersCount', 'lowStockCount', 'pendingOrdersCount',
             'completedOrdersCount', 'outOfStockCount', 'stockValue', 'todayRevenue', 'monthRevenue',
-            'orderStatusStats', 'lowStockProducts', 'recentLogs', 'dates', 'revenues'
+            'weeklyRevenueTotal', 'averageDailyRevenue', 'orderStatusStats',
+            'lowStockProducts', 'recentLogs', 'dates', 'revenues'
         ));
     }
 

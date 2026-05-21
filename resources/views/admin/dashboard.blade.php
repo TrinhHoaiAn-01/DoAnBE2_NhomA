@@ -142,6 +142,20 @@
                     <div class="chart-box">
                         <canvas id="revenueChart"></canvas>
                     </div>
+                    <div class="row g-3 mt-3">
+                        <div class="col-12 col-md-6">
+                            <div class="border rounded-2 p-3">
+                                <div class="text-muted small text-uppercase fw-semibold">Tổng doanh thu tuần</div>
+                                <div class="fs-5 fw-bold">{{ $money($weeklyRevenueTotal) }}</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="border rounded-2 p-3">
+                                <div class="text-muted small text-uppercase fw-semibold">Trung bình mỗi ngày</div>
+                                <div class="fs-5 fw-bold">{{ $money($averageDailyRevenue) }}</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
