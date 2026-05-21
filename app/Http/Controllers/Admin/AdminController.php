@@ -124,11 +124,13 @@ class AdminController extends Controller
         $filters = $request->validate([
             'from_date' => ['nullable', 'date'],
             'to_date' => ['nullable', 'date'],
+            'period' => ['nullable', 'integer', 'in:7,30,90'],
         ]);
+        $period = (int) ($filters['period'] ?? 7);
 
         $fromDate = isset($filters['from_date'])
             ? Carbon::parse($filters['from_date'])->startOfDay()
-            : now()->subDays(6)->startOfDay();
+            : now()->subDays($period - 1)->startOfDay();
         $toDate = isset($filters['to_date'])
             ? Carbon::parse($filters['to_date'])->endOfDay()
             : now()->endOfDay();
@@ -163,6 +165,7 @@ class AdminController extends Controller
         return view('admin.statistics', compact(
             'fromDate',
             'toDate',
+            'period',
             'ordersCount',
             'totalRevenue',
             'averageOrderValue',

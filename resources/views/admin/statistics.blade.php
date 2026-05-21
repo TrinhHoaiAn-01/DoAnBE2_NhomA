@@ -41,6 +41,16 @@
 
         <div class="report-panel p-4">
             <form class="row g-3 align-items-end" method="GET" action="{{ route('admin.statistics') }}">
+                <div class="col-12">
+                    <div class="btn-group" role="group" aria-label="Bộ lọc nhanh">
+                        @foreach([7 => '7 ngày', 30 => '30 ngày', 90 => '90 ngày'] as $days => $label)
+                            <a class="btn {{ $period === $days ? 'btn-primary' : 'btn-outline-primary' }}"
+                               href="{{ route('admin.statistics', ['period' => $days]) }}">
+                                {{ $label }}
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
                 <div class="col-12 col-md-4">
                     <label class="form-label fw-semibold" for="from_date">Từ ngày</label>
                     <input class="form-control" type="date" id="from_date" name="from_date" value="{{ $fromDate->format('Y-m-d') }}">
