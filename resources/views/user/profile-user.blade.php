@@ -245,6 +245,17 @@
         .no-spinner{
             -moz-appearance:textfield;
         }
+		
+		.fake-disabled{
+
+			background:rgba(255,255,255,0.05) !important;
+
+			color:rgba(255,255,255,0.6) !important;
+
+			cursor: default;
+
+			opacity:0.8;
+		}
 
     </style>
 
@@ -320,6 +331,16 @@
                             Đổi mật khẩu
 
                         </a>
+						
+						<!-- SUPPORT -->
+						<a href="#"
+						   class="nav-item">
+
+							<i class="fa fa-headset"></i>
+
+							Hỗ trợ người dùng
+
+						</a>
 
                         <!-- DELETE -->
                         <button class="nav-item danger"
@@ -482,13 +503,11 @@
                                     Email
                                 </label>
 
-								<input type="email"
-									   name="email"
-									   value="{{ Auth::user()->email }}"
-									   class="form-control"
-									   readonly
-									   disabled>
-
+							<input type="email"
+								   name="email"
+								   value="{{ Auth::user()->email }}"
+								   class="form-control fake-disabled"
+								   readonly>
 
                             </div>
 

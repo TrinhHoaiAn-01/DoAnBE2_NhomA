@@ -322,7 +322,7 @@
 					<li>
 
 						<a class="dropdown-item py-2 rounded-3"
-						   href="{{ route('profile.user') }}">
+						   href="{{ route('profile.admin') }}">
 
 							<i class="bi bi-person me-2"></i>
 

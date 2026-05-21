@@ -157,6 +157,18 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
+| PROFILE ADMIN
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/profile-admin', function () {
+    return view('admin.profile-admin');
+})->middleware('auth')->name('profile.admin');
+
+
+/*
+|--------------------------------------------------------------------------
+>>>>>>> VAN_TRONG/Ho_so_nguoi_dung
 | ICON USER
 |--------------------------------------------------------------------------
 */
@@ -170,6 +182,8 @@ Route::get('/settings', function () {
 
 })->name('settings');
 
+
+
 /*
 |--------------------------------------------------------------------------
 | DASHBOARD USER
@@ -179,7 +193,6 @@ Route::get('/settings', function () {
 Route::get('/home', function () {
     return view('admin.dashboard');
 })->middleware('auth')->name('user.home');
-
 
 /*
 |--------------------------------------------------------------------------
