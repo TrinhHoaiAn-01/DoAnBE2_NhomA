@@ -74,6 +74,20 @@ class AdminController extends Controller
             ->latest()
             ->take(5)
             ->get();
+        $topProducts = OrderItem::query()
+            ->select(
+                'product_name',
+                'sku',
+                DB::raw('SUM(quantity) as sold_quantity'),
+                DB::raw('SUM(subtotal) as sold_revenue')
+            )
+            ->whereHas('order', function ($query): void {
+                $query->where('status', '!=', 'cancelled');
+            })
+            ->groupBy('product_name', 'sku')
+            ->orderByDesc('sold_quantity')
+            ->take(5)
+            ->get();
         $recentLogs = SystemLog::latest()->take(5)->get();
 
         // Thong ke doanh thu 7 ngay gan nhat.
@@ -100,7 +114,7 @@ class AdminController extends Controller
             'usersCount', 'productsCount', 'ordersCount', 'lowStockCount', 'pendingOrdersCount',
             'completedOrdersCount', 'outOfStockCount', 'stockValue', 'todayRevenue', 'monthRevenue',
             'weeklyRevenueTotal', 'averageDailyRevenue', 'orderStatusStats',
-            'lowStockProducts', 'recentOrders', 'recentLogs', 'dates', 'revenues'
+            'lowStockProducts', 'recentOrders', 'topProducts', 'recentLogs', 'dates', 'revenues'
         ));
     }
 

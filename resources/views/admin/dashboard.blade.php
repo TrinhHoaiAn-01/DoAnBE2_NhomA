@@ -281,6 +281,39 @@
                 </table>
             </div>
         </div>
+
+        <div class="dashboard-panel">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                <h2 class="h5 fw-bold mb-0">Sản phẩm bán chạy</h2>
+                <a href="{{ route('admin.products.index') }}" class="btn btn-sm btn-outline-primary">Xem sản phẩm</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>SKU</th>
+                            <th class="text-end">Đã bán</th>
+                            <th class="text-end">Doanh thu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($topProducts as $product)
+                            <tr>
+                                <td class="fw-semibold">{{ $product->product_name }}</td>
+                                <td class="text-muted">{{ $product->sku ?: 'Không có SKU' }}</td>
+                                <td class="text-end">{{ number_format($product->sold_quantity) }}</td>
+                                <td class="text-end fw-semibold">{{ $money($product->sold_revenue) }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td class="text-center py-4 text-muted" colspan="4">Chưa có dữ liệu bán hàng.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 @endsection
 
