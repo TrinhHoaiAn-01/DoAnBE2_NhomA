@@ -157,6 +157,17 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
+| PROFILE ADMIN
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/profile-admin', function () {
+    return view('admin.profile-admin');
+})->middleware('auth')->name('profile.admin');
+
+
+/*
+|--------------------------------------------------------------------------
 | ICON USER
 |--------------------------------------------------------------------------
 */
@@ -170,15 +181,7 @@ Route::get('/settings', function () {
 
 })->name('settings');
 
-/*
-|--------------------------------------------------------------------------
-| PROFILE ADMIN
-|--------------------------------------------------------------------------
-*/
 
-Route::get('/profile-admin', function () {
-    return view('admin.profile-admin');
-})->middleware('auth')->name('profile.admin');
 
 /*
 |--------------------------------------------------------------------------
@@ -204,6 +207,10 @@ Route::prefix('admin')
         // DASHBOARD
         Route::get('/dashboard', [AdminController::class, 'dashboard'])
             ->name('dashboard');
+
+        // BASIC STATISTICS
+        Route::get('/statistics', [AdminController::class, 'statistics'])
+            ->name('statistics');
 
         // SUPPLIERS
         Route::get('/suppliers', [SupplierController::class, 'index'])
@@ -309,27 +316,18 @@ Route::prefix('admin')
 	
 /*
 |--------------------------------------------------------------------------
-| BẢO VỆ LINK ADMIN
+| BẢO VỆ LINK
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
+    // USER PROFILE (1–4)
+    Route::get('/profile', function () {
+        return view('user.profile-user');
+    })->middleware('role:user')->name('profile');
+
+    // ADMIN PROFILE (5)
     Route::get('/profile-admin', function () {
         return view('admin.profile-admin');
-    })->name('profile.admin');
-
-});
-
-
-/*
-|--------------------------------------------------------------------------
-| BẢO VỆ LINK USER
-|--------------------------------------------------------------------------
-*/
-Route::middleware(['auth', 'role:user'])->group(function () {
-
-    Route::get('/profile', function () {
-        return view('profile');
-    })->name('profile');
-
+    })->middleware('role:admin')->name('profile.admin');
 });
