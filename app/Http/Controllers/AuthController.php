@@ -116,9 +116,9 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
-        $request->session()->regenerate();
+        Auth::logout();
 
-        return redirect()->route('home')
+        return redirect()->route('login')
             ->with('success', 'Đăng ký thành công!');
     }
 
