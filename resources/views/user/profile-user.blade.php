@@ -320,6 +320,16 @@
                             Đổi mật khẩu
 
                         </a>
+						
+						<!-- SUPPORT -->
+						<a href="#"
+						   class="nav-item">
+
+							<i class="fa fa-headset"></i>
+
+							Hỗ trợ người dùng
+
+						</a>
 
                         <!-- DELETE -->
                         <button class="nav-item danger"
