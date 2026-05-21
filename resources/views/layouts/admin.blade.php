@@ -258,6 +258,11 @@
                         <i class="bi bi-journal-text"></i> Nhật ký hệ thống
                     </a>
                 </li>
+                <li class="{{ request()->routeIs('admin.statistics') ? 'active' : '' }}">
+                    <a href="{{ route('admin.statistics') }}">
+                        <i class="bi bi-bar-chart-line"></i> Thống kê cơ bản
+                    </a>
+                </li>
             </ul>
 
 			<!-- PROFILE -->
