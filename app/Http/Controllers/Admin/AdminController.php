@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\SystemLog;
 use App\Models\RolePermission;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
@@ -120,7 +121,32 @@ class AdminController extends Controller
 
     public function statistics(Request $request)
     {
-        return view('admin.statistics');
+        $filters = $request->validate([
+            'from_date' => ['nullable', 'date'],
+            'to_date' => ['nullable', 'date'],
+        ]);
+
+        $fromDate = isset($filters['from_date'])
+            ? Carbon::parse($filters['from_date'])->startOfDay()
+            : now()->subDays(6)->startOfDay();
+        $toDate = isset($filters['to_date'])
+            ? Carbon::parse($filters['to_date'])->endOfDay()
+            : now()->endOfDay();
+
+        $ordersQuery = $this->payableOrderQuery()
+            ->whereBetween('created_at', [$fromDate, $toDate]);
+
+        $ordersCount = (clone $ordersQuery)->count();
+        $totalRevenue = (clone $ordersQuery)->sum('total');
+        $averageOrderValue = $ordersCount > 0 ? $totalRevenue / $ordersCount : 0;
+
+        return view('admin.statistics', compact(
+            'fromDate',
+            'toDate',
+            'ordersCount',
+            'totalRevenue',
+            'averageOrderValue'
+        ));
     }
 
     public function permissions()
