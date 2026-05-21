@@ -75,9 +75,10 @@
                         {{ $order->delivery_date?->format('d/m/Y') ?: 'Chưa chọn ngày' }}
                         - {{ $deliveryTimeSlotLabel }}
                     </div>
-                    @if ($order->note)
-                        <div class="text-break">Ghi chú: {{ $order->note }}</div>
-                    @endif
+                    <div>
+                        <div class="small text-secondary">Ghi chú đơn hàng</div>
+                        <div class="text-break">{{ $order->note ?: 'Không có ghi chú' }}</div>
+                    </div>
                 </div>
             </div>
 

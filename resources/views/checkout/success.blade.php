@@ -42,6 +42,14 @@
                             </div>
                         </div>
                     </div>
+                    @if ($order->note)
+                        <div class="col-12">
+                            <div class="soft-surface rounded-3 p-3">
+                                <div class="small text-secondary">Ghi chú đơn hàng</div>
+                                <div class="fw-semibold text-break">{{ $order->note }}</div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
             <div class="col-lg-5">
