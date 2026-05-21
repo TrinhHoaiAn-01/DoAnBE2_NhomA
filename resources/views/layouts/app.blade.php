@@ -199,26 +199,37 @@
         </button>
 
         <!-- DROPDOWN -->
-        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3">
+		<ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3">
 
-            <li>
-                <a class="dropdown-item" href="{{ route('profile') }}">
-                    <i class="bi bi-person me-2"></i>Hồ sơ
-                </a>
-            </li>
+			@php
+				$user = auth()->user();
+				$isAdmin = $user->role_id == 5;
+			@endphp
 
-            <li><hr class="dropdown-divider"></li>
+			<li>
+				@if($isAdmin)
+					<a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+						<i class="bi bi-gear me-2"></i>Quản trị
+					</a>
+				@else
+					<a class="dropdown-item" href="{{ route('profile') }}">
+						<i class="bi bi-person me-2"></i>Hồ sơ
+					</a>
+				@endif
+			</li>
 
-            <li>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="dropdown-item text-danger">
-                        <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
-                    </button>
-                </form>
-            </li>
+			<li><hr class="dropdown-divider"></li>
 
-        </ul>
+			<li>
+				<form method="POST" action="{{ route('logout') }}">
+					@csrf
+					<button class="dropdown-item text-danger">
+						<i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+					</button>
+				</form>
+			</li>
+
+		</ul>
     @endauth
 
     @guest
