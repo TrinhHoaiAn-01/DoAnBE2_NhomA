@@ -26,6 +26,10 @@
             background: #ffffff;
             min-height: 120px;
         }
+
+        .report-chart {
+            min-height: 320px;
+        }
     </style>
 
     <div class="d-grid gap-4">
@@ -86,6 +90,18 @@
                     <div class="text-muted small text-uppercase fw-semibold">Giá trị trung bình</div>
                     <div class="fs-4 fw-bold mt-2">{{ $money($averageOrderValue) }}</div>
                 </div>
+            </div>
+        </div>
+
+        <div class="report-panel p-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div>
+                    <h2 class="h5 fw-bold mb-1">Doanh thu theo ngày</h2>
+                    <div class="text-muted small">{{ $fromDate->format('d/m/Y') }} - {{ $toDate->format('d/m/Y') }}</div>
+                </div>
+            </div>
+            <div class="report-chart">
+                <canvas id="dailyRevenueChart"></canvas>
             </div>
         </div>
 
@@ -156,3 +172,57 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const revenueCanvas = document.getElementById('dailyRevenueChart');
+
+            if (!revenueCanvas) {
+                return;
+            }
+
+            new Chart(revenueCanvas, {
+                type: 'bar',
+                data: {
+                    labels: @json($dailyLabels),
+                    datasets: [{
+                        label: 'Doanh thu',
+                        data: @json($dailyRevenue),
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.65)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(context.parsed.y || 0);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return new Intl.NumberFormat('vi-VN').format(value) + 'đ';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+@endpush

@@ -135,12 +135,32 @@ class AdminController extends Controller
             ? Carbon::parse($filters['to_date'])->endOfDay()
             : now()->endOfDay();
 
+        if ($fromDate->greaterThan($toDate)) {
+            [$fromDate, $toDate] = [$toDate->copy()->startOfDay(), $fromDate->copy()->endOfDay()];
+        }
+
         $ordersQuery = $this->payableOrderQuery()
             ->whereBetween('created_at', [$fromDate, $toDate]);
 
         $ordersCount = (clone $ordersQuery)->count();
         $totalRevenue = (clone $ordersQuery)->sum('total');
         $averageOrderValue = $ordersCount > 0 ? $totalRevenue / $ordersCount : 0;
+        $dailyRevenueRows = (clone $ordersQuery)
+            ->selectRaw('DATE(created_at) as report_date, SUM(total) as revenue')
+            ->groupBy('report_date')
+            ->orderBy('report_date')
+            ->pluck('revenue', 'report_date');
+        $dailyLabels = [];
+        $dailyRevenue = [];
+        $cursor = $fromDate->copy();
+
+        while ($cursor->lte($toDate)) {
+            $key = $cursor->format('Y-m-d');
+            $dailyLabels[] = $cursor->format('d/m');
+            $dailyRevenue[] = (float) ($dailyRevenueRows[$key] ?? 0);
+            $cursor->addDay();
+        }
+
         $bestSellingProducts = OrderItem::query()
             ->select(
                 'product_name',
@@ -169,6 +189,8 @@ class AdminController extends Controller
             'ordersCount',
             'totalRevenue',
             'averageOrderValue',
+            'dailyLabels',
+            'dailyRevenue',
             'bestSellingProducts',
             'paymentStats'
         ));
