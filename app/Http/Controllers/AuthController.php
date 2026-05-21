@@ -17,30 +17,37 @@ class AuthController extends Controller
     }
 
     public function login(Request $request): RedirectResponse
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
-        ]);
+	{
+		// 1. Validate input
+		$credentials = $request->validate([
+			'email' => ['required', 'email'],
+			'password' => ['required', 'string'],
+		]);
 
-        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+		// 2. Remember me checkbox
+		$remember = $request->boolean('remember');
 
-            return back()
-                ->withInput($request->except('password'))
-                ->withErrors([
-                    'email' => 'Email và Mật khẩu không đúng!'
-                ]);
-        }
+		// 3. Attempt login
+		if (!Auth::attempt($credentials, $remember)) {
 
-        $request->session()->regenerate();
+			return back()
+				->withInput($request->except('password'))
+				->withErrors([
+					'email' => 'Email hoặc mật khẩu không đúng!'
+				]);
+		}
 
-        // CHECK STATUS
-		if (!Auth::user()?->status) {
+		// 4. Regenerate session (security chống session fixation)
+		$request->session()->regenerate();
+
+		// 5. Check account status (active / blocked)
+		$user = Auth::user();
+
+		if (!$user || !$user->status) {
 
 			Auth::logout();
 
 			$request->session()->invalidate();
-
 			$request->session()->regenerateToken();
 
 			return back()->withErrors([
@@ -48,9 +55,9 @@ class AuthController extends Controller
 			]);
 		}
 
-        return redirect()
-            ->intended(route('home'));
-    }
+		// 6. Redirect after login
+		return redirect()->intended(route('home'));
+	}
 
     public function showRegister(): View
     {
@@ -91,7 +98,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return to_route('home')
-            ->with('status', 'Da dang xuat.');
+        return to_route('home');
     }
 }
