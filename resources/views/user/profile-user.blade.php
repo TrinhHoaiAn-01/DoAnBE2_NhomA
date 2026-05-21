@@ -178,6 +178,11 @@
             background:rgba(255,255,255,0.05);
             color:rgba(255,255,255,0.6);
         }
+		
+		.form-control::placeholder {
+			color: rgba(255,255,255,0.55);
+			opacity: 1;
+		}
 
         /* OPTION COLOR */
 
@@ -331,6 +336,16 @@
                             Đổi mật khẩu
 
                         </a>
+						
+						<!-- LOG ACTIVITY -->
+						<a href="#"
+						   class="nav-item">
+
+							<i class="fa fa-clock-rotate-left"></i>
+
+							Nhật ký hoạt động
+
+						</a>
 						
 						<!-- SUPPORT -->
 						<a href="#"

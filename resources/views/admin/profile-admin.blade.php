@@ -179,6 +179,11 @@
             color:rgba(255,255,255,0.6);
             cursor:not-allowed;
         }
+		
+		.form-control::placeholder {
+			color: rgba(255,255,255,0.55);
+			opacity: 1;
+		}
 
         /* OPTION COLOR */
 
