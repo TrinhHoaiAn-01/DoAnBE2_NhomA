@@ -100,33 +100,11 @@ Route::middleware('guest')->group(function (): void {
         ->name('register.submit');
 
     // FORGOT PASSWORD
-    Route::get('/forgetpassword', function () {
-        return view('auth.forget-password');
-    })->name('password.request');
+    Route::get('/forgetpassword', [AuthController::class, 'showForgetPassword'])
+        ->name('password.request');
 
-    Route::post('/forgetpassword', function (Request $request) {
-
-        $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'min:6', 'confirmed'],
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user) {
-            return back()->withErrors([
-                'email' => 'Email khong ton tai'
-            ]);
-        }
-
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-        return redirect()
-            ->route('login')
-            ->with('success', 'Doi mat khau thanh cong!');
-
-    })->name('password.update.fake');
+    Route::post('/forgetpassword', [AuthController::class, 'forgetPassword'])
+        ->name('password.update.fake');
 });
 
 

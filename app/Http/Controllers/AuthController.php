@@ -170,4 +170,32 @@ class AuthController extends Controller
 
 		return redirect()->route('login');
 	}
+
+    public function showForgetPassword(): View
+    {
+        return view('auth.forget-password');
+    }
+
+    public function forgetPassword(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'min:6', 'confirmed'],
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'Email khong ton tai'
+            ]);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()
+            ->route('login')
+            ->with('success', 'Doi mat khau thanh cong!');
+    }
 }
