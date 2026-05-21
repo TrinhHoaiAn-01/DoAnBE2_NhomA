@@ -50,7 +50,7 @@
                 <select class="form-select" id="status" name="status">
                     <option value="">Tất cả</option>
                     @foreach ($statusOptions as $value => $label)
-                        <option value="{{ $value }}" @selected($status === $value)>{{ $label }}</option>
+                        <option value="{{ $value }}" @selected($status !== null && $status !== '' && (int)$status === $value)>{{ $label }}</option>
                     @endforeach
                 </select>
             </div>
@@ -84,8 +84,8 @@
                             <td>{{ $user->phone ?: '-' }}</td>
                             <td>{{ $roleOptions[$user->role_id] ?? 'Khác' }}</td>
                             <td>
-                                <span class="badge {{ $user->status === 'locked' ? 'text-bg-danger' : 'text-bg-success' }}">
-                                    {{ $statusOptions[$user->status] ?? $user->status }}
+                                <span class="badge {{ !$user->status ? 'text-bg-danger' : 'text-bg-success' }}">
+                                    {{ $user->status ? 'Đang hoạt động' : 'Đã khóa' }}
                                 </span>
                             </td>
                             <td>{{ $user->created_at?->format('d/m/Y H:i') }}</td>
@@ -100,7 +100,7 @@
                                     </select>
                                     <select class="form-select form-select-sm" name="status" style="max-width: 130px">
                                         @foreach ($statusOptions as $value => $label)
-                                            <option value="{{ $value }}" @selected($user->status === $value)>{{ $label }}</option>
+                                            <option value="{{ $value }}" @selected((int)$user->status === $value)>{{ $label }}</option>
                                         @endforeach
                                     </select>
                                     <button class="btn btn-sm btn-outline-primary" type="submit">Lưu</button>

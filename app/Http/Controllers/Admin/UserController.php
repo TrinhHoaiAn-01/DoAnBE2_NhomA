@@ -14,7 +14,7 @@ class UserController extends Controller
     {
         $search = trim((string) $request->string('search'));
         $roleId = $request->integer('role_id');
-        $status = $request->string('status')->toString();
+        $status = $request->input('status');
 
         $users = User::query()
             ->when($search !== '', function ($query) use ($search): void {
@@ -28,8 +28,8 @@ class UserController extends Controller
             ->when($roleId > 0, function ($query) use ($roleId): void {
                 $query->where('role_id', $roleId);
             })
-            ->when($status !== '', function ($query) use ($status): void {
-                $query->where('status', $status);
+            ->when($status !== null && $status !== '', function ($query) use ($status): void {
+                $query->where('status', (bool)$status);
             })
             ->latest()
             ->paginate(15)
@@ -42,9 +42,9 @@ class UserController extends Controller
             'status' => $status,
             'roleOptions' => $this->roleOptions(),
             'statusOptions' => $this->statusOptions(),
-            'adminCount' => User::query()->where('role_id', 1)->count(),
-            'customerCount' => User::query()->where('role_id', 2)->count(),
-            'lockedCount' => User::query()->where('status', 'locked')->count(),
+            'adminCount' => User::query()->where('role_id', 5)->count(),
+            'customerCount' => User::query()->where('role_id', 1)->count(),
+            'lockedCount' => User::query()->where('status', false)->count(),
         ]);
     }
 
@@ -52,14 +52,19 @@ class UserController extends Controller
     {
         $data = $request->validate([
             'role_id' => ['required', 'integer', 'in:1,2,3,4,5'],
-            'status' => ['required', 'in:active,locked'],
+            'status' => ['required', 'in:0,1'],
         ]);
 
-        if ($request->user()?->is($user) && $data['status'] === 'locked') {
+        $statusVal = (bool)$data['status'];
+
+        if ($request->user()?->is($user) && !$statusVal) {
             return to_route('admin.users.index')->with('error', 'Không thể khóa tài khoản đang đăng nhập.');
         }
 
-        $user->update($data);
+        $user->update([
+            'role_id' => $data['role_id'],
+            'status' => $statusVal,
+        ]);
 
         return to_route('admin.users.index')->with('status', 'Đã cập nhật người dùng.');
     }
@@ -67,19 +72,19 @@ class UserController extends Controller
     private function roleOptions(): array
     {
         return [
-            1 => 'Quản trị viên',
-            2 => 'Khách hàng',
-            3 => 'Bán hàng',
-            4 => 'Kho vận',
-            5 => 'Hỗ trợ',
+            5 => 'Quản trị viên',
+            4 => 'Nhân viên Kho',
+            3 => 'Nhân viên Đơn hàng',
+            2 => 'Nhân viên Sản phẩm',
+            1 => 'Khách hàng',
         ];
     }
 
     private function statusOptions(): array
     {
         return [
-            'active' => 'Đang hoạt động',
-            'locked' => 'Đã khóa',
+            1 => 'Đang hoạt động',
+            0 => 'Đã khóa',
         ];
     }
 }
