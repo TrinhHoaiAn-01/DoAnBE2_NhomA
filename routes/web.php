@@ -162,13 +162,13 @@ Route::middleware('auth')->group(function () {
 */
 
 Route::get('/profile-admin', function () {
-
     return view('admin.profile-admin');
-
 })->middleware('auth')->name('profile.admin');
+
 
 /*
 |--------------------------------------------------------------------------
+>>>>>>> VAN_TRONG/Ho_so_nguoi_dung
 | ICON USER
 |--------------------------------------------------------------------------
 */
@@ -181,6 +181,8 @@ Route::get('/settings', function () {
     return view('settings.setting');
 
 })->name('settings');
+
+
 
 /*
 |--------------------------------------------------------------------------
