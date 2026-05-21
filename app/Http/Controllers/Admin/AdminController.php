@@ -86,6 +86,11 @@ class AdminController extends Controller
         }
         $weeklyRevenueTotal = $revenues->sum();
         $averageDailyRevenue = $revenues->avg() ?? 0;
+        $dates = $dates->values()->all();
+        $revenues = $revenues
+            ->map(fn ($value) => (float) $value)
+            ->values()
+            ->all();
 
         return view('admin.dashboard', compact(
             'usersCount', 'productsCount', 'ordersCount', 'lowStockCount', 'pendingOrdersCount',
