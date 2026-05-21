@@ -118,6 +118,11 @@ class AdminController extends Controller
         ));
     }
 
+    public function statistics(Request $request)
+    {
+        return view('admin.statistics');
+    }
+
     public function permissions()
     {
         $roles = RolePermission::all();

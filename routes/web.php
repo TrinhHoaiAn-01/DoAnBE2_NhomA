@@ -196,6 +196,10 @@ Route::prefix('admin')
         Route::get('/dashboard', [AdminController::class, 'dashboard'])
             ->name('dashboard');
 
+        // BASIC STATISTICS
+        Route::get('/statistics', [AdminController::class, 'statistics'])
+            ->name('statistics');
+
         // SUPPLIERS
         Route::get('/suppliers', [SupplierController::class, 'index'])
             ->name('suppliers.index');
