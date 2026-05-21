@@ -9,7 +9,7 @@
           content="width=device-width, initial-scale=1.0">
 
     <title>
-        Hồ sơ người dùng
+        Hồ sơ Admin
     </title>
 
     <!-- BOOTSTRAP -->
@@ -134,12 +134,12 @@
             background:rgba(255,255,255,0.2);
         }
 
-        .danger{
-            background:rgba(255,0,0,0.2);
+        .dashboard-btn{
+            background:rgba(34,197,94,0.2);
         }
 
-        .danger:hover{
-            background:#dc2626;
+        .dashboard-btn:hover{
+            background:#16a34a;
         }
 
         /* RIGHT */
@@ -177,6 +177,7 @@
         .form-control:disabled{
             background:rgba(255,255,255,0.05);
             color:rgba(255,255,255,0.6);
+            cursor:not-allowed;
         }
 
         /* OPTION COLOR */
@@ -284,9 +285,7 @@
                     <!-- ROLE -->
                     <div class="role">
 
-                        {{ Auth::user()->role_id == 1
-                            ? 'Quản trị viên'
-                            : 'Người dùng' }}
+                        Admin
 
                     </div>
 
@@ -304,7 +303,9 @@
                     <!-- MENU -->
                     <div class="nav-menu">
 
-                        <a href="/" class="nav-item">
+                        <!-- HOME -->
+                        <a href="/"
+                           class="nav-item">
 
                             <i class="fa fa-home"></i>
 
@@ -312,6 +313,17 @@
 
                         </a>
 
+                        <!-- DASHBOARD -->
+                        <a href="{{ route('admin.dashboard') }}"
+                           class="nav-item dashboard-btn">
+
+                            <i class="fa fa-chart-line"></i>
+
+                            Dashboard Admin
+
+                        </a>
+
+                        <!-- CHANGE PASSWORD -->
                         <a href="{{ route('change.password') }}"
                            class="nav-item">
 
@@ -320,17 +332,6 @@
                             Đổi mật khẩu
 
                         </a>
-
-                        <!-- DELETE -->
-                        <button class="nav-item danger"
-                                data-bs-toggle="modal"
-                                data-bs-target="#deleteModal">
-
-                            <i class="fa fa-trash"></i>
-
-                            Xoá tài khoản
-
-                        </button>
 
                         <!-- LOGOUT -->
                         <form action="{{ route('logout') }}"
@@ -482,13 +483,10 @@
                                     Email
                                 </label>
 
-								<input type="email"
-									   name="email"
-									   value="{{ Auth::user()->email }}"
-									   class="form-control"
-									   readonly
-									   disabled>
-
+                                <input type="email"
+                                       value="{{ Auth::user()->email }}"
+                                       class="form-control"
+                                       disabled>
 
                             </div>
 
@@ -593,66 +591,6 @@
                     </form>
 
                 </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- DELETE MODAL -->
-<div class="modal fade"
-     id="deleteModal"
-     tabindex="-1">
-
-    <div class="modal-dialog modal-dialog-centered">
-
-        <div class="modal-content bg-dark text-white rounded-4">
-
-            <div class="modal-header border-0">
-
-                <h5>
-                    Xác nhận xoá tài khoản
-                </h5>
-
-            </div>
-
-            <div class="modal-body">
-
-                Bạn có chắc chắn muốn xoá tài khoản không?
-
-                <br>
-
-                <span class="text-danger">
-                    Hành động này không thể hoàn tác.
-                </span>
-
-            </div>
-
-            <div class="modal-footer border-0">
-
-                <button class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-
-                    Huỷ
-
-                </button>
-
-                <form action="{{ route('profile.delete') }}"
-                      method="POST">
-
-                    @csrf
-                    @method('DELETE')
-
-                    <button class="btn btn-danger">
-
-                        Xoá tài khoản
-
-                    </button>
-
-                </form>
 
             </div>
 
