@@ -164,6 +164,12 @@ Route::get('/profile-user', function () {
     return view('user.profile-user');
 })->name('profile.user');
 
+Route::get('/settings', function () {
+
+    return view('settings.setting');
+
+})->name('settings');
+
 /*
 |--------------------------------------------------------------------------
 | DASHBOARD USER

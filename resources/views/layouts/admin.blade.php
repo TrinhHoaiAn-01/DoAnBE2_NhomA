@@ -331,7 +331,7 @@
 					<li>
 
 						<a class="dropdown-item py-2 rounded-3"
-						   href="#">
+						   href="{{ route('settings') }}">
 
 							<i class="bi bi-gear me-2"></i>
 
