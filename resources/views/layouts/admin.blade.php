@@ -260,18 +260,117 @@
                 </li>
             </ul>
 
-            <div class="sidebar-profile d-flex align-items-center">
-                <div class="avatar-circle text-white rounded-circle d-flex justify-content-center align-items-center fw-bold text-uppercase" style="width: 42px; height: 42px; font-size: 1.1rem;">
-                    {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
-                </div>
-                <div class="ms-3">
-                    <div class="fw-semibold fs-6 text-white">{{ Auth::check() ? Auth::user()->name : 'Người dùng' }}</div>
-                    <div class="text-success small d-flex align-items-center gap-1.5" style="font-size: 0.78rem; opacity: 0.95;">
-                        <span class="d-inline-block bg-success rounded-circle" style="width: 6px; height: 6px;"></span>
-                        Online
-                    </div>
-                </div>
-            </div>
+			<!-- PROFILE -->
+			<div class="sidebar-profile dropdown">
+
+				<!-- BUTTON -->
+				<button class="btn w-100 text-start border-0 bg-transparent p-0"
+						type="button"
+						data-bs-toggle="dropdown"
+						aria-expanded="false">
+
+					<div class="d-flex align-items-center">
+
+						<!-- AVATAR -->
+						<div class="avatar-circle text-white rounded-circle d-flex justify-content-center align-items-center fw-bold text-uppercase"
+							 style="
+								width: 42px;
+								height: 42px;
+								font-size: 1.1rem;
+								flex-shrink: 0;
+							 ">
+
+							{{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
+
+						</div>
+
+
+						<!-- INFO -->
+						<div class="ms-3">
+
+							<div class="fw-semibold fs-6 text-white">
+
+								{{ Auth::check() ? Auth::user()->name : 'Người dùng' }}
+
+							</div>
+
+							<div class="text-success small d-flex align-items-center">
+
+								<span class="d-inline-block bg-success rounded-circle me-1"
+									  style="width:6px;height:6px;"></span>
+
+								Online
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</button>
+
+				<!-- DROPDOWN -->
+				<ul class="dropdown-menu dropdown-menu-dark shadow border-0 w-100 mt-3"
+					style="border-radius:16px;">
+
+					<!-- PROFILE -->
+					<li>
+
+						<a class="dropdown-item py-2 rounded-3"
+						   href="{{ route('profile.user') }}">
+
+							<i class="bi bi-person me-2"></i>
+
+							Hồ sơ người dùng
+
+						</a>
+
+					</li>
+
+					<!-- SETTINGS -->
+					<li>
+
+						<a class="dropdown-item py-2 rounded-3"
+						   href="#">
+
+							<i class="bi bi-gear me-2"></i>
+
+							Cài đặt
+
+						</a>
+
+					</li>
+
+					<!-- DIVIDER -->
+					<li>
+						<hr class="dropdown-divider">
+					</li>
+
+					<!-- LOGOUT -->
+					<li>
+
+						<form action="{{ route('logout') }}"
+							  method="POST">
+
+							@csrf
+
+							<button type="submit"
+									class="dropdown-item py-2 rounded-3 text-danger">
+
+								<i class="bi bi-box-arrow-right me-2"></i>
+
+								Đăng xuất
+
+							</button>
+
+						</form>
+
+					</li>
+
+				</ul>
+
+			</div>
+
         </nav>
 
         <!-- Page Content -->
