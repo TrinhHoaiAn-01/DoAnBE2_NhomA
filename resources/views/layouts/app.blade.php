@@ -140,6 +140,7 @@
     @stack('styles')
 </head>
 <body>
+	@if(!($hideNavbar ?? false))
     <!-- Top Navbar -->
     <nav class="top-nav sticky-top">
         <div class="container py-2">
@@ -238,6 +239,7 @@
             </div>
         </div>
     </nav>
+	@endif
 
     <!-- Main Content -->
     <main class="container py-4">
