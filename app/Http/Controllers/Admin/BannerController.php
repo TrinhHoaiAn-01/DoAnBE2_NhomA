@@ -12,7 +12,7 @@ class BannerController extends Controller
     public function index()
     {
         $banners = Banner::orderBy('sort_order', 'asc')->get();
-        return view('admin.banners.index', compact('banners'));
+        return view('admin.banners', compact('banners'));
     }
 
     public function store(Request $request)

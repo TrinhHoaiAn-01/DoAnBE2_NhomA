@@ -27,7 +27,7 @@ class PromotionController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        return view('admin.promotions.index', [
+        return view('admin.promotions', [
             'promotions' => $promotions,
             'editing' => $request->filled('promotion')
                 ? Promotion::query()->find($request->integer('promotion'))

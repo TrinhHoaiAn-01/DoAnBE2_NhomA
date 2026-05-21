@@ -35,7 +35,7 @@ class UserController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('admin.users.index', [
+        return view('admin.users', [
             'users' => $users,
             'search' => $search,
             'roleId' => $roleId,

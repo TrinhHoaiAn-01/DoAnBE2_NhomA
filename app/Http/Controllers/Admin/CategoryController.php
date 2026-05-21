@@ -32,7 +32,7 @@ class CategoryController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.categories.index', [
+        return view('admin.categories', [
             'categories' => $categories,
             'editing' => $request->filled('category')
                 ? Category::query()->find($request->integer('category'))
