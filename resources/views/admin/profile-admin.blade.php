@@ -246,6 +246,17 @@
         .no-spinner{
             -moz-appearance:textfield;
         }
+		
+		.fake-disabled{
+
+			background:rgba(255,255,255,0.05) !important;
+
+			color:rgba(255,255,255,0.6) !important;
+
+			cursor: default;
+
+			opacity:0.8;
+		}
 
     </style>
 
@@ -483,10 +494,11 @@
                                     Email
                                 </label>
 
-                                <input type="email"
-                                       value="{{ Auth::user()->email }}"
-                                       class="form-control"
-                                       disabled>
+							<input type="email"
+								   name="email"
+								   value="{{ Auth::user()->email }}"
+								   class="form-control fake-disabled"
+								   readonly>
 
                             </div>
 
