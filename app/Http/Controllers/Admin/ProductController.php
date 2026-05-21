@@ -18,7 +18,7 @@ class ProductController extends Controller
         $categoryId = $request->integer('category_id');
         $stockStatus = $request->string('stock_status')->toString();
 
-        return view('admin.products.index', [
+        return view('admin.products', [
             'products' => Product::query()
                 ->with('category')
                 ->when($search !== '', function ($query) use ($search): void {

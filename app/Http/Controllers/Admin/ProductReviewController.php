@@ -22,7 +22,7 @@ class ProductReviewController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        return view('admin.reviews.index', [
+        return view('admin.reviews', [
             'reviews' => $reviews,
             'status' => $status,
             'pendingCount' => ProductReview::query()->where('is_approved', false)->count(),
