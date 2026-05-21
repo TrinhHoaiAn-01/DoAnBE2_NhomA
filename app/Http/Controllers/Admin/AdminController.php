@@ -37,8 +37,17 @@ class AdminController extends Controller
     {
         $usersCount = User::count();
         $productsCount = Product::count();
+        $ordersCount = Order::count();
         $lowStockCount = Product::where('stock', '<=', 10)->count();
         $pendingOrdersCount = Order::where('status', 'pending')->count();
+        $completedOrdersCount = Order::where('status', 'completed')->count();
+        $todayRevenue = (clone $this->payableOrderQuery())
+            ->whereDate('created_at', today())
+            ->sum('total');
+        $monthRevenue = (clone $this->payableOrderQuery())
+            ->whereYear('created_at', now()->year)
+            ->whereMonth('created_at', now()->month)
+            ->sum('total');
         
         $lowStockProducts = Product::where('stock', '<=', 10)->orderBy('stock', 'asc')->take(5)->get();
         $recentLogs = SystemLog::latest()->take(5)->get();
@@ -57,7 +66,8 @@ class AdminController extends Controller
         }
 
         return view('admin.dashboard', compact(
-            'usersCount', 'productsCount', 'lowStockCount', 'pendingOrdersCount', 
+            'usersCount', 'productsCount', 'ordersCount', 'lowStockCount', 'pendingOrdersCount',
+            'completedOrdersCount', 'todayRevenue', 'monthRevenue',
             'lowStockProducts', 'recentLogs', 'dates', 'revenues'
         ));
     }
