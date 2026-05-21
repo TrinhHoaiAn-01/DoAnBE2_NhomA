@@ -145,6 +145,11 @@ class AdminController extends Controller
         $ordersCount = (clone $ordersQuery)->count();
         $totalRevenue = (clone $ordersQuery)->sum('total');
         $averageOrderValue = $ordersCount > 0 ? $totalRevenue / $ordersCount : 0;
+        $paidOrdersCount = (clone $ordersQuery)->where('payment_status', 'paid')->count();
+        $pendingPaymentCount = (clone $ordersQuery)->where('payment_status', 'pending')->count();
+        $completedRevenue = (clone $ordersQuery)
+            ->where('status', 'completed')
+            ->sum('total');
         $dailyRevenueRows = (clone $ordersQuery)
             ->selectRaw('DATE(created_at) as report_date, SUM(total) as revenue')
             ->groupBy('report_date')
@@ -189,6 +194,9 @@ class AdminController extends Controller
             'ordersCount',
             'totalRevenue',
             'averageOrderValue',
+            'paidOrdersCount',
+            'pendingPaymentCount',
+            'completedRevenue',
             'dailyLabels',
             'dailyRevenue',
             'bestSellingProducts',
