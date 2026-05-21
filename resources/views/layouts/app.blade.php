@@ -157,9 +157,6 @@
                     <a class="nav-link-custom {{ request()->routeIs('cart.*') ? 'active' : '' }}" href="{{ route('cart.index') }}">
                         <i class="bi bi-cart3 me-1"></i>Giỏ hàng
                     </a>
-                    <a class="nav-link-custom {{ request()->routeIs('admin.*') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-                        <i class="bi bi-gear me-1"></i>Quản trị
-                    </a>
                 </div>
                 <div class="dropdown">
     @auth
