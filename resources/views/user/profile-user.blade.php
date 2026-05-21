@@ -482,11 +482,13 @@
                                     Email
                                 </label>
 
-                                <input type="email"
-                                       name="email"
-                                       value="{{ Auth::user()->email }}"
-                                       class="form-control"
-                                       placeholder="Nhập email">
+								<input type="email"
+									   name="email"
+									   value="{{ Auth::user()->email }}"
+									   class="form-control"
+									   readonly
+									   disabled>
+
 
                             </div>
 
