@@ -19,31 +19,52 @@
     @endif
 
     <div class="surface p-4">
+        <!-- Bộ lọc và tìm kiếm nhanh -->
+        <div class="row g-3 mb-4 align-items-center">
+            <div class="col-12 col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                    <input type="text" id="faqSearchInput" class="form-control border-start-0" placeholder="Tìm kiếm nhanh câu hỏi, câu trả lời...">
+                </div>
+            </div>
+            <div class="col-12 col-md-7 d-flex justify-content-md-end align-items-center gap-2 flex-wrap">
+                <span class="small text-secondary fw-semibold"><i class="bi bi-funnel"></i> Lọc danh mục:</span>
+                <button class="btn btn-sm btn-primary faq-filter-btn shadow-sm" data-filter="all">Tất cả</button>
+                @foreach($faqs->pluck('category')->unique() as $cat)
+                    @if($cat)
+                        <button class="btn btn-sm btn-outline-secondary faq-filter-btn" data-filter="{{ Str::slug($cat) }}">{{ $cat }}</button>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+
         <div class="table-responsive">
             <table class="table align-middle mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th width="10%">Ưu tiên</th>
+                        <th width="10%" class="text-center">Ưu tiên</th>
                         <th width="15%">Danh mục</th>
                         <th width="45%">Câu hỏi & Trả lời</th>
                         <th width="15%" class="text-center">Trạng thái</th>
                         <th width="15%"></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="faqTableBody">
                     @forelse ($faqs as $faq)
-                        <tr>
-                            <td class="text-center fw-bold">{{ $faq->sort_order }}</td>
-                            <td><span class="badge bg-info text-dark">{{ $faq->category }}</span></td>
+                        <tr class="faq-row" data-category="{{ Str::slug($faq->category) }}" data-search="{{ Str::lower($faq->question) }} {{ Str::lower($faq->answer) }} {{ Str::lower($faq->category) }}">
+                            <td class="text-center fw-bold text-secondary">{{ $faq->sort_order }}</td>
+                            <td><span class="badge bg-primary bg-opacity-10 text-primary px-2.5 py-1.5 fw-semibold" style="font-size: 0.78rem;">{{ $faq->category }}</span></td>
                             <td>
-                                <div class="fw-bold mb-1">{{ $faq->question }}</div>
-                                <div class="text-muted small text-truncate" style="max-width: 400px;">{{ $faq->answer }}</div>
+                                <div class="fw-bold text-dark mb-1">{{ $faq->question }}</div>
+                                <div class="text-muted small" style="max-height: 48px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                    {{ $faq->answer }}
+                                </div>
                             </td>
                             <td class="text-center">
                                 <form action="{{ route('admin.faqs.toggle', $faq->id) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="btn btn-sm {{ $faq->is_active ? 'btn-success' : 'btn-secondary' }}">
-                                        {!! $faq->is_active ? '<i class="bi bi-eye"></i> Đang hiện' : '<i class="bi bi-eye-slash"></i> Đã ẩn' !!}
+                                    <button type="submit" class="btn btn-sm {{ $faq->is_active ? 'btn-success bg-gradient' : 'btn-secondary' }} px-2.5">
+                                        {!! $faq->is_active ? '<i class="bi bi-eye-fill"></i> Đang hiện' : '<i class="bi bi-eye-slash-fill"></i> Đã ẩn' !!}
                                     </button>
                                 </form>
                             </td>
@@ -51,19 +72,93 @@
                                 <form action="{{ route('admin.faqs.destroy', $faq->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa câu hỏi này?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Xóa</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash-fill"></i> Xóa</button>
                                 </form>
                             </td>
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">Chưa có dữ liệu FAQ.</td>
+                        <tr id="faqEmptyRow">
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-question-circle display-4 d-block mb-3 text-secondary" style="opacity: 0.4;"></i>
+                                Chưa có dữ liệu câu hỏi thường gặp FAQ.
+                            </td>
                         </tr>
                     @endforelse
+                    
+                    <!-- Dòng hiển thị khi không có kết quả tìm kiếm -->
+                    <tr id="faqNoResultsRow" style="display: none;">
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <i class="bi bi-search display-4 d-block mb-3 text-secondary" style="opacity: 0.4;"></i>
+                            Không tìm thấy câu hỏi FAQ nào phù hợp với bộ lọc.
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('faqSearchInput');
+            const filterBtns = document.querySelectorAll('.faq-filter-btn');
+            const rows = document.querySelectorAll('.faq-row');
+            const noResultsRow = document.getElementById('faqNoResultsRow');
+            const emptyRow = document.getElementById('faqEmptyRow');
+            
+            let currentFilter = 'all';
+            let searchQuery = '';
+
+            function filterFaqs() {
+                let visibleCount = 0;
+
+                rows.forEach(row => {
+                    const cat = row.getAttribute('data-category');
+                    const searchText = row.getAttribute('data-search');
+                    
+                    const matchesCategory = (currentFilter === 'all' || cat === currentFilter);
+                    const matchesSearch = searchText.includes(searchQuery);
+                    
+                    if (matchesCategory && matchesSearch) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Hiển thị dòng báo không tìm thấy kết quả nếu không có dòng nào match
+                if (rows.length > 0) {
+                    if (visibleCount === 0) {
+                        noResultsRow.style.display = '';
+                    } else {
+                        noResultsRow.style.display = 'none';
+                    }
+                }
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    searchQuery = this.value.toLowerCase().trim();
+                    filterFaqs();
+                });
+            }
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    filterBtns.forEach(b => {
+                        b.classList.remove('btn-primary', 'shadow-sm');
+                        b.classList.add('btn-outline-secondary');
+                    });
+                    this.classList.remove('btn-outline-secondary');
+                    this.classList.add('btn-primary', 'shadow-sm');
+                    
+                    currentFilter = this.getAttribute('data-filter');
+                    filterFaqs();
+                });
+            });
+        });
+    </script>
 
     <!-- Modal Thêm FAQ -->
     <div class="modal fade" id="addFaqModal" tabindex="-1">
