@@ -1,4 +1,7 @@
-@extends('layouts.app', ['title' => 'Quên mật khẩu NeoMart'])
+@extends('layouts.app', [
+    'title' => 'Quên mật khẩu',
+    'hideNavbar' => true
+])
 
 @section('content')
 
