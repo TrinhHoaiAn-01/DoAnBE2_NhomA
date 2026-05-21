@@ -1,28 +1,28 @@
-﻿@extends('layouts.app', ['title' => 'NeoMart - Dat hang'])
+@extends('layouts.app', ['title' => 'NeoMart - Đặt hàng'])
 
 @section('content')
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
         <div>
-            <p class="text-uppercase text-primary small fw-semibold mb-2">Thanh toan</p>
-            <h1 class="h2 fw-bold mb-1">Thong tin dat hang</h1>
-            <p class="text-secondary mb-0">Nhap dia chi giao hang va chon hinh thuc thanh toan.</p>
+            <p class="text-uppercase text-primary small fw-semibold mb-2">Thanh toán</p>
+            <h1 class="h2 fw-bold mb-1">Thông tin đặt hàng</h1>
+            <p class="text-secondary mb-0">Nhập địa chỉ, chọn khung giờ giao hàng và hình thức thanh toán.</p>
         </div>
-        <a class="btn btn-outline-secondary" href="{{ route('cart.index') }}">Quay lai gio hang</a>
+        <a class="btn btn-outline-secondary" href="{{ route('cart.index') }}">Quay lại giỏ hàng</a>
     </div>
 
     <form class="row g-4" method="post" action="{{ route('checkout.store') }}">
         @csrf
         <div class="col-lg-7">
             <div class="surface rounded-3 p-4">
-                <h2 class="h5 fw-bold mb-3">Nguoi nhan</h2>
+                <h2 class="h5 fw-bold mb-3">Người nhận</h2>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label" for="customer_name">Ho ten</label>
+                        <label class="form-label" for="customer_name">Họ tên</label>
                         <input class="form-control @error('customer_name') is-invalid @enderror" id="customer_name" name="customer_name" value="{{ old('customer_name', $user?->name) }}" required>
                         @error('customer_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label" for="customer_phone">So dien thoai</label>
+                        <label class="form-label" for="customer_phone">Số điện thoại</label>
                         <input class="form-control @error('customer_phone') is-invalid @enderror" id="customer_phone" name="customer_phone" value="{{ old('customer_phone', $user?->phone) }}" required>
                         @error('customer_phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
@@ -32,12 +32,12 @@
                         @error('customer_email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-12">
-                        <label class="form-label" for="shipping_address">Dia chi giao hang</label>
+                        <label class="form-label" for="shipping_address">Địa chỉ giao hàng</label>
                         <input class="form-control @error('shipping_address') is-invalid @enderror" id="shipping_address" name="shipping_address" value="{{ old('shipping_address') }}" required>
                         @error('shipping_address')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label" for="shipping_district">Khu vá»±c giao hÃ ng</label>
+                        <label class="form-label" for="shipping_district">Khu vực giao hàng</label>
                         <select class="form-select @error('shipping_district') is-invalid @enderror" id="shipping_district" name="shipping_district" required>
                             @foreach ($shippingDistricts as $value => $district)
                                 <option value="{{ $value }}" data-fee="{{ $district['base_fee'] }}" @selected(old('shipping_district', 'noi_thanh') === $value)>
@@ -48,7 +48,7 @@
                         @error('shipping_district')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label" for="shipping_service">Dá»‹ch vá»¥ váº­n chuyá»ƒn</label>
+                        <label class="form-label" for="shipping_service">Dịch vụ vận chuyển</label>
                         <select class="form-select @error('shipping_service') is-invalid @enderror" id="shipping_service" name="shipping_service" required>
                             @foreach ($shippingServices as $value => $service)
                                 <option value="{{ $value }}" data-fee="{{ $service['extra_fee'] }}" @selected(old('shipping_service', 'standard') === $value)>
@@ -58,27 +58,59 @@
                         </select>
                         @error('shipping_service')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
+                </div>
+
+                <h2 class="h5 fw-bold mt-4 mb-3">Lịch giao hàng</h2>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="delivery_date">Ngày giao hàng</label>
+                        <input
+                            class="form-control @error('delivery_date') is-invalid @enderror"
+                            id="delivery_date"
+                            name="delivery_date"
+                            type="date"
+                            min="{{ now()->toDateString() }}"
+                            max="{{ now()->addDays(14)->toDateString() }}"
+                            value="{{ old('delivery_date', $defaultDeliveryDate) }}"
+                            required
+                        >
+                        @error('delivery_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="delivery_time_slot">Khung giờ nhận hàng</label>
+                        <select class="form-select @error('delivery_time_slot') is-invalid @enderror" id="delivery_time_slot" name="delivery_time_slot" required>
+                            @foreach ($deliveryTimeSlots as $value => $slot)
+                                <option value="{{ $value }}" @selected(old('delivery_time_slot', $defaultDeliveryTimeSlot) === $value)>
+                                    {{ $slot['label'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('delivery_time_slot')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
                     <div class="col-12">
-                        <label class="form-label" for="note">Ghi chu</label>
+                        <div class="soft-surface rounded-3 p-3 small text-secondary" id="deliverySlotHelp"></div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="note">Ghi chú</label>
                         <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note" rows="3">{{ old('note') }}</textarea>
                         @error('note')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
-                <h2 class="h5 fw-bold mt-4 mb-3">Thanh toan</h2>
+                <h2 class="h5 fw-bold mt-4 mb-3">Thanh toán</h2>
                 @php
                     $paymentMethods = [
                         'cod' => [
-                            'label' => 'Thanh toan khi nhan hang',
-                            'description' => 'Khach kiem tra don va thanh toan truc tiep cho nhan vien giao hang.',
+                            'label' => 'Thanh toán khi nhận hàng',
+                            'description' => 'Khách kiểm tra đơn và thanh toán trực tiếp cho nhân viên giao hàng.',
                         ],
                         'bank_transfer' => [
-                            'label' => 'Chuyen khoan ngan hang',
-                            'description' => 'NeoMart giu don trong 24 gio de khach chuyen khoan theo ma don.',
+                            'label' => 'Chuyển khoản ngân hàng',
+                            'description' => 'NeoMart giữ đơn trong 24 giờ để khách chuyển khoản theo mã đơn.',
                         ],
                         'wallet' => [
-                            'label' => 'Vi dien tu demo',
-                            'description' => 'Mo phong thanh toan qua vi dien tu trong moi truong bai tap.',
+                            'label' => 'Ví điện tử demo',
+                            'description' => 'Mô phỏng thanh toán qua ví điện tử trong môi trường bài tập.',
                         ],
                     ];
                 @endphp
@@ -98,7 +130,7 @@
 
         <div class="col-lg-5">
             <div class="surface rounded-3 p-4">
-                <h2 class="h5 fw-bold mb-3">Don hang</h2>
+                <h2 class="h5 fw-bold mb-3">Đơn hàng</h2>
                 <div class="vstack gap-3 mb-4">
                     @foreach ($items as $item)
                         <div class="d-flex justify-content-between gap-3">
@@ -106,34 +138,34 @@
                                 <div class="fw-semibold">{{ $item['product']->name }}</div>
                                 <div class="small text-secondary">SL: {{ $item['quantity'] }}</div>
                             </div>
-                            <div class="fw-semibold">{{ number_format($item['subtotal'], 0, ',', '.') }}d</div>
+                            <div class="fw-semibold">{{ number_format($item['subtotal'], 0, ',', '.') }}đ</div>
                         </div>
                     @endforeach
                 </div>
                 <div class="border-top pt-3">
                     <div class="mb-3">
-                        <label class="form-label" for="promotion_code">Ma giam gia</label>
-                        <input class="form-control @error('promotion_code') is-invalid @enderror" id="promotion_code" name="promotion_code" value="{{ old('promotion_code') }}" placeholder="Nhap ma neu co">
+                        <label class="form-label" for="promotion_code">Mã giảm giá</label>
+                        <input class="form-control @error('promotion_code') is-invalid @enderror" id="promotion_code" name="promotion_code" value="{{ old('promotion_code') }}" placeholder="Nhập mã nếu có">
                         @error('promotion_code')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Tam tinh</span>
-                        <strong>{{ number_format($subtotal, 0, ',', '.') }}d</strong>
+                        <span>Tạm tính</span>
+                        <strong>{{ number_format($subtotal, 0, ',', '.') }}đ</strong>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Phi giao hang</span>
-                        <strong id="shippingFeeText">{{ number_format($shippingFee, 0, ',', '.') }}d</strong>
+                        <span>Phí giao hàng</span>
+                        <strong id="shippingFeeText">{{ number_format($shippingFee, 0, ',', '.') }}đ</strong>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Giam gia</span>
-                        <strong>-{{ number_format($discountTotal, 0, ',', '.') }}d</strong>
+                        <span>Giảm giá</span>
+                        <strong>-{{ number_format($discountTotal, 0, ',', '.') }}đ</strong>
                     </div>
                     <div class="d-flex justify-content-between fs-5">
-                        <span>Tong cong</span>
-                        <strong id="orderTotalText">{{ number_format($subtotal + $shippingFee - $discountTotal, 0, ',', '.') }}d</strong>
+                        <span>Tổng cộng</span>
+                        <strong id="orderTotalText">{{ number_format($subtotal + $shippingFee - $discountTotal, 0, ',', '.') }}đ</strong>
                     </div>
                 </div>
-                <button class="btn btn-primary w-100 mt-4" type="submit">Xac nhan dat hang</button>
+                <button class="btn btn-primary w-100 mt-4" type="submit">Xác nhận đặt hàng</button>
             </div>
         </div>
     </form>
@@ -146,21 +178,27 @@
         const orderTotalText = document.getElementById('orderTotalText');
         const discountTotal = {{ (float) $discountTotal }};
         const money = new Intl.NumberFormat('vi-VN');
+        const slotHelp = document.getElementById('deliverySlotHelp');
+        const slotSelect = document.getElementById('delivery_time_slot');
+        const slotDescriptions = @json(collect($deliveryTimeSlots)->mapWithKeys(fn ($slot, $value) => [$value => $slot['description']]));
 
         function updateShippingFee() {
             const districtFee = Number(districtSelect.selectedOptions[0].dataset.fee || 0);
             const serviceFee = Number(serviceSelect.selectedOptions[0].dataset.fee || 0);
             const fee = subtotal >= 500000 && serviceSelect.value === 'standard' ? 0 : districtFee + serviceFee;
 
-            shippingFeeText.textContent = money.format(fee) + 'd';
-            orderTotalText.textContent = money.format(Math.max(0, subtotal + fee - discountTotal)) + 'd';
+            shippingFeeText.textContent = money.format(fee) + 'đ';
+            orderTotalText.textContent = money.format(Math.max(0, subtotal + fee - discountTotal)) + 'đ';
+        }
+
+        function updateSlotHelp() {
+            slotHelp.textContent = slotDescriptions[slotSelect.value] || 'Chọn khung giờ phù hợp để nhân viên giao hàng liên hệ trước khi đến.';
         }
 
         districtSelect.addEventListener('change', updateShippingFee);
         serviceSelect.addEventListener('change', updateShippingFee);
+        slotSelect.addEventListener('change', updateSlotHelp);
         updateShippingFee();
+        updateSlotHelp();
     </script>
 @endsection
-
-
-
