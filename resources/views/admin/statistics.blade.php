@@ -5,6 +5,11 @@
 @section('content')
     @php
         $money = fn ($value) => number_format((float) $value, 0, ',', '.') . 'đ';
+        $paymentLabels = [
+            'cod' => 'COD',
+            'bank_transfer' => 'Chuyển khoản',
+            'e_wallet' => 'Ví điện tử',
+        ];
     @endphp
 
     <style>
@@ -99,6 +104,40 @@
                         @empty
                             <tr>
                                 <td class="text-center py-4 text-muted" colspan="4">Chưa có dữ liệu sản phẩm trong khoảng này.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="report-panel">
+            <div class="p-3 border-bottom">
+                <h2 class="h5 fw-bold mb-0">Phương thức thanh toán</h2>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Phương thức</th>
+                            <th class="text-end">Số đơn</th>
+                            <th class="text-end">Doanh thu</th>
+                            <th class="text-end">Tỷ trọng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($paymentStats as $payment)
+                            <tr>
+                                <td class="fw-semibold">{{ $paymentLabels[$payment->payment_method] ?? ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
+                                <td class="text-end">{{ number_format($payment->total_orders) }}</td>
+                                <td class="text-end fw-semibold">{{ $money($payment->total_revenue) }}</td>
+                                <td class="text-end">
+                                    {{ $ordersCount > 0 ? number_format(($payment->total_orders / $ordersCount) * 100, 1) : 0 }}%
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td class="text-center py-4 text-muted" colspan="4">Chưa có dữ liệu thanh toán.</td>
                             </tr>
                         @endforelse
                     </tbody>

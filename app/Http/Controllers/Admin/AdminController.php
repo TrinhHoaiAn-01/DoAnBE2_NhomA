@@ -154,6 +154,11 @@ class AdminController extends Controller
             ->orderByDesc('sold_quantity')
             ->take(10)
             ->get();
+        $paymentStats = (clone $ordersQuery)
+            ->select('payment_method', DB::raw('COUNT(*) as total_orders'), DB::raw('SUM(total) as total_revenue'))
+            ->groupBy('payment_method')
+            ->orderByDesc('total_orders')
+            ->get();
 
         return view('admin.statistics', compact(
             'fromDate',
@@ -161,7 +166,8 @@ class AdminController extends Controller
             'ordersCount',
             'totalRevenue',
             'averageOrderValue',
-            'bestSellingProducts'
+            'bestSellingProducts',
+            'paymentStats'
         ));
     }
 
