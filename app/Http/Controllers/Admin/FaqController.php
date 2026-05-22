@@ -8,12 +8,14 @@ use Illuminate\Http\Request;
 
 class FaqController extends Controller
 {
+    // Hiển thị danh sách câu hỏi thường gặp (FAQ)
     public function index()
     {
         $faqs = Faq::orderBy('sort_order', 'asc')->orderBy('created_at', 'desc')->get();
         return view('admin.faqs', compact('faqs'));
     }
 
+    // Thêm mới câu hỏi thường gặp
     public function store(Request $request)
     {
         $request->validate([
@@ -33,6 +35,7 @@ class FaqController extends Controller
         return redirect()->back()->with('success', 'Đã thêm câu hỏi FAQ mới!');
     }
 
+    // Bật/tắt trạng thái ẩn/hiển thị của câu hỏi
     public function toggle($id)
     {
         $faq = Faq::findOrFail($id);
@@ -40,6 +43,7 @@ class FaqController extends Controller
         return redirect()->back()->with('success', 'Đã thay đổi trạng thái hiển thị của FAQ!');
     }
 
+    // Xóa câu hỏi thường gặp
     public function destroy($id)
     {
         Faq::findOrFail($id)->delete();

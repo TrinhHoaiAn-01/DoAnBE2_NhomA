@@ -11,6 +11,7 @@ use Illuminate\View\View;
 
 class PromotionController extends Controller
 {
+    // Trang danh sách mã giảm giá
     public function index(Request $request): View
     {
         $search = trim((string) $request->string('search'));
@@ -36,6 +37,7 @@ class PromotionController extends Controller
         ]);
     }
 
+    // Thêm mới mã giảm giá
     public function store(Request $request): RedirectResponse
     {
         Promotion::query()->create($this->validatedData($request));
@@ -43,6 +45,7 @@ class PromotionController extends Controller
         return to_route('admin.promotions.index')->with('status', 'Đã tạo mã giảm giá mới.');
     }
 
+    // Cập nhật mã giảm giá
     public function update(Request $request, Promotion $promotion): RedirectResponse
     {
         $promotion->update($this->validatedData($request, $promotion));
@@ -50,6 +53,7 @@ class PromotionController extends Controller
         return to_route('admin.promotions.index')->with('status', 'Đã cập nhật mã giảm giá.');
     }
 
+    // Xóa mã giảm giá
     public function destroy(Promotion $promotion): RedirectResponse
     {
         $promotion->delete();
@@ -57,6 +61,7 @@ class PromotionController extends Controller
         return to_route('admin.promotions.index')->with('status', 'Đã xóa mã giảm giá.');
     }
 
+    // Xác thực dữ liệu mã giảm giá
     private function validatedData(Request $request, ?Promotion $promotion = null): array
     {
         $data = $request->validate([

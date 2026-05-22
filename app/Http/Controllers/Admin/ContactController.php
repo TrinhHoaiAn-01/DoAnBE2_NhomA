@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
+    // Hiển thị danh sách liên hệ từ khách hàng
     public function index(Request $request)
     {
         $query = Contact::query();
@@ -22,12 +23,14 @@ class ContactController extends Controller
         return view('admin.contacts.index', compact('contacts', 'pendingCount', 'resolvedCount'));
     }
 
+    // Xem chi tiết nội dung liên hệ
     public function show($id)
     {
         $contact = Contact::findOrFail($id);
         return view('admin.contacts.show', compact('contact'));
     }
 
+    // Gửi phản hồi liên hệ và hoàn tất
     public function reply(Request $request, $id)
     {
         $request->validate(['reply_message' => 'required|string']);

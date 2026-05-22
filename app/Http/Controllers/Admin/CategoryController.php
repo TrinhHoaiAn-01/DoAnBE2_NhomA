@@ -11,6 +11,7 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
+    // Trang danh sách danh mục
     public function index(Request $request): View
     {
         $search = trim((string) $request->string('search'));
@@ -42,6 +43,7 @@ class CategoryController extends Controller
         ]);
     }
 
+    // Thêm mới danh mục
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
@@ -64,6 +66,7 @@ class CategoryController extends Controller
         return to_route('admin.categories.index')->with('status', 'Đã tạo danh mục mới.');
     }
 
+    // Cập nhật danh mục
     public function update(Request $request, Category $category): RedirectResponse
     {
         $data = $request->validate([
@@ -86,6 +89,7 @@ class CategoryController extends Controller
         return to_route('admin.categories.index')->with('status', 'Đã cập nhật danh mục.');
     }
 
+    // Xóa danh mục
     public function destroy(Category $category): RedirectResponse
     {
         if ($category->products()->exists()) {

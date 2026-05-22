@@ -12,6 +12,7 @@ use Illuminate\View\View;
 
 class OrderController extends Controller
 {
+    // Trang danh sách đơn hàng
     public function index(Request $request): View
     {
         $search = trim((string) $request->string('search'));
@@ -45,6 +46,7 @@ class OrderController extends Controller
         ]);
     }
 
+    // Trang chi tiết đơn hàng
     public function show(Order $order): View
     {
         return view('admin.orders.show', [
@@ -56,6 +58,7 @@ class OrderController extends Controller
         ]);
     }
 
+    // Cập nhật trạng thái đơn hàng
     public function update(Request $request, Order $order): RedirectResponse
     {
         $data = $request->validate([
@@ -67,6 +70,7 @@ class OrderController extends Controller
         return to_route('admin.orders.show', $order)->with('status', 'Đã cập nhật trạng thái đơn hàng.');
     }
 
+    // Các trạng thái đơn hàng
     private function statusOptions(): array
     {
         return [

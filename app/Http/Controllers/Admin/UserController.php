@@ -10,6 +10,7 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
+    // Trang danh sách thành viên
     public function index(Request $request): View
     {
         $search = trim((string) $request->string('search'));
@@ -48,6 +49,7 @@ class UserController extends Controller
         ]);
     }
 
+    // Cập nhật thành viên
     public function update(Request $request, User $user): RedirectResponse
     {
         $data = $request->validate([
@@ -69,6 +71,7 @@ class UserController extends Controller
         return to_route('admin.users.index')->with('status', 'Đã cập nhật người dùng.');
     }
 
+    // Các vai trò thành viên
     private function roleOptions(): array
     {
         return [
@@ -80,6 +83,7 @@ class UserController extends Controller
         ];
     }
 
+    // Các trạng thái tài khoản
     private function statusOptions(): array
     {
         return [

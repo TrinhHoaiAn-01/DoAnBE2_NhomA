@@ -10,6 +10,7 @@ use Illuminate\View\View;
 
 class ProductReviewController extends Controller
 {
+    // Hiển thị danh sách đánh giá sản phẩm
     public function index(Request $request): View
     {
         $status = $request->string('status')->toString();
@@ -30,6 +31,7 @@ class ProductReviewController extends Controller
         ]);
     }
 
+    // Duyệt hoặc từ chối đánh giá sản phẩm
     public function update(Request $request, ProductReview $review): RedirectResponse
     {
         $data = $request->validate([
@@ -41,6 +43,7 @@ class ProductReviewController extends Controller
         return to_route('admin.reviews.index')->with('status', 'Đã cập nhật trạng thái đánh giá.');
     }
 
+    // Xóa đánh giá sản phẩm
     public function destroy(ProductReview $review): RedirectResponse
     {
         $review->delete();

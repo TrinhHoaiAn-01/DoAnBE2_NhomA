@@ -12,6 +12,7 @@ use Illuminate\View\View;
 
 class ProductController extends Controller
 {
+    // Trang danh sách sản phẩm
     public function index(Request $request): View
     {
         $search = trim((string) $request->string('search'));
@@ -54,6 +55,7 @@ class ProductController extends Controller
         ]);
     }
 
+    // Thêm mới sản phẩm
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validateProduct($request);
@@ -66,6 +68,7 @@ class ProductController extends Controller
         return to_route('admin.products.index')->with('status', 'Đã thêm sản phẩm mới.');
     }
 
+    // Cập nhật sản phẩm
     public function update(Request $request, Product $product): RedirectResponse
     {
         $data = $this->validateProduct($request, $product);
@@ -78,6 +81,7 @@ class ProductController extends Controller
         return to_route('admin.products.index')->with('status', 'Đã cập nhật sản phẩm.');
     }
 
+    // Xóa sản phẩm
     public function destroy(Product $product): RedirectResponse
     {
         $product->delete();
@@ -85,6 +89,7 @@ class ProductController extends Controller
         return to_route('admin.products.index')->with('status', 'Đã xóa sản phẩm.');
     }
 
+    // Xác thực dữ liệu sản phẩm
     private function validateProduct(Request $request, ?Product $product = null): array
     {
         return $request->validate([

@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Storage;
 
 class BannerController extends Controller
 {
+    // Hiển thị danh sách banner quảng cáo
     public function index()
     {
         $banners = Banner::orderBy('sort_order', 'asc')->get();
         return view('admin.banners', compact('banners'));
     }
 
+    // Thêm mới banner quảng cáo và upload ảnh
     public function store(Request $request)
     {
         $request->validate([
@@ -40,6 +42,7 @@ class BannerController extends Controller
         return redirect()->back()->with('success', 'Đã tải lên banner mới thành công!');
     }
 
+    // Bật/tắt ẩn hiển banner quảng cáo
     public function toggle($id)
     {
         $banner = Banner::findOrFail($id);
@@ -47,6 +50,7 @@ class BannerController extends Controller
         return redirect()->back()->with('success', 'Đã đổi trạng thái ẩn/hiện của banner!');
     }
 
+    // Xóa banner quảng cáo và ảnh đi kèm
     public function destroy($id)
     {
         $banner = Banner::findOrFail($id);
