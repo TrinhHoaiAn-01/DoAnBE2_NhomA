@@ -15,8 +15,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController as ShopProductController;
 use App\Http\Controllers\ProfileUserController;
-
+use App\Http\Controllers\SupportUserController;
 use App\Http\Middleware\CheckRole;
+use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -116,7 +117,7 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
 
-Route::post('/logout', [AuthController::class, 'logout'])
+    Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
 
 });
@@ -130,28 +131,33 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::middleware('auth')->group(function () {
 
     // profile
-    Route::get('/profile',
+    Route::get(
+        '/profile',
         [ProfileUserController::class, 'index']
     )->name('profile');
 
-    Route::post('/profile/update',
+    Route::post(
+        '/profile/update',
         [ProfileUserController::class, 'update']
     )->name('profile.update');
 
     // change password page
-    Route::get('/changepassword',
+    Route::get(
+        '/changepassword',
         [ProfileUserController::class, 'showChangePassword']
     )->name('change.password');
 
     // update password
-    Route::post('/changepassword',
+    Route::post(
+        '/changepassword',
         [ProfileUserController::class, 'changePassword']
     )->name('password.update');
-	
-	// delete account
-	Route::delete('/deleteaccount',
-    [ProfileUserController::class, 'deleteAccount']
-)->name('profile.delete');
+
+    // delete account
+    Route::delete(
+        '/deleteaccount',
+        [ProfileUserController::class, 'deleteAccount']
+    )->name('profile.delete');
 
 });
 
@@ -181,7 +187,20 @@ Route::get('/settings', function () {
 
 })->name('settings');
 
+/*
+|--------------------------------------------------------------------------
+| SUPPORT USER
+|--------------------------------------------------------------------------
+*/
+Route::get(
+    '/support-user',
+    [SupportUserController::class, 'index']
+)->name('support.user');
 
+Route::post(
+    '/support-send',
+    [SupportUserController::class, 'send']
+)->name('support.send');
 
 /*
 |--------------------------------------------------------------------------
@@ -275,15 +294,15 @@ Route::prefix('admin')
             Route::get('/receipts/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createReceipt'])->name('receipts.create');
             Route::post('/receipts', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeReceipt'])->name('receipts.store');
             Route::get('/receipts/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showReceipt'])->name('receipts.show');
-            
+
             Route::get('/inventory', [\App\Http\Controllers\Admin\WarehouseController::class, 'inventory'])->name('inventory');
             Route::get('/inventory/{id}/history', [\App\Http\Controllers\Admin\WarehouseController::class, 'stockHistory'])->name('inventory.history');
-            
+
             Route::get('/issues', [\App\Http\Controllers\Admin\WarehouseController::class, 'issues'])->name('issues');
             Route::get('/issues/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createIssue'])->name('issues.create');
             Route::post('/issues', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeIssue'])->name('issues.store');
             Route::get('/issues/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showIssue'])->name('issues.show');
-            
+
             Route::get('/checks', [\App\Http\Controllers\Admin\WarehouseController::class, 'checks'])->name('checks');
             Route::get('/checks/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createCheck'])->name('checks.create');
             Route::post('/checks', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeCheck'])->name('checks.store');
@@ -313,7 +332,7 @@ Route::prefix('admin')
             Route::delete('/{id}', [\App\Http\Controllers\Admin\BannerController::class, 'destroy'])->name('destroy');
         });
     });
-	
+
 /*
 |--------------------------------------------------------------------------
 | BẢO VỆ LINK
