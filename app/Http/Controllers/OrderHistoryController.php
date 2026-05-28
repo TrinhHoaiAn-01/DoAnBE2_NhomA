@@ -53,7 +53,16 @@ class OrderHistoryController extends Controller
     {
         abort_unless((int) $order->user_id === (int) $request->user()->id, 404);
 
-        // Xu ly huy don se duoc bo sung sau khi xac dinh dieu kien nghiep vu.
-        return back()->with('error', 'Chức năng hủy đơn đang được chuẩn bị.');
+        if (! in_array($order->status, ['pending', 'processing'], true)) {
+            return back()->with('error', 'Đơn hàng này không thể hủy ở trạng thái hiện tại.');
+        }
+
+        // Cap nhat trang thai huy de admin khong tiep tuc xu ly giao hang.
+        $order->update([
+            'status' => 'cancelled',
+            'payment_status' => $order->payment_status === 'paid' ? 'refund_pending' : $order->payment_status,
+        ]);
+
+        return to_route('orders.show', $order)->with('status', 'Đã hủy đơn hàng thành công.');
     }
 }
