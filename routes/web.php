@@ -124,6 +124,9 @@ Route::post('/logout', [AuthController::class, 'logout'])
     Route::get('/don-hang', [OrderHistoryController::class, 'index'])
         ->name('orders.index');
 
+    Route::get('/don-hang/{order}', [OrderHistoryController::class, 'show'])
+        ->name('orders.show');
+
 });
 
 /*

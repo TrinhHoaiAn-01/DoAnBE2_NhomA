@@ -60,7 +60,7 @@
                                     <span class="badge text-bg-light border">{{ $statusOptions[$order->status] ?? $order->status }}</span>
                                 </td>
                                 <td class="text-end">
-                                    <a class="btn btn-sm btn-outline-primary" href="#">
+                                    <a class="btn btn-sm btn-outline-primary" href="{{ route('orders.show', $order) }}">
                                         Theo dõi
                                     </a>
                                 </td>
