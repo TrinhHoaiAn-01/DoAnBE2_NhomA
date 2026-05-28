@@ -130,6 +130,27 @@ class AdminController extends Controller
         ));
     }
 
+    public function productSalesReport(Request $request)
+    {
+        // Lay nhung san pham co so luong ban cao nhat tu cac don hang hop le.
+        $bestSellingProducts = OrderItem::query()
+            ->select(
+                'product_name',
+                'sku',
+                DB::raw('SUM(quantity) as sold_quantity'),
+                DB::raw('SUM(subtotal) as sold_revenue')
+            )
+            ->whereHas('order', function ($query): void {
+                $query->where('status', '!=', 'cancelled');
+            })
+            ->groupBy('product_name', 'sku')
+            ->orderByDesc('sold_quantity')
+            ->take(10)
+            ->get();
+
+        return view('admin.reports.products', compact('bestSellingProducts'));
+    }
+
     public function dashboard()
     {
         $usersCount = User::count();
