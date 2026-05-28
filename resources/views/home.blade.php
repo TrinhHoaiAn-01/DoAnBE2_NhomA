@@ -243,58 +243,46 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
-    padding: 1.25rem 0.75rem;
+    justify-content: space-between;
+    padding: 1.5rem 1rem;
     height: 100%;
 }
 .category-card:hover {
     border-color: var(--primary);
-    background: #f7fee7;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    color: var(--text-primary);
+    background: #fff;
+    color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 .category-img-wrap {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-bottom: 0.75rem;
+    width: 100%;
+    height: 110px;
+    margin-bottom: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    transition: transform 0.3s;
+    transition: transform 0.35s ease;
 }
 .category-card:hover .category-img-wrap {
-    transform: scale(1.08);
+    transform: translateY(-4px) scale(1.03);
 }
 .category-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 .category-body {
     padding: 0;
+    text-align: center;
 }
 .category-name {
     font-weight: 700;
     font-size: 0.95rem;
     color: var(--text-primary);
-    margin-bottom: 0.25rem;
+    margin: 0;
     transition: color 0.2s;
 }
 .category-card:hover .category-name {
     color: var(--primary);
-}
-.category-count {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    background: var(--surface-2);
-    padding: 0.15rem 0.5rem;
-    border-radius: 12px;
-    display: inline-block;
 }
 
 /* ===== PRODUCT CARDS ===== */
@@ -547,13 +535,13 @@
         <div class="row g-3">
             @php
                 $categoryImages = [
-                    'thuc-pham' => 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&q=80', // Food / Groceries
-                    'do-uong' => 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&q=80', // Beverages / Milk
-                    'my-pham' => 'https://images.unsplash.com/photo-1526947425960-945c6e72858f?w=300&q=80', // Cosmetics / Shampoo
-                    'gia-dung' => 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=300&q=80', // Household / Cleaning
+                    'thuc-pham' => 'https://images.unsplash.com/photo-1610832958506-ee5633619144?w=300&q=80', // Basket of fruits & veggies (white bg)
+                    'do-uong' => 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=80', // Beverages / soda cans (white bg)
+                    'my-pham' => 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=300&q=80', // Cosmetics & Care (white/clean bg)
+                    'gia-dung' => 'https://images.unsplash.com/photo-1585421514738-ee1a3b8d1f2b?w=300&q=80', // Detergents & Cleaning (white bg)
                     'khuyen-mai' => 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=300&q=80', // Promotions
-                    'rau' => 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=80',
-                    'cu' => 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=80',
+                    'rau' => 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=300&q=80',
+                    'cu' => 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=300&q=80',
                     'qua' => 'https://images.unsplash.com/photo-1610832958506-ee5633619144?w=300&q=80',
                     'thit' => 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=300&q=80',
                     'ca' => 'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=300&q=80',
@@ -573,18 +561,17 @@
                             return $imgUrl;
                         }
                     }
-                    return 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&q=80';
+                    return 'https://images.unsplash.com/photo-1610832958506-ee5633619144?w=300&q=80';
                 };
             @endphp
             @foreach($categories as $i => $category)
-            <div class="col-6 col-md-4 col-lg-3">
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
                 <a href="{{ route('products.index', ['category' => $category->slug]) }}" class="category-card">
                     <div class="category-img-wrap">
                         <img src="{{ $getCategoryImage($category) }}" alt="{{ $category->name }}" loading="lazy">
                     </div>
                     <div class="category-body">
                         <div class="category-name">{{ $category->name }}</div>
-                        <div class="category-count">{{ $category->products_count }} sản phẩm</div>
                     </div>
                 </a>
             </div>
