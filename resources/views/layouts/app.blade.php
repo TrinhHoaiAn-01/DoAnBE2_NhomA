@@ -158,6 +158,11 @@
                     <a class="nav-link-custom {{ request()->routeIs('cart.*') ? 'active' : '' }}" href="{{ route('cart.index') }}">
                         <i class="bi bi-cart3 me-1"></i>Giỏ hàng
                     </a>
+                    @auth
+                        <a class="nav-link-custom {{ request()->routeIs('orders.*') ? 'active' : '' }}" href="{{ route('orders.index') }}">
+                            <i class="bi bi-receipt me-1"></i>Đơn hàng
+                        </a>
+                    @endauth
                 </div>
                 <div class="dropdown">
     @auth
