@@ -15,6 +15,33 @@
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="surface rounded-3 p-4 mb-4">
+                <h2 class="h5 fw-bold mb-3">Tiến trình đơn hàng</h2>
+                <div class="row g-3">
+                    @foreach ($trackingSteps as $step)
+                        @php
+                            $isDone = $step['state'] === 'done';
+                            $isActive = $step['state'] === 'active';
+                            $isDanger = $step['state'] === 'danger';
+                            $iconClass = $isDanger ? 'text-bg-danger' : ($isDone ? 'text-bg-success' : ($isActive ? 'text-bg-primary' : 'text-bg-light text-secondary border'));
+                        @endphp
+                        <div class="col-md-6">
+                            <div class="soft-surface rounded-3 p-3 h-100">
+                                <div class="d-flex gap-3 align-items-start">
+                                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center {{ $iconClass }}" style="width: 42px; height: 42px;">
+                                        <i class="bi {{ $step['icon'] }}"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-semibold">{{ $step['label'] }}</div>
+                                        <div class="small text-secondary">{{ $step['description'] }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="surface rounded-3 p-4 mb-4">
                 <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
                     <div>
                         <h2 class="h5 fw-bold mb-1">Sản phẩm đã đặt</h2>

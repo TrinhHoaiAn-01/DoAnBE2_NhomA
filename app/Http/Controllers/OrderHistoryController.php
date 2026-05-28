@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Support\DeliveryTimeSlot;
+use App\Support\OrderStatus;
 use App\Support\ShippingFeeCalculator;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -28,7 +29,7 @@ class OrderHistoryController extends Controller
         return view('orders.index', [
             'orders' => $orders,
             'status' => $status,
-            'statusOptions' => $this->statusOptions(),
+            'statusOptions' => OrderStatus::labels(),
         ]);
     }
 
@@ -37,21 +38,11 @@ class OrderHistoryController extends Controller
         // Hien thi chi tiet de khach hang theo doi tien do don hang.
         return view('orders.show', [
             'order' => $order->load('items.product'),
-            'statusOptions' => $this->statusOptions(),
+            'statusOptions' => OrderStatus::labels(),
+            'trackingSteps' => OrderStatus::steps($order->status),
             'shippingDistrictLabel' => ShippingFeeCalculator::districtLabel($order->shipping_district),
             'shippingServiceLabel' => ShippingFeeCalculator::serviceLabel($order->shipping_service),
             'deliveryTimeSlotLabel' => DeliveryTimeSlot::label($order->delivery_time_slot),
         ]);
-    }
-
-    private function statusOptions(): array
-    {
-        return [
-            'pending' => 'Chờ xử lý',
-            'processing' => 'Đang xử lý',
-            'shipping' => 'Đang giao',
-            'completed' => 'Hoàn tất',
-            'cancelled' => 'Đã hủy',
-        ];
     }
 }
