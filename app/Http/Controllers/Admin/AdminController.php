@@ -34,6 +34,102 @@ class AdminController extends Controller
         return Order::query()->where('status', '!=', 'cancelled');
     }
 
+    public function revenueReport(Request $request)
+    {
+        $filters = $request->validate([
+            'from_date' => ['nullable', 'date'],
+            'to_date' => ['nullable', 'date'],
+            'group_by' => ['nullable', 'in:day,month,year'],
+        ]);
+        $groupBy = $filters['group_by'] ?? 'day';
+        $fromDate = isset($filters['from_date'])
+            ? Carbon::parse($filters['from_date'])->startOfDay()
+            : now()->subDays(29)->startOfDay();
+        $toDate = isset($filters['to_date'])
+            ? Carbon::parse($filters['to_date'])->endOfDay()
+            : now()->endOfDay();
+
+        if ($fromDate->greaterThan($toDate)) {
+            [$fromDate, $toDate] = [$toDate->copy()->startOfDay(), $fromDate->copy()->endOfDay()];
+        }
+
+        $ordersQuery = $this->payableOrderQuery()
+            ->whereBetween('created_at', [$fromDate, $toDate]);
+
+        // Lay nhanh cac chi so dau tien cho man hinh bao cao doanh thu.
+        $ordersCount = (clone $ordersQuery)->count();
+        $totalRevenue = (clone $ordersQuery)->sum('total');
+        $paidOrdersCount = (clone $ordersQuery)
+            ->where('payment_status', 'paid')
+            ->count();
+        $pendingPaymentCount = (clone $ordersQuery)
+            ->where('payment_status', 'pending')
+            ->count();
+        $completedRevenue = (clone $ordersQuery)
+            ->where('status', 'completed')
+            ->sum('total');
+        $averageOrderValue = $ordersCount > 0 ? $totalRevenue / $ordersCount : 0;
+        $chartRows = (clone $ordersQuery)
+            ->get(['created_at', 'total'])
+            ->groupBy(function (Order $order) use ($groupBy): string {
+                return match ($groupBy) {
+                    'month' => $order->created_at->format('Y-m'),
+                    'year' => $order->created_at->format('Y'),
+                    default => $order->created_at->format('Y-m-d'),
+                };
+            })
+            ->map(fn ($orders) => (float) $orders->sum('total'));
+        $revenueLabels = [];
+        $revenueData = [];
+        $revenueRows = [];
+        $cursor = match ($groupBy) {
+            'month' => $fromDate->copy()->startOfMonth(),
+            'year' => $fromDate->copy()->startOfYear(),
+            default => $fromDate->copy(),
+        };
+
+        while ($cursor->lte($toDate)) {
+            $key = match ($groupBy) {
+                'month' => $cursor->format('Y-m'),
+                'year' => $cursor->format('Y'),
+                default => $cursor->format('Y-m-d'),
+            };
+            $label = match ($groupBy) {
+                'month' => $cursor->format('m/Y'),
+                'year' => $cursor->format('Y'),
+                default => $cursor->format('d/m'),
+            };
+            $revenueLabels[] = $label;
+            $revenue = (float) ($chartRows[$key] ?? 0);
+            $revenueData[] = $revenue;
+            $revenueRows[] = [
+                'label' => $label,
+                'revenue' => $revenue,
+            ];
+
+            match ($groupBy) {
+                'month' => $cursor->addMonth(),
+                'year' => $cursor->addYear(),
+                default => $cursor->addDay(),
+            };
+        }
+
+        return view('admin.reports.revenue', compact(
+            'fromDate',
+            'toDate',
+            'groupBy',
+            'ordersCount',
+            'totalRevenue',
+            'paidOrdersCount',
+            'pendingPaymentCount',
+            'completedRevenue',
+            'averageOrderValue',
+            'revenueLabels',
+            'revenueData',
+            'revenueRows'
+        ));
+    }
+
     public function dashboard()
     {
         $usersCount = User::count();
