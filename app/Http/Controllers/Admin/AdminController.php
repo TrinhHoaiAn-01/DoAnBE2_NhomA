@@ -49,6 +49,10 @@ class AdminController extends Controller
             ? Carbon::parse($filters['to_date'])->endOfDay()
             : now()->endOfDay();
 
+        if ($fromDate->greaterThan($toDate)) {
+            [$fromDate, $toDate] = [$toDate->copy()->startOfDay(), $fromDate->copy()->endOfDay()];
+        }
+
         $ordersQuery = $this->payableOrderQuery()
             ->whereBetween('created_at', [$fromDate, $toDate]);
 
