@@ -63,5 +63,37 @@
                 </table>
             </div>
         </div>
+
+        <div class="product-report-panel">
+            <div class="p-3 border-bottom">
+                <h2 class="h5 fw-bold mb-0">Sản phẩm bán chậm</h2>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>SKU</th>
+                            <th class="text-end">Số lượng bán</th>
+                            <th class="text-end">Doanh thu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($slowSellingProducts as $product)
+                            <tr>
+                                <td class="fw-semibold">{{ $product->product_name }}</td>
+                                <td class="text-muted">{{ $product->sku ?: 'Không có SKU' }}</td>
+                                <td class="text-end">{{ number_format($product->sold_quantity) }}</td>
+                                <td class="text-end fw-semibold">{{ $money($product->sold_revenue) }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td class="text-center py-4 text-muted" colspan="4">Chưa có dữ liệu bán chậm.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 @endsection

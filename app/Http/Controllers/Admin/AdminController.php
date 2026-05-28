@@ -147,8 +147,22 @@ class AdminController extends Controller
             ->orderByDesc('sold_quantity')
             ->take(10)
             ->get();
+        $slowSellingProducts = OrderItem::query()
+            ->select(
+                'product_name',
+                'sku',
+                DB::raw('SUM(quantity) as sold_quantity'),
+                DB::raw('SUM(subtotal) as sold_revenue')
+            )
+            ->whereHas('order', function ($query): void {
+                $query->where('status', '!=', 'cancelled');
+            })
+            ->groupBy('product_name', 'sku')
+            ->orderBy('sold_quantity')
+            ->take(10)
+            ->get();
 
-        return view('admin.reports.products', compact('bestSellingProducts'));
+        return view('admin.reports.products', compact('bestSellingProducts', 'slowSellingProducts'));
     }
 
     public function dashboard()
