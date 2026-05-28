@@ -263,6 +263,11 @@
                         <i class="bi bi-bar-chart-line"></i> Thống kê cơ bản
                     </a>
                 </li>
+                <li class="{{ request()->routeIs('admin.reports.revenue') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.revenue') }}">
+                        <i class="bi bi-graph-up-arrow"></i> Báo cáo doanh thu
+                    </a>
+                </li>
             </ul>
 
 			<!-- PROFILE -->
