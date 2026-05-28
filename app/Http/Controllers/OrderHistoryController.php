@@ -43,7 +43,7 @@ class OrderHistoryController extends Controller
             'order' => $order->load('items.product'),
             'statusOptions' => OrderStatus::labels(),
             'trackingSteps' => OrderStatus::steps($order->status),
-            'canCancel' => in_array($order->status, ['pending', 'processing'], true),
+            'canCancel' => OrderStatus::canBeCancelled($order->status),
             'shippingDistrictLabel' => ShippingFeeCalculator::districtLabel($order->shipping_district),
             'shippingServiceLabel' => ShippingFeeCalculator::serviceLabel($order->shipping_service),
             'deliveryTimeSlotLabel' => DeliveryTimeSlot::label($order->delivery_time_slot),
@@ -54,8 +54,8 @@ class OrderHistoryController extends Controller
     {
         abort_unless((int) $order->user_id === (int) $request->user()->id, 404);
 
-        if (! in_array($order->status, ['pending', 'processing'], true)) {
-            return back()->with('error', 'Đơn hàng này không thể hủy ở trạng thái hiện tại.');
+        if (! OrderStatus::canBeCancelled($order->status)) {
+            return back()->with('error', 'Chỉ có thể hủy đơn trước khi đơn được xử lý.');
         }
 
         // Cap nhat trang thai huy de admin khong tiep tuc xu ly giao hang.

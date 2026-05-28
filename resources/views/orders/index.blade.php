@@ -64,7 +64,7 @@
                                         <a class="btn btn-sm btn-outline-primary" href="{{ route('orders.show', $order) }}">
                                             Theo dõi
                                         </a>
-                                        @if (in_array($order->status, ['pending', 'processing'], true))
+                                        @if (\App\Support\OrderStatus::canBeCancelled($order->status))
                                             <form method="post" action="{{ route('orders.cancel', $order) }}" onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn hàng này?');">
                                                 @csrf
                                                 @method('patch')
