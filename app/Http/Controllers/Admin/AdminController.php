@@ -34,6 +34,24 @@ class AdminController extends Controller
         return Order::query()->where('status', '!=', 'cancelled');
     }
 
+    public function revenueReport(Request $request)
+    {
+        $ordersQuery = $this->payableOrderQuery();
+
+        // Lay nhanh cac chi so dau tien cho man hinh bao cao doanh thu.
+        $ordersCount = (clone $ordersQuery)->count();
+        $totalRevenue = (clone $ordersQuery)->sum('total');
+        $paidOrdersCount = (clone $ordersQuery)
+            ->where('payment_status', 'paid')
+            ->count();
+
+        return view('admin.reports.revenue', compact(
+            'ordersCount',
+            'totalRevenue',
+            'paidOrdersCount'
+        ));
+    }
+
     public function dashboard()
     {
         $usersCount = User::count();

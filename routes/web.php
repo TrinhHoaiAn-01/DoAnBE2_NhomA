@@ -212,6 +212,12 @@ Route::prefix('admin')
         Route::get('/statistics', [AdminController::class, 'statistics'])
             ->name('statistics');
 
+        // REPORTS
+        Route::prefix('reports')->name('reports.')->group(function (): void {
+            Route::get('/revenue', [AdminController::class, 'revenueReport'])
+                ->name('revenue');
+        });
+
         // SUPPLIERS
         Route::get('/suppliers', [SupplierController::class, 'index'])
             ->name('suppliers.index');
