@@ -34,6 +34,23 @@ class AdminController extends Controller
         return Order::query()->where('status', '!=', 'cancelled');
     }
 
+    private function soldProductReportQuery(Carbon $fromDate, Carbon $toDate)
+    {
+        // Gom doanh so theo san pham tu cac don hang hop le trong khoang loc.
+        return OrderItem::query()
+            ->select(
+                'product_name',
+                'sku',
+                DB::raw('SUM(quantity) as sold_quantity'),
+                DB::raw('SUM(subtotal) as sold_revenue')
+            )
+            ->whereHas('order', function ($query) use ($fromDate, $toDate): void {
+                $query->where('status', '!=', 'cancelled')
+                    ->whereBetween('created_at', [$fromDate, $toDate]);
+            })
+            ->groupBy('product_name', 'sku');
+    }
+
     public function revenueReport(Request $request)
     {
         $filters = $request->validate([
@@ -145,19 +162,12 @@ class AdminController extends Controller
             : now()->endOfDay();
         $limit = (int) ($filters['limit'] ?? 10);
 
+        if ($fromDate->greaterThan($toDate)) {
+            [$fromDate, $toDate] = [$toDate->copy()->startOfDay(), $fromDate->copy()->endOfDay()];
+        }
+
         // Lay nhung san pham co so luong ban cao nhat tu cac don hang hop le.
-        $bestSellingProducts = OrderItem::query()
-            ->select(
-                'product_name',
-                'sku',
-                DB::raw('SUM(quantity) as sold_quantity'),
-                DB::raw('SUM(subtotal) as sold_revenue')
-            )
-            ->whereHas('order', function ($query) use ($fromDate, $toDate): void {
-                $query->where('status', '!=', 'cancelled')
-                    ->whereBetween('created_at', [$fromDate, $toDate]);
-            })
-            ->groupBy('product_name', 'sku')
+        $bestSellingProducts = $this->soldProductReportQuery($fromDate, $toDate)
             ->orderByDesc('sold_quantity')
             ->take($limit)
             ->get();
