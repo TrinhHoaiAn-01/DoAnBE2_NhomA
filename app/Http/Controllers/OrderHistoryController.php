@@ -33,8 +33,10 @@ class OrderHistoryController extends Controller
         ]);
     }
 
-    public function show(Order $order): View
+    public function show(Request $request, Order $order): View
     {
+        abort_unless((int) $order->user_id === (int) $request->user()->id, 404);
+
         // Hien thi chi tiet de khach hang theo doi tien do don hang.
         return view('orders.show', [
             'order' => $order->load('items.product'),
