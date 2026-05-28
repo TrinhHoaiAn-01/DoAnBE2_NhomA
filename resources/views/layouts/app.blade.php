@@ -31,13 +31,13 @@
             --text-primary:   #0f172a;
             --text-secondary: #475569;
             --text-muted:     #94a3b8;
-            --shadow-sm:      0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-md:      0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-            --shadow-lg:      0 20px 40px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.06);
-            --radius-sm:      8px;
-            --radius-md:      12px;
-            --radius-lg:      20px;
-            --radius-xl:      28px;
+            --shadow-sm:      none;
+            --shadow-md:      none;
+            --shadow-lg:      none;
+            --radius-sm:      0px;
+            --radius-md:      0px;
+            --radius-lg:      0px;
+            --radius-xl:      0px;
             --transition:     all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -87,14 +87,13 @@
            TOP NAVBAR
         ============================================================ */
         .top-nav {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
+            background: #1a1a1a;
+            border-bottom: 2px solid var(--primary);
             position: sticky;
             top: 0;
             z-index: 1000;
         }
-        .nav-inner { padding: 0.75rem 0; }
+        .nav-inner { padding: 0; }
 
         /* Brand */
         .brand-logo {
@@ -104,65 +103,66 @@
             text-decoration: none;
             line-height: 1;
             white-space: nowrap;
+            padding: 1rem 0;
         }
-        .brand-logo .neo { color: var(--primary); }
-        .brand-logo .mart { color: var(--text-primary); }
+        .brand-logo .neo { color: #fff; font-style: italic; }
+        .brand-logo .mart { color: var(--primary); font-style: italic; }
 
         /* Search bar */
         .nav-search-form {
             flex: 1;
-            max-width: 480px;
+            max-width: 350px;
+            margin: 0.5rem 0;
         }
         .nav-search-wrap {
             position: relative;
             display: flex;
-            background: var(--surface-2);
-            border: 1.5px solid var(--border);
-            border-radius: 50px;
+            background: #fff;
+            border: 1px solid #333;
+            border-radius: 0;
             overflow: hidden;
             transition: var(--transition);
         }
         .nav-search-wrap:focus-within {
             border-color: var(--primary);
-            background: var(--surface);
-            box-shadow: 0 0 0 3px var(--primary-light);
         }
         .nav-search-input {
             flex: 1;
             border: none;
             background: transparent;
-            padding: 0.5rem 1rem 0.5rem 1.1rem;
-            font-size: 0.875rem;
-            color: var(--text-primary);
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            color: #333;
             outline: none;
         }
-        .nav-search-input::placeholder { color: var(--text-muted); }
+        .nav-search-input::placeholder { color: #888; }
         .nav-search-btn {
-            background: var(--primary);
+            background: transparent;
             border: none;
-            color: #fff;
-            padding: 0 1.1rem;
+            color: #333;
+            padding: 0 0.8rem;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: background 0.2s;
+            font-size: 1rem;
+            transition: color 0.2s;
             border-radius: 0;
         }
-        .nav-search-btn:hover { background: var(--primary-dark); }
+        .nav-search-btn:hover { color: var(--primary); }
 
         /* Nav links */
-        .nav-links { display: flex; align-items: center; gap: 0.25rem; }
+        .nav-links { display: flex; align-items: stretch; height: 100%; margin-left: 2rem; }
         .nav-link-item {
-            color: var(--text-secondary);
+            color: #ccc;
             font-size: 0.85rem;
-            font-weight: 500;
-            padding: 0.45rem 0.75rem;
-            border-radius: var(--radius-sm);
-            transition: var(--transition);
+            font-weight: 700;
+            padding: 1.2rem 1rem;
             text-decoration: none;
+            text-transform: uppercase;
             white-space: nowrap;
+            display: flex; align-items: center;
+            border-bottom: 3px solid transparent;
         }
-        .nav-link-item:hover { color: var(--primary); background: var(--primary-light); }
-        .nav-link-item.active { color: var(--primary); font-weight: 700; }
+        .nav-link-item:hover { color: #fff; border-bottom-color: var(--text-muted); }
+        .nav-link-item.active { color: #fff; border-bottom-color: var(--primary); }
 
         /* Cart icon */
         .cart-btn {
@@ -171,45 +171,39 @@
             align-items: center;
             justify-content: center;
             width: 40px; height: 40px;
-            border-radius: var(--radius-sm);
-            color: var(--text-secondary);
+            color: #fff;
             text-decoration: none;
-            transition: var(--transition);
             font-size: 1.15rem;
         }
-        .cart-btn:hover { color: var(--primary); background: var(--primary-light); }
+        .cart-btn:hover { color: var(--primary); }
         .cart-badge {
             position: absolute;
-            top: 2px; right: 2px;
-            background: var(--danger);
+            top: 4px; right: 2px;
+            background: var(--primary);
             color: #fff;
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             font-weight: 800;
-            width: 16px; height: 16px;
-            border-radius: 50%;
+            width: 18px; height: 18px;
+            border-radius: 0;
             display: flex; align-items: center; justify-content: center;
-            border: 2px solid var(--surface);
             line-height: 1;
         }
 
         /* User dropdown */
         .user-btn {
             display: flex; align-items: center; gap: 0.5rem;
-            background: var(--surface-2);
-            border: 1.5px solid var(--border);
-            border-radius: 50px;
-            padding: 0.35rem 0.75rem 0.35rem 0.35rem;
+            background: transparent;
+            border: 1px solid #444;
+            padding: 0.25rem 0.75rem 0.25rem 0.25rem;
             cursor: pointer;
-            transition: var(--transition);
-            color: var(--text-primary);
+            color: #fff;
             font-size: 0.85rem;
             font-weight: 600;
         }
         .user-btn:hover { border-color: var(--primary); color: var(--primary); }
         .user-avatar {
             width: 28px; height: 28px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 50%;
+            background: var(--primary);
             display: flex; align-items: center; justify-content: center;
             color: #fff; font-size: 0.75rem; font-weight: 700;
             flex-shrink: 0;
@@ -442,28 +436,11 @@
                 </a>
             </div>
 
-            <!-- Search bar -->
-            <form class="nav-search-form d-none d-md-flex mx-auto" method="GET" action="{{ route('products.index') }}">
-                <div class="nav-search-wrap w-100">
-                    <input
-                        type="text"
-                        name="search"
-                        class="nav-search-input"
-                        placeholder="Tìm sản phẩm..."
-                        value="{{ request('search') }}"
-                        autocomplete="off"
-                    >
-                    <button class="nav-search-btn" type="submit">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </div>
-            </form>
-
             <!-- Right actions -->
-            <div class="d-flex align-items-center gap-2 ms-auto flex-shrink-0">
+            <div class="d-flex align-items-center gap-2 ms-auto flex-shrink-0 h-100">
 
                 <!-- Cart -->
-                <a href="{{ route('cart.index') }}" class="cart-btn" title="Giỏ hàng">
+                <a href="{{ route('cart.index') }}" class="cart-btn me-2" title="Giỏ hàng">
                     <i class="bi bi-bag"></i>
                     @auth
                         @php $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'quantity')) : 0; @endphp
@@ -476,16 +453,15 @@
                 <!-- Auth -->
                 @auth
                     <div class="dropdown">
-                        <button class="user-btn dropdown-toggle border-0 bg-transparent p-0" type="button"
+                        <button class="user-btn dropdown-toggle p-0" type="button"
                                 data-bs-toggle="dropdown" aria-expanded="false"
-                                style="display:flex;align-items:center;gap:0.5rem;background:var(--surface-2) !important;border:1.5px solid var(--border) !important;border-radius:50px;padding:0.35rem 0.75rem 0.35rem 0.35rem !important;">
+                                style="display:flex;align-items:center;gap:0.5rem;background:transparent !important;border:none !important;border-radius:0;padding:0.35rem 0.75rem 0.35rem 0.35rem !important;">
                             <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
-                            <span class="d-none d-lg-inline small fw-semibold text-dark" style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                            <span class="d-none d-lg-inline small fw-semibold text-white" style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
                                 {{ auth()->user()->name }}
                             </span>
-                            <i class="bi bi-chevron-down small text-muted" style="font-size:0.7rem;"></i>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        <ul class="dropdown-menu dropdown-menu-end rounded-0 border-dark">
                             <li class="px-3 py-2">
                                 <div class="fw-bold text-dark small">{{ auth()->user()->name }}</div>
                                 <div class="text-muted" style="font-size:0.75rem;">{{ auth()->user()->email }}</div>
@@ -493,12 +469,12 @@
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="{{ route('profile.index') }}">
-                                    <i class="bi bi-person me-2 text-primary"></i>Hồ sơ cá nhân
+                                    Hồ sơ cá nhân
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                    <i class="bi bi-speedometer2 me-2 text-primary"></i>Quản trị
+                                    Quản trị
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
@@ -506,18 +482,18 @@
                                 <form method="post" action="{{ route('logout') }}" class="m-0">
                                     @csrf
                                     <button class="dropdown-item text-danger" type="submit">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+                                        Đăng xuất
                                     </button>
                                 </form>
                             </li>
                         </ul>
                     </div>
                 @else
-                    <a class="btn btn-outline-secondary btn-sm rounded-pill px-3 d-none d-sm-inline-flex" href="{{ route('login') }}">
+                    <a class="nav-link-item px-2 border-0" href="{{ route('login') }}" style="font-size:0.8rem;text-transform:none;">
                         Đăng nhập
                     </a>
-                    <a class="btn btn-sm rounded-pill px-3 fw-semibold" href="{{ route('register') }}"
-                       style="background:var(--primary);color:#fff;">
+                    <a class="btn btn-sm px-3 fw-semibold" href="{{ route('register') }}"
+                       style="background:var(--primary);color:#fff;border-radius:0;">
                         Đăng ký
                     </a>
                 @endauth
@@ -532,13 +508,6 @@
         <!-- Mobile nav -->
         <div class="collapse d-lg-none" id="mobileNav">
             <div class="py-2 border-top" style="border-color:var(--border)!important;">
-                <!-- Mobile search -->
-                <form method="GET" action="{{ route('products.index') }}" class="mb-2">
-                    <div class="nav-search-wrap">
-                        <input type="text" name="search" class="nav-search-input" placeholder="Tìm sản phẩm..." value="{{ request('search') }}">
-                        <button class="nav-search-btn" type="submit"><i class="bi bi-search"></i></button>
-                    </div>
-                </form>
                 <div class="d-flex flex-column gap-1">
                     <a class="nav-link-item {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
                         <i class="bi bi-house-door me-2"></i>Trang chủ
@@ -567,7 +536,7 @@
 
 <!-- ===== FOOTER ===== -->
 <footer class="site-footer">
-    <div class="footer-top">
+    <div class="footer-top border-top border-dark">
         <div class="container">
             <div class="row g-5">
 
