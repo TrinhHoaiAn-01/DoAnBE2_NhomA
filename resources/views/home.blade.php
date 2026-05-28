@@ -4,7 +4,7 @@
 <style>
 /* ===== HERO ===== */
 .hero-section {
-    background: var(--primary-dark);
+    background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 70%, #34d399 100%);
     border-radius: 12px;
     padding: 4.5rem 2rem;
     color: white;
@@ -15,16 +15,18 @@
 .hero-section::before {
     content: '';
     position: absolute;
-    top: -80px; right: -80px;
-    width: 320px; height: 320px;
-    background: rgba(255,255,255,0.06);
+    top: -150px; right: -50px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+    border-radius: 50%;
 }
 .hero-section::after {
     content: '';
     position: absolute;
-    bottom: -100px; left: 30%;
-    width: 260px; height: 260px;
-    background: rgba(255,255,255,0.04);
+    bottom: -200px; left: 10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+    border-radius: 50%;
 }
 .hero-badge {
     display: inline-flex; align-items: center; gap: 0.4rem;
@@ -487,11 +489,17 @@
                             class="{{ $index == 0 ? 'active' : '' }}"></button>
                 @endforeach
             </div>
-            <div class="carousel-inner">
+            <div class="carousel-inner" style="background: #047857;">
                 @foreach($banners as $index => $banner)
                     <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                        <img src="{{ $banner['image'] }}" class="d-block w-100" alt="{{ $banner['title'] }}">
-                        <div class="carousel-caption text-start" style="left:0;right:auto;bottom:0;top:0;background:linear-gradient(90deg,rgba(0,0,0,0.55) 0%,transparent 65%);padding:2rem 2.5rem;border-radius:0;display:flex;flex-direction:column;justify-content:center;max-width:55%;">
+                        @if($index == 0)
+                            <img src="{{ $banner['image'] }}" class="d-block w-100" style="object-fit: cover; opacity: 0.85;" alt="{{ $banner['title'] }}">
+                        @else
+                            <div class="d-block w-100 position-relative" style="height: 380px; background: linear-gradient(90deg, #047857 0%, #059669 35%, #ecfdf5 70%, #f3f4f6 100%);">
+                                <img src="{{ $banner['image'] }}" class="position-absolute" style="right: 5%; top: 50%; transform: translateY(-50%); max-height: 80%; max-width: 40%; object-fit: contain; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); background: white; padding: 1rem;" alt="{{ $banner['title'] }}">
+                            </div>
+                        @endif
+                        <div class="carousel-caption text-start" style="left:0;right:auto;bottom:0;top:0;background:linear-gradient(90deg, rgba(4, 120, 87, 0.95) 0%, rgba(4, 120, 87, 0.5) 55%, transparent 100%);padding:2rem 2.5rem;border-radius:0;display:flex;flex-direction:column;justify-content:center;max-width:55%;">
                             <h2 class="fw-black text-white mb-3" style="font-size:clamp(1.2rem,3vw,1.8rem);text-shadow:0 2px 8px rgba(0,0,0,0.3);">{{ $banner['title'] }}</h2>
                             <a href="{{ $banner['link'] }}" class="hero-btn-primary" style="font-size:0.85rem;padding:0.55rem 1.25rem;align-self:flex-start;">
                                 Mua ngay <i class="bi bi-arrow-right ms-1"></i>

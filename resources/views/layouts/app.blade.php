@@ -228,12 +228,12 @@
            FOOTER
         ============================================================ */
         .site-footer {
-            background: #0f172a;
-            color: #94a3b8;
+            background: var(--primary);
+            color: rgba(255,255,255,0.85);
             margin-top: 4rem;
         }
         .footer-top {
-            padding: 3.5rem 0 2.5rem;
+            padding: 3.5rem 0 3.5rem;
         }
         .footer-brand-logo {
             font-weight: 900;
@@ -241,32 +241,32 @@
             letter-spacing: -0.5px;
             line-height: 1;
         }
-        .footer-brand-logo .neo { color: var(--primary); }
-        .footer-brand-logo .mart { color: #fff; }
+        .footer-brand-logo .neo { color: #fff; }
+        .footer-brand-logo .mart { color: #fbbf24; }
         .footer-desc {
             font-size: 0.875rem;
             line-height: 1.7;
-            color: #64748b;
-            max-width: 280px;
+            color: rgba(255,255,255,0.9);
+            max-width: 300px;
         }
         .footer-heading {
             color: #fff;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 1.05rem;
             margin-bottom: 1.25rem;
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
         .footer-link {
-            color: #64748b;
+            color: rgba(255,255,255,0.85);
             text-decoration: none;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             transition: var(--transition);
             display: flex;
             align-items: center;
             gap: 0.4rem;
         }
-        .footer-link:hover { color: var(--primary); padding-left: 4px; }
+        .footer-link:hover { color: #fff; padding-left: 4px; }
         .footer-links-list {
             list-style: none;
             padding: 0; margin: 0;
@@ -548,11 +548,10 @@
 
 <!-- ===== FOOTER ===== -->
 <footer class="site-footer">
-    <div class="footer-top border-top border-dark">
+    <div class="footer-top">
         <div class="container">
-            <div class="row g-5">
-
-                <!-- Brand + Newsletter -->
+            <div class="row g-5 justify-content-between">
+                <!-- Brand -->
                 <div class="col-lg-4">
                     <div class="footer-brand-logo mb-3">
                         <span class="neo">Neo</span><span class="mart">Mart</span>
@@ -560,94 +559,42 @@
                     <p class="footer-desc mb-4">
                         Hệ thống siêu thị trực tuyến cung cấp sản phẩm công nghệ chất lượng cao với dịch vụ giao hàng siêu tốc và chăm sóc khách hàng tận tâm.
                     </p>
-                    <!-- Newsletter -->
-                    <div class="newsletter-wrap mb-4">
-                        <div class="small fw-semibold text-white mb-2">
-                            <i class="bi bi-envelope-heart me-1" style="color:var(--primary)"></i>
-                            Nhận ưu đãi mới nhất
-                        </div>
-                        <form class="newsletter-form" onsubmit="return false;">
-                            <input type="email" class="newsletter-input" placeholder="Email của bạn...">
-                            <button class="newsletter-btn" type="submit">Đăng ký</button>
-                        </form>
-                    </div>
-                    <!-- Socials -->
-                    <div class="d-flex gap-2">
-                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-tiktok"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
-                    </div>
                 </div>
 
-                <!-- Links -->
-                <div class="col-6 col-lg-2">
-                    <div class="footer-heading">Sản phẩm</div>
-                    <ul class="footer-links-list">
-                        <li><a href="{{ route('products.index', ['category' => 'thiet-bi-di-dong']) }}" class="footer-link">Điện thoại</a></li>
-                        <li><a href="{{ route('products.index', ['category' => 'may-tinh-laptop']) }}" class="footer-link">Laptop</a></li>
-                        <li><a href="{{ route('products.index', ['category' => 'phu-kien']) }}" class="footer-link">Phụ kiện</a></li>
-                        <li><a href="{{ route('products.index', ['category' => 'thiet-bi-deo']) }}" class="footer-link">Đồng hồ & Wearable</a></li>
-                        <li><a href="{{ route('products.index') }}" class="footer-link">Tất cả sản phẩm</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-6 col-lg-2">
+                <!-- Hỗ trợ -->
+                <div class="col-6 col-md-4 col-lg-3">
                     <div class="footer-heading">Hỗ trợ</div>
                     <ul class="footer-links-list">
-                        <li><a href="#" class="footer-link">Hướng dẫn mua hàng</a></li>
-                        <li><a href="#" class="footer-link">Chính sách bảo hành</a></li>
-                        <li><a href="#" class="footer-link">Vận chuyển & Đổi hàng</a></li>
-                        <li><a href="#" class="footer-link">Hỏi đáp (FAQ)</a></li>
-                        <li><a href="#" class="footer-link">Liên hệ chúng tôi</a></li>
+                        <li><a href="#" class="footer-link" data-bs-toggle="modal" data-bs-target="#modal-buying-guide">Hướng dẫn mua hàng</a></li>
+                        <li><a href="#" class="footer-link" data-bs-toggle="modal" data-bs-target="#modal-warranty">Chính sách bảo hành</a></li>
+                        <li><a href="#" class="footer-link" data-bs-toggle="modal" data-bs-target="#modal-shipping">Vận chuyển & Đổi hàng</a></li>
+                        <li><a href="#" class="footer-link" data-bs-toggle="modal" data-bs-target="#modal-faq">Hỏi đáp (FAQ)</a></li>
+                        <li><a href="#" class="footer-link" data-bs-toggle="modal" data-bs-target="#modal-contact">Liên hệ chúng tôi</a></li>
                     </ul>
                 </div>
 
-                <!-- Contact + App -->
-                <div class="col-lg-4">
+                <!-- Contact -->
+                <div class="col-12 col-md-4 col-lg-4">
                     <div class="footer-heading">Liên hệ</div>
-                    <div class="footer-contact-item">
-                        <i class="bi bi-geo-alt-fill footer-contact-icon"></i>
-                        <span>123 Đường Công Nghệ, Quận 1, TP. Hồ Chí Minh</span>
-                    </div>
-                    <div class="footer-contact-item">
-                        <i class="bi bi-telephone-fill footer-contact-icon"></i>
-                        <span>(+84) 123 456 789</span>
-                    </div>
-                    <div class="footer-contact-item">
-                        <i class="bi bi-envelope-fill footer-contact-icon"></i>
-                        <span>support@neomart.vn</span>
-                    </div>
-                    <div class="footer-contact-item">
-                        <i class="bi bi-clock-fill footer-contact-icon"></i>
-                        <span>Hỗ trợ 24/7 – Thứ 2 đến Chủ nhật</span>
-                    </div>
-
-                    <div class="mt-4">
-                        <div class="small fw-semibold text-white mb-2">Tải ứng dụng:</div>
-                        <div class="d-flex gap-2">
-                            <a href="#" class="app-badge"><i class="bi bi-apple fs-5"></i><span>App Store</span></a>
-                            <a href="#" class="app-badge"><i class="bi bi-google-play fs-5"></i><span>Play Store</span></a>
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex gap-2 align-items-start">
+                            <i class="bi bi-geo-alt-fill text-warning mt-1"></i>
+                            <span>123 Đường Công Nghệ, Quận 1, TP. Hồ Chí Minh</span>
+                        </div>
+                        <div class="d-flex gap-2 align-items-center">
+                            <i class="bi bi-telephone-fill text-warning"></i>
+                            <span>(+84) 123 456 789</span>
+                        </div>
+                        <div class="d-flex gap-2 align-items-center">
+                            <i class="bi bi-envelope-fill text-warning"></i>
+                            <span>support@neomart.vn</span>
+                        </div>
+                        <div class="d-flex gap-2 align-items-center">
+                            <i class="bi bi-clock-fill text-warning"></i>
+                            <span>Hỗ trợ 24/7 – Thứ 2 đến Chủ nhật</span>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer Bottom -->
-    <div class="footer-bottom">
-        <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <span>© 2026 NeoMart. Thiết kế bởi <strong style="color:var(--primary)">Nhóm A</strong>.</span>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <span class="payment-badge"><i class="bi bi-credit-card me-1"></i>VNPay</span>
-                <span class="payment-badge"><i class="bi bi-wallet2 me-1"></i>MoMo</span>
-                <span class="payment-badge"><i class="bi bi-bank me-1"></i>Banking</span>
-            </div>
-            <div class="d-flex gap-3">
-                <a href="#">Điều khoản</a>
-                <a href="#">Bảo mật</a>
-                <a href="#">Cookies</a>
             </div>
         </div>
     </div>
@@ -674,6 +621,208 @@
     });
     scrollBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
+<!-- Modals for Footer Links -->
+<style>
+    .custom-modal .modal-content {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        overflow: hidden;
+    }
+    .custom-modal .modal-header {
+        background: linear-gradient(135deg, var(--primary) 0%, #047857 100%);
+        color: white;
+        border-bottom: none;
+        padding: 1.25rem 1.5rem;
+    }
+    .custom-modal .modal-title {
+        font-weight: 800;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .custom-modal .modal-body {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+    .custom-modal .modal-body h6 {
+        font-weight: 700;
+        color: var(--primary-dark, #047857);
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .custom-modal .modal-body h6:first-child {
+        margin-top: 0;
+    }
+    .custom-modal .modal-body p, .custom-modal .modal-body ul {
+        color: #475569;
+        margin-bottom: 0;
+    }
+    .custom-modal .modal-body ul {
+        padding-left: 1.25rem;
+    }
+    .custom-modal .modal-body li {
+        margin-bottom: 0.35rem;
+    }
+    .custom-modal .modal-footer {
+        border-top: 1px solid #f1f5f9;
+        padding: 1rem 1.5rem;
+    }
+    .custom-modal .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+        opacity: 0.8;
+    }
+    .custom-modal .btn-close:hover {
+        opacity: 1;
+    }
+    .custom-modal .btn-secondary {
+        background: #f1f5f9;
+        color: #475569;
+        border: none;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 0.5rem 1.25rem;
+        transition: all 0.2s;
+    }
+    .custom-modal .btn-secondary:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+</style>
+
+<div class="modal fade custom-modal" id="modal-buying-guide" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-cart-check"></i> Hướng dẫn mua hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6><i class="bi bi-search text-warning"></i> 1. Tìm kiếm sản phẩm</h6>
+                <p class="mb-3">Quý khách có thể tìm kiếm sản phẩm theo danh mục hoặc sử dụng thanh tìm kiếm ở phía trên trang web.</p>
+                <h6><i class="bi bi-bag-plus text-warning"></i> 2. Thêm vào giỏ hàng</h6>
+                <p class="mb-3">Khi tìm được sản phẩm ưng ý, bấm "CHỌN MUA" để thêm sản phẩm vào giỏ hàng của bạn.</p>
+                <h6><i class="bi bi-credit-card text-warning"></i> 3. Thanh toán</h6>
+                <p>Tiến hành tới trang Giỏ hàng, điền thông tin giao hàng và chọn phương thức thanh toán phù hợp. Chúng tôi hỗ trợ nhiều hình thức thanh toán an toàn.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade custom-modal" id="modal-warranty" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-shield-check"></i> Chính sách bảo hành</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6><i class="bi bi-patch-check-fill text-primary"></i> Bảo hành chính hãng</h6>
+                <p class="mb-3">Tất cả các sản phẩm mua tại NeoMart đều được bảo hành chính hãng theo tiêu chuẩn của nhà sản xuất.</p>
+                <h6><i class="bi bi-card-checklist text-primary"></i> Điều kiện bảo hành</h6>
+                <ul>
+                    <li>Sản phẩm còn trong thời hạn bảo hành.</li>
+                    <li>Sản phẩm không bị rơi vỡ, vào nước, hoặc can thiệp phần cứng.</li>
+                    <li>Tem bảo hành còn nguyên vẹn.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade custom-modal" id="modal-shipping" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-truck"></i> Vận chuyển & Đổi hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6><i class="bi bi-lightning-fill text-warning"></i> Giao hàng siêu tốc</h6>
+                <p class="mb-3">NeoMart cam kết giao hàng nhanh trong vòng <strong>2 giờ</strong> đối với khu vực nội thành TP.HCM và Hà Nội. Các tỉnh thành khác sẽ nhận được hàng từ 1-3 ngày làm việc.</p>
+                <h6><i class="bi bi-arrow-left-right text-success"></i> Đổi trả dễ dàng</h6>
+                <p>Quý khách có thể đổi trả sản phẩm trong vòng <strong>30 ngày</strong> nếu phát hiện lỗi từ nhà sản xuất. Sản phẩm đổi trả phải còn nguyên hộp và phụ kiện đi kèm.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade custom-modal" id="modal-faq" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-question-circle"></i> Hỏi đáp (FAQ)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6>NeoMart bán hàng chính hãng không?</h6>
+                <p class="mb-3">Chắc chắn rồi! <strong>100%</strong> sản phẩm tại NeoMart đều là hàng chính hãng, có nguồn gốc xuất xứ rõ ràng.</p>
+                <h6>Làm sao để tôi theo dõi đơn hàng?</h6>
+                <p class="mb-3">Bạn có thể theo dõi tiến trình giao hàng bằng cách đăng nhập vào tài khoản và truy cập phần <strong>"Quản lý đơn hàng"</strong>.</p>
+                <h6>Có xuất hóa đơn VAT không?</h6>
+                <p>NeoMart cung cấp đầy đủ hóa đơn VAT điện tử cho tất cả các đơn hàng khi quý khách có yêu cầu.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade custom-modal" id="modal-contact" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-headset"></i> Liên hệ chúng tôi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded-3">
+                    <i class="bi bi-geo-alt-fill fs-3 text-danger"></i>
+                    <div>
+                        <div class="fw-bold text-dark">Địa chỉ trực tiếp</div>
+                        <div class="text-muted small">123 Đường Công Nghệ, Quận 1, TP. Hồ Chí Minh</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded-3">
+                    <i class="bi bi-telephone-fill fs-3 text-success"></i>
+                    <div>
+                        <div class="fw-bold text-dark">Hotline hỗ trợ 24/7</div>
+                        <div class="text-muted small">(+84) 123 456 789</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded-3">
+                    <i class="bi bi-envelope-fill fs-3 text-primary"></i>
+                    <div>
+                        <div class="fw-bold text-dark">Email liên hệ</div>
+                        <div class="text-muted small">support@neomart.vn</div>
+                    </div>
+                </div>
+                <p class="text-center mt-4 fw-semibold text-success">
+                    Chúng tôi luôn sẵn lòng lắng nghe và hỗ trợ quý khách mọi lúc, mọi nơi!
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @stack('scripts')
 </body>
 </html>

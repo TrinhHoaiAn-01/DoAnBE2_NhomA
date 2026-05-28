@@ -48,7 +48,7 @@ class HomeController extends Controller
 
         // Banners
         $banners = [
-            ['image' => 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1200', 'title' => 'Mega Sale - Giảm tới 50%', 'link' => route('products.index')],
+            ['image' => 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=1200', 'title' => 'Mega Sale - Giảm tới 50%', 'link' => route('products.index')],
             [
                 'image' => $newestProduct?->image_url ?? 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=1200',
                 'title' => $newestProduct ? 'Mới nhất: ' . $newestProduct->name : 'Sản phẩm mới nhất',

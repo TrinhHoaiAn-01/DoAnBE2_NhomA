@@ -57,7 +57,7 @@
     padding: 0.45rem 2rem 0.45rem 0.85rem;
     font-size: 0.85rem;
     color: var(--text-primary);
-    background: var(--surface-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236366f1' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") no-repeat right 0.65rem center;
+    background: var(--surface-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23047857' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") no-repeat right 0.65rem center;
     -webkit-appearance: none; appearance: none;
     cursor: pointer;
     outline: none;
@@ -75,13 +75,13 @@
     margin-bottom: 1rem;
 }
 .filter-card-header {
-    padding: 0.9rem 1.25rem;
+    padding: 1rem 1.25rem;
     border-bottom: 1px solid var(--border);
-    font-weight: 700;
-    font-size: 0.875rem;
-    color: var(--text-primary);
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #fff;
     display: flex; align-items: center; gap: 0.5rem;
-    background: var(--surface-2);
+    background: var(--primary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -89,25 +89,25 @@
 
 .cat-item {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0.7rem 1.25rem;
+    padding: 1rem 1.25rem;
     border-bottom: 1px solid var(--surface-3);
     text-decoration: none;
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: 500;
     transition: var(--transition);
     gap: 0.5rem;
-    border-left: 3px solid transparent;
+    border-left: 4px solid transparent;
 }
 .cat-item:last-child { border-bottom: none; }
 .cat-item:hover {
-    background: var(--primary-light);
+    background: rgba(4, 120, 87, 0.05);
     color: var(--primary);
     border-left-color: var(--primary);
     padding-left: 1.5rem;
 }
 .cat-item.active {
-    background: var(--primary-light);
+    background: rgba(4, 120, 87, 0.08);
     color: var(--primary);
     font-weight: 700;
     border-left-color: var(--primary);
@@ -122,7 +122,7 @@
     font-weight: 700;
     flex-shrink: 0;
 }
-.cat-item.active .cat-count { background: rgba(99,102,241,0.18); color: var(--primary); }
+.cat-item.active .cat-count { background: rgba(4,120,87,0.15); color: var(--primary); }
 
 /* ===== TOOLBAR ===== */
 .products-toolbar {
@@ -315,9 +315,7 @@
 
         {{-- Danh mục --}}
         <div class="filter-card">
-            <div class="filter-card-header">
-                <i class="bi bi-grid text-primary"></i> Danh mục
-            </div>
+
             <div class="filter-card-body">
                 <a href="{{ route('products.index') }}"
                    class="cat-item {{ !$categorySlug ? 'active' : '' }}">
