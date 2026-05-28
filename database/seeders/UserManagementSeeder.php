@@ -16,7 +16,7 @@ class UserManagementSeeder extends Seeder
                 'email' => 'admin@example.com',
                 'phone' => '0901000001',
                 'role_id' => 5,
-                'status' => 'active',
+                'status' => 1,
                 'avatar_url' => 'https://placehold.co/160x160?text=Admin',
             ],
             [
@@ -24,7 +24,7 @@ class UserManagementSeeder extends Seeder
                 'email' => 'product@example.com',
                 'phone' => '0901000002',
                 'role_id' => 2,
-                'status' => 'active',
+                'status' => 1,
                 'avatar_url' => 'https://placehold.co/160x160?text=Product',
             ],
             [
@@ -32,7 +32,7 @@ class UserManagementSeeder extends Seeder
                 'email' => 'order@example.com',
                 'phone' => '0901000003',
                 'role_id' => 3,
-                'status' => 'active',
+                'status' => 1,
                 'avatar_url' => 'https://placehold.co/160x160?text=Order',
             ],
             [
@@ -40,7 +40,7 @@ class UserManagementSeeder extends Seeder
                 'email' => 'warehouse@example.com',
                 'phone' => '0901000004',
                 'role_id' => 4,
-                'status' => 'active',
+                'status' => 1,
                 'avatar_url' => 'https://placehold.co/160x160?text=Warehouse',
             ],
             [
@@ -48,7 +48,7 @@ class UserManagementSeeder extends Seeder
                 'email' => 'customer@example.com',
                 'phone' => '0901000005',
                 'role_id' => 1,
-                'status' => 'active',
+                'status' => 1,
                 'avatar_url' => 'https://placehold.co/160x160?text=Customer',
             ],
             [
@@ -56,7 +56,7 @@ class UserManagementSeeder extends Seeder
                 'email' => 'locked@example.com',
                 'phone' => '0901000006',
                 'role_id' => 1,
-                'status' => 'inactive',
+                'status' => 0,
                 'avatar_url' => 'https://placehold.co/160x160?text=Locked',
             ],
         ];

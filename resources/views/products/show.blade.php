@@ -7,34 +7,45 @@
 .custom-breadcrumb .breadcrumb-item.active { font-size: 0.85rem; color: var(--text-muted); }
 .custom-breadcrumb .breadcrumb-item + .breadcrumb-item::before { color: var(--text-muted); }
 
-/* ===== IMAGE SECTION ===== */
-.product-image-card {
+/* ===== UNIFIED PRODUCT CARD ===== */
+.product-detail-card {
     background: #fff;
     border-radius: 24px;
     border: 1px solid var(--border);
     overflow: hidden;
-    position: sticky;
-    top: 80px;
+    margin-bottom: 2rem;
+    align-items: stretch !important;
 }
+.product-detail-card > [class*='col'] {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== IMAGE SECTION ===== */
 .main-image-wrap {
     background: var(--surface-2);
-    display: flex; align-items: center; justify-content: center;
-    height: 380px;
-    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-height: 440px;
     position: relative;
     overflow: hidden;
     cursor: zoom-in;
+    border-radius: 0;
 }
 .main-image-wrap img {
-    max-width: 100%; max-height: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     transition: transform 0.5s ease;
 }
-.main-image-wrap:hover img { transform: scale(1.08); }
+.main-image-wrap:hover img { transform: scale(1.05); }
 .image-badge-corner {
     position: absolute; top: 1rem; left: 1rem;
     font-size: 0.75rem; font-weight: 800;
     padding: 0.3rem 0.75rem; border-radius: 10px;
+    z-index: 2;
 }
 
 /* Thumbnails */
@@ -60,10 +71,11 @@
 /* ===== INFO SECTION ===== */
 .product-info-card {
     background: #fff;
-    border-radius: 24px;
-    border: 1px solid var(--border);
+    border-radius: 0;
+    border-left: none;
     padding: 2rem;
     height: 100%;
+    overflow-y: auto;
 }
 .product-cat-badge {
     display: inline-flex; align-items: center; gap: 0.4rem;
@@ -315,6 +327,7 @@
     height: 160px; background: var(--surface-2);
     display: flex; align-items: center; justify-content: center;
     padding: 1rem;
+    overflow: hidden;
 }
 .related-img img { max-height: 100%; max-width: 100%; object-fit: contain; transition: transform 0.4s; }
 .related-card:hover .related-img img { transform: scale(1.08); }
@@ -364,36 +377,21 @@
 </nav>
 
 {{-- ===== MAIN PRODUCT AREA ===== --}}
-<div class="row g-4 mb-2">
+<div class="product-detail-card row g-0 mb-2">
 
     {{-- IMAGE COLUMN --}}
-    <div class="col-lg-5">
-        <div class="product-image-card">
-            <div class="main-image-wrap" id="mainImgWrap">
-                @if($product->original_price && $product->original_price > $product->price)
-                    <span class="image-badge-corner bg-danger text-white">
-                        -{{ round((1 - $product->price / $product->original_price) * 100) }}%
-                    </span>
-                @elseif($product->created_at->gt(now()->subDays(7)))
-                    <span class="image-badge-corner bg-success text-white">Mới về</span>
-                @endif
-                <img id="mainImg"
-                     src="{{ $product->image_url ?: 'https://placehold.co/600x400?text='.urlencode($product->name) }}"
-                     alt="{{ $product->name }}">
-            </div>
-            {{-- Thumbnails (dùng cùng 1 ảnh + placeholder để demo gallery) --}}
-            <div class="thumb-row">
-                @php $imgUrl = $product->image_url ?: 'https://placehold.co/300x200?text='.urlencode($product->name); @endphp
-                <div class="thumb-item active" onclick="switchImg(this, '{{ $imgUrl }}')">
-                    <img src="{{ $imgUrl }}" alt="Ảnh 1">
-                </div>
-                <div class="thumb-item" onclick="switchImg(this, 'https://placehold.co/600x400/e0e7ff/6366f1?text=Góc+2')">
-                    <img src="https://placehold.co/60x60/e0e7ff/6366f1?text=2" alt="Ảnh 2">
-                </div>
-                <div class="thumb-item" onclick="switchImg(this, 'https://placehold.co/600x400/d1fae5/10b981?text=Góc+3')">
-                    <img src="https://placehold.co/60x60/d1fae5/10b981?text=3" alt="Ảnh 3">
-                </div>
-            </div>
+    <div class="col-lg-5 d-flex">
+        <div class="main-image-wrap w-100" id="mainImgWrap">
+            @if($product->original_price && $product->original_price > $product->price)
+                <span class="image-badge-corner bg-danger text-white">
+                    -{{ round((1 - $product->price / $product->original_price) * 100) }}%
+                </span>
+            @elseif($product->created_at->gt(now()->subDays(7)))
+                <span class="image-badge-corner bg-success text-white">Mới về</span>
+            @endif
+            <img id="mainImg"
+                 src="{{ $product->image_url ?: 'https://placehold.co/600x400?text='.urlencode($product->name) }}"
+                 alt="{{ $product->name }}">
         </div>
     </div>
 

@@ -204,18 +204,22 @@
     cursor: pointer;
     text-decoration: none;
     color: var(--text-primary);
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     height: 100%;
 }
 .flash-card:hover {
     border-color: var(--accent);
     color: var(--text-primary);
 }
-.flash-card img {
-    height: 110px; object-fit: contain;
-    margin-bottom: 0.75rem;
-    transition: transform 0.4s ease;
-}
+    .flash-card img {
+        height: 260px; /* match product card image height */
+        width: 100%;
+        object-fit: cover;
+        margin-bottom: 0.75rem;
+        transition: transform 0.4s ease;
+    }
 .flash-card:hover img { transform: scale(1.05); }
 .flash-card-name { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; min-height: 2.2rem; }
 .flash-price { font-size: 1.1rem; font-weight: 900; color: var(--danger); }
@@ -254,14 +258,12 @@
 }
 .category-img-wrap {
     width: 100%;
-    height: 180px;
+    height: 260px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-.category-card:hover .category-img-wrap img {
-    transform: scale(1.08);
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 .category-img-wrap img {
     width: 100%;
@@ -286,31 +288,44 @@
 
 /* ===== PRODUCT CARDS ===== */
 .product-card {
-    background: #fff;
+    background: #ffffff;
     border-radius: 8px;
     overflow: hidden;
-    transition: var(--transition);
-    border: 1px solid var(--border);
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: none;
     display: flex; flex-direction: column;
     height: 100%;
 }
 .product-card:hover {
     border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
 .product-img-wrap {
     position: relative;
-    padding: 1.5rem;
-    background: var(--surface-2);
-    display: flex; align-items: center; justify-content: center;
-    height: 200px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 260px; /* uniform height */
     overflow: hidden;
+    aspect-ratio: 1 / 1; /* keep square */
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 .product-img-wrap img {
-    max-height: 100%; max-width: 100%;
-    object-fit: contain;
-    transition: transform 0.5s ease;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: transform 0.4s ease;
 }
-.product-card:hover .product-img-wrap img { transform: scale(1.1); }
+.product-card:hover .product-img-wrap img {
+    transform: scale(1.12);
+    box-shadow: 0 8px 16px rgba(0,136,72,0.15);
+}
 .product-overlay-btn {
     position: absolute;
     inset: 0;
@@ -360,7 +375,19 @@
 .wishlist-btn:hover { color: #ef4444; transform: scale(1.15); }
 .wishlist-btn.active { color: #ef4444; }
 
-.product-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
+.product-body {
+.product-body {
+    background: #ffffff;
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
 .product-cat { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
 .product-name {
     font-weight: 700; font-size: 0.92rem;
@@ -464,9 +491,9 @@
                 @foreach($banners as $index => $banner)
                     <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
                         <img src="{{ $banner['image'] }}" class="d-block w-100" alt="{{ $banner['title'] }}">
-                        <div class="carousel-caption text-start" style="left:6%;right:auto;bottom:15%;background:rgba(0,0,0,0.6);padding:1.5rem 2rem;border-radius:0;">
-                            <h2 class="fw-black text-white mb-3" style="font-size:clamp(1.2rem,3vw,1.8rem);">{{ $banner['title'] }}</h2>
-                            <a href="{{ $banner['link'] }}" class="hero-btn-primary" style="font-size:0.85rem;padding:0.55rem 1.25rem;">
+                        <div class="carousel-caption text-start" style="left:0;right:auto;bottom:0;top:0;background:linear-gradient(90deg,rgba(0,0,0,0.55) 0%,transparent 65%);padding:2rem 2.5rem;border-radius:0;display:flex;flex-direction:column;justify-content:center;max-width:55%;">
+                            <h2 class="fw-black text-white mb-3" style="font-size:clamp(1.2rem,3vw,1.8rem);text-shadow:0 2px 8px rgba(0,0,0,0.3);">{{ $banner['title'] }}</h2>
+                            <a href="{{ $banner['link'] }}" class="hero-btn-primary" style="font-size:0.85rem;padding:0.55rem 1.25rem;align-self:flex-start;">
                                 Mua ngay <i class="bi bi-arrow-right ms-1"></i>
                             </a>
                         </div>

@@ -39,10 +39,21 @@ class HomeController extends Controller
         // Thời gian kết thúc flash sale (giả lập 2 tiếng nữa)
         $flash_sale_end = now()->addHours(2)->format('Y-m-d H:i:s');
 
-        // Banners (tạm dùng mock — sau này có thể đọc từ bảng banners)
+        // Sản phẩm mới nhất có ảnh để hiển thị trên banner
+        $newestProduct = Product::query()
+            ->where('is_active', true)
+            ->whereNotNull('image_url')
+            ->latest()
+            ->first();
+
+        // Banners
         $banners = [
             ['image' => 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1200', 'title' => 'Mega Sale - Giảm tới 50%', 'link' => route('products.index')],
-            ['image' => 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=1200', 'title' => 'Sản phẩm mới nhất', 'link' => route('products.index')],
+            [
+                'image' => $newestProduct?->image_url ?? 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=1200',
+                'title' => $newestProduct ? 'Mới nhất: ' . $newestProduct->name : 'Sản phẩm mới nhất',
+                'link'  => $newestProduct ? route('products.show', $newestProduct) : route('products.index'),
+            ],
         ];
 
         return view('home', [
