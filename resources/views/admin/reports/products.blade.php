@@ -19,6 +19,17 @@
             background: #ffffff;
             box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
         }
+
+        .product-report-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #ffffff;
+            min-height: 120px;
+        }
+
+        .product-chart {
+            min-height: 320px;
+        }
     </style>
 
     <div class="product-report-shell">
@@ -57,6 +68,45 @@
                     <a class="btn btn-outline-secondary" href="{{ route('admin.reports.products') }}">Đặt lại</a>
                 </div>
             </form>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-12 col-md-3">
+                <div class="product-report-card p-3">
+                    <div class="text-muted small text-uppercase fw-semibold">Số lượng đã bán</div>
+                    <div class="fs-4 fw-bold mt-2">{{ number_format($totalSoldQuantity) }}</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="product-report-card p-3">
+                    <div class="text-muted small text-uppercase fw-semibold">Doanh thu nhóm đầu</div>
+                    <div class="fs-4 fw-bold mt-2">{{ $money($totalSoldRevenue) }}</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="product-report-card p-3">
+                    <div class="text-muted small text-uppercase fw-semibold">Bán chạy nhất</div>
+                    <div class="fw-bold mt-2 text-truncate">{{ $topProduct->product_name ?? 'Chưa có dữ liệu' }}</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="product-report-card p-3">
+                    <div class="text-muted small text-uppercase fw-semibold">Cần theo dõi</div>
+                    <div class="fw-bold mt-2 text-truncate">{{ $slowProduct->product_name ?? 'Chưa có dữ liệu' }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-report-panel p-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div>
+                    <h2 class="h5 fw-bold mb-1">Xếp hạng theo số lượng bán</h2>
+                    <div class="text-muted small">{{ $fromDate->format('d/m/Y') }} - {{ $toDate->format('d/m/Y') }}</div>
+                </div>
+            </div>
+            <div class="product-chart">
+                <canvas id="bestProductChart"></canvas>
+            </div>
         </div>
 
         <div class="product-report-panel">
@@ -126,3 +176,46 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const canvas = document.getElementById('bestProductChart');
+
+            if (!canvas) {
+                return;
+            }
+
+            new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: @json($bestProductLabels),
+                    datasets: [{
+                        label: 'Số lượng bán',
+                        data: @json($bestProductQuantities),
+                        borderColor: '#16a34a',
+                        backgroundColor: 'rgba(22, 163, 74, 0.68)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+@endpush

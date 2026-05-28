@@ -180,13 +180,28 @@ class AdminController extends Controller
             ->orderByDesc('products.stock')
             ->take($limit)
             ->get();
+        $totalSoldQuantity = (int) $bestSellingProducts->sum('sold_quantity');
+        $totalSoldRevenue = (float) $bestSellingProducts->sum('sold_revenue');
+        $topProduct = $bestSellingProducts->first();
+        $slowProduct = $slowSellingProducts->first();
+        $bestProductLabels = $bestSellingProducts->pluck('product_name')->values();
+        $bestProductQuantities = $bestSellingProducts
+            ->pluck('sold_quantity')
+            ->map(fn ($value) => (int) $value)
+            ->values();
 
         return view('admin.reports.products', compact(
             'fromDate',
             'toDate',
             'limit',
             'bestSellingProducts',
-            'slowSellingProducts'
+            'slowSellingProducts',
+            'totalSoldQuantity',
+            'totalSoldRevenue',
+            'topProduct',
+            'slowProduct',
+            'bestProductLabels',
+            'bestProductQuantities'
         ));
     }
 
