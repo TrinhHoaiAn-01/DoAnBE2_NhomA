@@ -242,9 +242,6 @@
     color: var(--text-primary);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.25rem 0.75rem;
     height: 100%;
 }
 .category-card:hover {
@@ -256,23 +253,23 @@
 }
 .category-img-wrap {
     width: 100%;
-    height: 130px;
-    margin-bottom: 0.75rem;
+    height: 150px;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.category-card:hover .category-img-wrap {
-    transform: scale(1.1);
+.category-card:hover .category-img-wrap img {
+    transform: scale(1.08);
 }
 .category-img-wrap img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
 }
 .category-body {
-    padding: 0;
+    padding: 1rem 0.75rem;
     text-align: center;
 }
 .category-name {
@@ -535,34 +532,37 @@
         </div>
         <div class="row g-3">
             @php
-                $categoryImages = [
-                    'thuc-pham' => 'https://images.unsplash.com/photo-1610832958506-ee5633619144?w=400&q=80', // Basket of fruits & veggies (white bg)
-                    'do-uong' => 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&q=80', // Beverages / soda cans (white bg)
-                    'my-pham' => 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=400&q=80', // Cosmetics & Care (white/clean bg)
-                    'gia-dung' => 'https://images.unsplash.com/photo-1585421514738-ee1a3b8d1f2b?w=400&q=80', // Detergents & Cleaning (white bg)
-                    'khuyen-mai' => 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&q=80', // Promotions
-                    'rau' => 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=400&q=80',
-                    'cu' => 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=400&q=80',
-                    'qua' => 'https://images.unsplash.com/photo-1610832958506-ee5633619144?w=400&q=80',
-                    'thit' => 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400&q=80',
-                    'ca' => 'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=400&q=80',
-                    'hai-san' => 'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=400&q=80',
-                    'sua' => 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&q=80',
-                    'banh' => 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80',
-                ];
-
-                $getCategoryImage = function($category) use ($categoryImages) {
-                    $slug = $category->slug;
-                    $name = mb_strtolower($category->name, 'UTF-8');
-                    if (isset($categoryImages[$slug])) {
-                        return $categoryImages[$slug];
+                $getCategoryImage = function($category) {
+                    $slug = trim(strtolower($category->slug));
+                    $name = mb_strtolower(trim($category->name), 'UTF-8');
+                    
+                    // 1. Food / Groceries / Thực phẩm
+                    if (str_contains($slug, 'thuc-pham') || str_contains($slug, 'thucpham') || str_contains($name, 'thực phẩm') || str_contains($name, 'thuc pham') || str_contains($slug, 'food') || str_contains($name, 'ăn')) {
+                        return 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80'; // Ultra-vibrant fresh market stand
                     }
-                    foreach ($categoryImages as $keyword => $imgUrl) {
-                        if (str_contains($slug, $keyword) || str_contains($name, $keyword)) {
-                            return $imgUrl;
-                        }
+                    
+                    // 2. Drinks / Đồ uống
+                    if (str_contains($slug, 'do-uong') || str_contains($slug, 'douong') || str_contains($name, 'đồ uống') || str_contains($name, 'do uong') || str_contains($slug, 'drink') || str_contains($slug, 'beverage') || str_contains($name, 'nước') || str_contains($name, 'sữa')) {
+                        return 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop&q=80'; // Vibrant tropical cocktails & beverages
                     }
-                    return 'https://images.unsplash.com/photo-1610832958506-ee5633619144?w=300&q=80';
+                    
+                    // 3. Cosmetics / Mỹ phẩm
+                    if (str_contains($slug, 'my-pham') || str_contains($slug, 'mypham') || str_contains($name, 'mỹ phẩm') || str_contains($name, 'my pham') || str_contains($slug, 'cosmetic') || str_contains($slug, 'beauty') || str_contains($name, 'tóc') || str_contains($name, 'da')) {
+                        return 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=500&auto=format&fit=crop&q=80'; // Bright modern cosmetic bottles
+                    }
+                    
+                    // 4. Houseware / Detergents / Gia dụng (handles 'da dung' typo too!)
+                    if (str_contains($slug, 'gia-dung') || str_contains($slug, 'giadung') || str_contains($name, 'gia dụng') || str_contains($name, 'gia dung') || str_contains($name, 'da dung') || str_contains($slug, 'house') || str_contains($slug, 'home') || str_contains($slug, 'clean') || str_contains($name, 'chén') || str_contains($name, 'giấy')) {
+                        return 'https://images.unsplash.com/photo-1583947268964-b28dc8f51f92?w=500&auto=format&fit=crop&q=80'; // Colorful household tools and clean elements
+                    }
+                    
+                    // 5. Promotions / Khuyến mãi
+                    if (str_contains($slug, 'khuyen-mai') || str_contains($slug, 'khuyenmai') || str_contains($name, 'khuyến mãi') || str_contains($name, 'khuyen mai') || str_contains($slug, 'promo') || str_contains($slug, 'sale') || str_contains($name, 'tặng')) {
+                        return 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=500&auto=format&fit=crop&q=80'; // Bright glowing shopping bags & promotions
+                    }
+                    
+                    // Fallback general nice grocery image
+                    return 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80';
                 };
             @endphp
             @foreach($categories as $i => $category)
