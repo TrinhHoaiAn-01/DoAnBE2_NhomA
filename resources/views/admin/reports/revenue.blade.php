@@ -61,7 +61,30 @@
         </div>
 
         <div class="report-panel p-4">
-            <div class="text-muted">Dữ liệu báo cáo sẽ được nạp sau khi kết nối route quản trị.</div>
+            <form class="row g-3 align-items-end" method="GET" action="{{ route('admin.reports.revenue') }}">
+                <div class="col-12 col-md-3">
+                    <label class="form-label fw-semibold" for="from_date">Từ ngày</label>
+                    <input class="form-control" type="date" id="from_date" name="from_date" value="{{ $fromDate->format('Y-m-d') }}">
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label fw-semibold" for="to_date">Đến ngày</label>
+                    <input class="form-control" type="date" id="to_date" name="to_date" value="{{ $toDate->format('Y-m-d') }}">
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label fw-semibold" for="group_by">Gom dữ liệu</label>
+                    <select class="form-select" id="group_by" name="group_by">
+                        <option value="day" @selected($groupBy === 'day')>Theo ngày</option>
+                        <option value="month" @selected($groupBy === 'month')>Theo tháng</option>
+                        <option value="year" @selected($groupBy === 'year')>Theo năm</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-3 d-flex gap-2">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-funnel me-1"></i> Lọc
+                    </button>
+                    <a class="btn btn-outline-secondary" href="{{ route('admin.reports.revenue') }}">Đặt lại</a>
+                </div>
+            </form>
         </div>
     </div>
 @endsection

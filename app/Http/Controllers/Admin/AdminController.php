@@ -36,7 +36,21 @@ class AdminController extends Controller
 
     public function revenueReport(Request $request)
     {
-        $ordersQuery = $this->payableOrderQuery();
+        $filters = $request->validate([
+            'from_date' => ['nullable', 'date'],
+            'to_date' => ['nullable', 'date'],
+            'group_by' => ['nullable', 'in:day,month,year'],
+        ]);
+        $groupBy = $filters['group_by'] ?? 'day';
+        $fromDate = isset($filters['from_date'])
+            ? Carbon::parse($filters['from_date'])->startOfDay()
+            : now()->subDays(29)->startOfDay();
+        $toDate = isset($filters['to_date'])
+            ? Carbon::parse($filters['to_date'])->endOfDay()
+            : now()->endOfDay();
+
+        $ordersQuery = $this->payableOrderQuery()
+            ->whereBetween('created_at', [$fromDate, $toDate]);
 
         // Lay nhanh cac chi so dau tien cho man hinh bao cao doanh thu.
         $ordersCount = (clone $ordersQuery)->count();
@@ -46,6 +60,9 @@ class AdminController extends Controller
             ->count();
 
         return view('admin.reports.revenue', compact(
+            'fromDate',
+            'toDate',
+            'groupBy',
             'ordersCount',
             'totalRevenue',
             'paidOrdersCount'
