@@ -132,6 +132,19 @@ class AdminController extends Controller
 
     public function productSalesReport(Request $request)
     {
+        $filters = $request->validate([
+            'from_date' => ['nullable', 'date'],
+            'to_date' => ['nullable', 'date'],
+            'limit' => ['nullable', 'integer', 'min:5', 'max:30'],
+        ]);
+        $fromDate = isset($filters['from_date'])
+            ? Carbon::parse($filters['from_date'])->startOfDay()
+            : now()->subDays(29)->startOfDay();
+        $toDate = isset($filters['to_date'])
+            ? Carbon::parse($filters['to_date'])->endOfDay()
+            : now()->endOfDay();
+        $limit = (int) ($filters['limit'] ?? 10);
+
         // Lay nhung san pham co so luong ban cao nhat tu cac don hang hop le.
         $bestSellingProducts = OrderItem::query()
             ->select(
@@ -140,12 +153,13 @@ class AdminController extends Controller
                 DB::raw('SUM(quantity) as sold_quantity'),
                 DB::raw('SUM(subtotal) as sold_revenue')
             )
-            ->whereHas('order', function ($query): void {
-                $query->where('status', '!=', 'cancelled');
+            ->whereHas('order', function ($query) use ($fromDate, $toDate): void {
+                $query->where('status', '!=', 'cancelled')
+                    ->whereBetween('created_at', [$fromDate, $toDate]);
             })
             ->groupBy('product_name', 'sku')
             ->orderByDesc('sold_quantity')
-            ->take(10)
+            ->take($limit)
             ->get();
         $slowSellingProducts = OrderItem::query()
             ->select(
@@ -154,15 +168,22 @@ class AdminController extends Controller
                 DB::raw('SUM(quantity) as sold_quantity'),
                 DB::raw('SUM(subtotal) as sold_revenue')
             )
-            ->whereHas('order', function ($query): void {
-                $query->where('status', '!=', 'cancelled');
+            ->whereHas('order', function ($query) use ($fromDate, $toDate): void {
+                $query->where('status', '!=', 'cancelled')
+                    ->whereBetween('created_at', [$fromDate, $toDate]);
             })
             ->groupBy('product_name', 'sku')
             ->orderBy('sold_quantity')
-            ->take(10)
+            ->take($limit)
             ->get();
 
-        return view('admin.reports.products', compact('bestSellingProducts', 'slowSellingProducts'));
+        return view('admin.reports.products', compact(
+            'fromDate',
+            'toDate',
+            'limit',
+            'bestSellingProducts',
+            'slowSellingProducts'
+        ));
     }
 
     public function dashboard()

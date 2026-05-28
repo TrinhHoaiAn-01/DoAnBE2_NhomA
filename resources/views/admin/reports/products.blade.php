@@ -32,6 +32,33 @@
             </a>
         </div>
 
+        <div class="product-report-panel p-4">
+            <form class="row g-3 align-items-end" method="GET" action="{{ route('admin.reports.products') }}">
+                <div class="col-12 col-md-3">
+                    <label class="form-label fw-semibold" for="from_date">Từ ngày</label>
+                    <input class="form-control" type="date" id="from_date" name="from_date" value="{{ $fromDate->format('Y-m-d') }}">
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label fw-semibold" for="to_date">Đến ngày</label>
+                    <input class="form-control" type="date" id="to_date" name="to_date" value="{{ $toDate->format('Y-m-d') }}">
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label fw-semibold" for="limit">Số dòng</label>
+                    <select class="form-select" id="limit" name="limit">
+                        @foreach([5, 10, 15, 20, 30] as $option)
+                            <option value="{{ $option }}" @selected($limit === $option)>{{ $option }} sản phẩm</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-12 col-md-3 d-flex gap-2">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-funnel me-1"></i> Lọc
+                    </button>
+                    <a class="btn btn-outline-secondary" href="{{ route('admin.reports.products') }}">Đặt lại</a>
+                </div>
+            </form>
+        </div>
+
         <div class="product-report-panel">
             <div class="p-3 border-bottom">
                 <h2 class="h5 fw-bold mb-0">Sản phẩm bán chạy</h2>
