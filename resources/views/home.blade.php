@@ -430,47 +430,7 @@
         </div>
     </div>
 
-    {{-- ===== 2. TRUST STRIP ===== --}}
-    <div class="trust-strip mb-4">
-        <div class="trust-item">
-            <div class="trust-icon" style="background:#e0e7ff">
-                <i class="bi bi-truck" style="color:var(--primary)"></i>
-            </div>
-            <div>
-                <div class="trust-text">Giao hàng 2 giờ</div>
-                <div class="trust-sub">Nội thành TP.HCM & Hà Nội</div>
-            </div>
-        </div>
-        <div class="trust-item">
-            <div class="trust-icon" style="background:#d1fae5">
-                <i class="bi bi-shield-check" style="color:#10b981"></i>
-            </div>
-            <div>
-                <div class="trust-text">Bảo hành chính hãng</div>
-                <div class="trust-sub">Đổi trả trong 30 ngày</div>
-            </div>
-        </div>
-        <div class="trust-item">
-            <div class="trust-icon" style="background:#fef3c7">
-                <i class="bi bi-percent" style="color:#f59e0b"></i>
-            </div>
-            <div>
-                <div class="trust-text">Giá tốt nhất</div>
-                <div class="trust-sub">Cam kết hoàn tiền chênh lệch</div>
-            </div>
-        </div>
-        <div class="trust-item">
-            <div class="trust-icon" style="background:#fce7f3">
-                <i class="bi bi-headset" style="color:#ec4899"></i>
-            </div>
-            <div>
-                <div class="trust-text">Hỗ trợ 24/7</div>
-                <div class="trust-sub">Tư vấn miễn phí mọi lúc</div>
-            </div>
-        </div>
-    </div>
-
-    {{-- ===== 3. BANNER CAROUSEL ===== --}}
+    {{-- ===== 2. BANNER CAROUSEL ===== --}}
     @if(count($banners) > 0)
     <div class="banner-carousel-wrap mb-4">
         <div id="homeBanner" class="carousel slide" data-bs-ride="carousel">
@@ -643,6 +603,46 @@
         </div>
     </div>
     @endif
+
+    {{-- ===== 7. TRUST STRIP ===== --}}
+    <div class="trust-strip mb-4 mt-2">
+        <div class="trust-item">
+            <div class="trust-icon" style="background:#e0e7ff">
+                <i class="bi bi-truck" style="color:var(--primary)"></i>
+            </div>
+            <div>
+                <div class="trust-text">Giao hàng 2 giờ</div>
+                <div class="trust-sub">Nội thành TP.HCM & Hà Nội</div>
+            </div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-icon" style="background:#d1fae5">
+                <i class="bi bi-shield-check" style="color:#10b981"></i>
+            </div>
+            <div>
+                <div class="trust-text">Bảo hành chính hãng</div>
+                <div class="trust-sub">Đổi trả trong 30 ngày</div>
+            </div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-icon" style="background:#fef3c7">
+                <i class="bi bi-percent" style="color:#f59e0b"></i>
+            </div>
+            <div>
+                <div class="trust-text">Giá tốt nhất</div>
+                <div class="trust-sub">Cam kết hoàn tiền chênh lệch</div>
+            </div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-icon" style="background:#fce7f3">
+                <i class="bi bi-headset" style="color:#ec4899"></i>
+            </div>
+            <div>
+                <div class="trust-text">Hỗ trợ 24/7</div>
+                <div class="trust-sub">Tư vấn miễn phí mọi lúc</div>
+            </div>
+        </div>
+    </div>
 
 </div>
 @endsection
