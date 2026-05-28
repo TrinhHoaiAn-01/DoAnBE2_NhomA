@@ -240,28 +240,61 @@
     cursor: pointer;
     text-decoration: none;
     color: var(--text-primary);
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.25rem 0.75rem;
     height: 100%;
 }
 .category-card:hover {
-    background: var(--surface-2);
+    border-color: var(--primary);
+    background: #f7fee7;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     color: var(--text-primary);
 }
-.category-icon-wrap {
+.category-img-wrap {
+    width: 90px;
     height: 90px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2.2rem;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     transition: transform 0.3s;
 }
-.category-card:hover .category-icon-wrap { transform: scale(1.15) rotate(-3deg); }
-.category-body { padding: 1rem 1.25rem 1.25rem; }
-.category-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; }
-.category-count { font-size: 0.78rem; color: var(--text-muted); }
-.category-cta {
-    display: inline-flex; align-items: center; gap: 0.3rem;
-    font-size: 0.78rem; font-weight: 600;
+.category-card:hover .category-img-wrap {
+    transform: scale(1.08);
+}
+.category-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.category-body {
+    padding: 0;
+}
+.category-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    transition: color 0.2s;
+}
+.category-card:hover .category-name {
     color: var(--primary);
-    margin-top: 0.5rem;
+}
+.category-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    display: inline-block;
 }
 
 /* ===== PRODUCT CARDS ===== */
@@ -513,19 +546,45 @@
         </div>
         <div class="row g-3">
             @php
-                $bgColors = ['#e0e7ff','#d1fae5','#fef3c7','#fce7f3','#dbeafe','#fce7f3','#dcfce7','#ede9fe'];
-                $iconColors = ['#6366f1','#10b981','#f59e0b','#ec4899','#3b82f6','#ec4899','#22c55e','#8b5cf6'];
+                $categoryImages = [
+                    'thuc-pham' => 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&q=80', // Food / Groceries
+                    'do-uong' => 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&q=80', // Beverages / Milk
+                    'my-pham' => 'https://images.unsplash.com/photo-1526947425960-945c6e72858f?w=300&q=80', // Cosmetics / Shampoo
+                    'gia-dung' => 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=300&q=80', // Household / Cleaning
+                    'khuyen-mai' => 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=300&q=80', // Promotions
+                    'rau' => 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=80',
+                    'cu' => 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=80',
+                    'qua' => 'https://images.unsplash.com/photo-1610832958506-ee5633619144?w=300&q=80',
+                    'thit' => 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=300&q=80',
+                    'ca' => 'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=300&q=80',
+                    'hai-san' => 'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=300&q=80',
+                    'sua' => 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&q=80',
+                    'banh' => 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=300&q=80',
+                ];
+
+                $getCategoryImage = function($category) use ($categoryImages) {
+                    $slug = $category->slug;
+                    $name = mb_strtolower($category->name, 'UTF-8');
+                    if (isset($categoryImages[$slug])) {
+                        return $categoryImages[$slug];
+                    }
+                    foreach ($categoryImages as $keyword => $imgUrl) {
+                        if (str_contains($slug, $keyword) || str_contains($name, $keyword)) {
+                            return $imgUrl;
+                        }
+                    }
+                    return 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&q=80';
+                };
             @endphp
             @foreach($categories as $i => $category)
             <div class="col-6 col-md-4 col-lg-3">
                 <a href="{{ route('products.index', ['category' => $category->slug]) }}" class="category-card">
-                    <div class="category-icon-wrap" style="background:{{ $bgColors[$i % count($bgColors)] }}">
-                        <i class="fa-solid {{ $category->icon ?? 'fa-box' }}" style="color:{{ $iconColors[$i % count($iconColors)] }}"></i>
+                    <div class="category-img-wrap">
+                        <img src="{{ $getCategoryImage($category) }}" alt="{{ $category->name }}" loading="lazy">
                     </div>
                     <div class="category-body">
                         <div class="category-name">{{ $category->name }}</div>
                         <div class="category-count">{{ $category->products_count }} sản phẩm</div>
-                        <div class="category-cta">Xem ngay <i class="bi bi-arrow-right"></i></div>
                     </div>
                 </a>
             </div>
