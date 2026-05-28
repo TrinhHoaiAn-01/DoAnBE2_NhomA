@@ -13,7 +13,7 @@
 .top-filter-bar {
     background: #fff;
     border: 1px solid var(--border);
-    border-radius: 0;
+    border-radius: 8px;
     padding: 0.85rem 1.25rem;
     margin-bottom: 1.25rem;
     display: flex;
@@ -28,7 +28,7 @@
     align-items: center;
     background: var(--surface-2);
     border: 1.5px solid var(--border);
-    border-radius: 0;
+    border-radius: 8px;
     overflow: hidden;
     transition: var(--transition);
 }
@@ -53,7 +53,7 @@
 .sort-dropdown-wrap label { font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
 .sort-select {
     border: 1.5px solid var(--border);
-    border-radius: 0;
+    border-radius: 8px;
     padding: 0.45rem 2rem 0.45rem 0.85rem;
     font-size: 0.85rem;
     color: var(--text-primary);
@@ -70,6 +70,7 @@
 .filter-card {
     background: #fff;
     border: 1px solid var(--border);
+    border-radius: 8px;
     overflow: hidden;
     margin-bottom: 1rem;
 }
@@ -126,7 +127,7 @@
 /* ===== TOOLBAR ===== */
 .products-toolbar {
     background: #fff;
-    border-radius: 0;
+    border-radius: 8px;
     padding: 0.85rem 1.25rem;
     border: 1px solid var(--border);
     margin-bottom: 1.25rem;
@@ -139,7 +140,7 @@
 .view-toggle { display: flex; gap: 0.25rem; }
 .view-btn {
     width: 34px; height: 34px;
-    border-radius: 0;
+    border-radius: 8px;
     border: 1px solid var(--border);
     background: transparent;
     color: var(--text-muted);
@@ -153,7 +154,7 @@
 /* ===== PRODUCT GRID ===== */
 .product-grid-card {
     background: #fff;
-    border-radius: 0;
+    border-radius: 8px;
     overflow: hidden;
     border: 1px solid var(--border);
     transition: var(--transition);
@@ -182,11 +183,11 @@
 .grid-badge {
     position: absolute; top: 0; left: 0;
     font-size: 0.68rem; font-weight: 800;
-    padding: 0.2rem 0.55rem; border-radius: 0;
+    padding: 0.2rem 0.55rem; border-radius: 8px 0 8px 0;
 }
 .grid-wishlist {
     position: absolute; top: 0; right: 0;
-    width: 30px; height: 30px; border-radius: 0;
+    width: 30px; height: 30px; border-radius: 0 8px 0 8px;
     background: rgba(0,0,0,0.05); border: none;
     color: #999; font-size: 0.85rem;
     display: flex; align-items: center; justify-content: center;
@@ -211,11 +212,11 @@
 .grid-footer { display: flex; flex-direction: column; margin-top: auto; gap: 0.5rem; }
 .grid-price { font-size: 1.15rem; font-weight: 900; color: var(--danger); }
 .grid-original { font-size: 0.75rem; color: #999; text-decoration: line-through; }
-.grid-stock { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 0; font-weight: 600; }
+.grid-stock { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 6px; font-weight: 600; }
 .grid-actions { display: flex; margin-top: 0.75rem; width: 100%; }
 .btn-detail { display: none; }
 .btn-cart-grid {
-    flex: 1; border-radius: 0;
+    flex: 1; border-radius: 0 0 8px 8px;
     border: none; background: var(--accent);
     color: #000; font-size: 0.85rem; font-weight: bold;
     display: flex; align-items: center; justify-content: center;
@@ -229,7 +230,7 @@
 /* ===== LIST VIEW ===== */
 .product-list-card {
     background: #fff;
-    border-radius: 0;
+    border-radius: 8px;
     border: 1px solid var(--border);
     transition: var(--transition);
     display: flex; overflow: hidden;
@@ -378,7 +379,7 @@
                 @else Cửa hàng chưa có sản phẩm nào đang bán.
                 @endif
             </p>
-            <a class="btn btn-primary rounded-0 px-4" href="{{ route('products.index') }}">Xem tất cả sản phẩm</a>
+            <a class="btn btn-primary rounded-1 px-4" href="{{ route('products.index') }}">Xem tất cả sản phẩm</a>
         </div>
         @else
         {{-- Grid View --}}
@@ -465,12 +466,12 @@
                         <span class="grid-stock {{ $product->stock > 0 ? 'bg-success bg-opacity-10 text-success' : 'bg-secondary bg-opacity-10 text-secondary' }}">
                             {{ $product->stock > 0 ? 'Còn hàng' : 'Hết hàng' }}
                         </span>
-                        <a class="btn btn-outline-primary btn-sm rounded-0 px-3" href="{{ route('products.show', $product) }}">
+                        <a class="btn btn-outline-primary btn-sm rounded-1 px-3" href="{{ route('products.show', $product) }}">
                             <i class="bi bi-eye me-1"></i>Chi tiết
                         </a>
                         <form method="post" action="{{ route('cart.add', $product) }}">
                             @csrf
-                            <button class="btn btn-primary btn-sm rounded-0 px-3" style="background:var(--accent);color:#000;border:none;font-weight:bold;" type="submit" @disabled($product->stock <= 0)>
+                            <button class="btn btn-primary btn-sm rounded-1 px-3" style="background:var(--accent);color:#000;border:none;font-weight:bold;" type="submit" @disabled($product->stock <= 0)>
                                 CHỌN MUA
                             </button>
                         </form>

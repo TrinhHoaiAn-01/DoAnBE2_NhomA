@@ -118,7 +118,7 @@
         .nav-search-wrap {
             display: flex;
             background: #fff;
-            border-radius: 0;
+            border-radius: 8px;
             overflow: hidden;
             height: 40px;
         }
@@ -177,7 +177,7 @@
             font-size: 0.65rem;
             font-weight: 800;
             width: 18px; height: 18px;
-            border-radius: 0;
+            border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
             line-height: 1;
         }
@@ -187,6 +187,7 @@
             display: flex; align-items: center; gap: 0.5rem;
             background: rgba(0,0,0,0.2);
             border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
             padding: 0.25rem 0.75rem 0.25rem 0.25rem;
             cursor: pointer;
             color: #fff;
@@ -196,6 +197,7 @@
         .user-btn:hover { background: rgba(0,0,0,0.3); }
         .user-avatar {
             width: 28px; height: 28px;
+            border-radius: 6px;
             background: var(--accent);
             display: flex; align-items: center; justify-content: center;
             color: #000; font-size: 0.75rem; font-weight: 800;

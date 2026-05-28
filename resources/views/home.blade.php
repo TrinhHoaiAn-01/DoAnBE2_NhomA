@@ -5,7 +5,7 @@
 /* ===== HERO ===== */
 .hero-section {
     background: var(--primary-dark);
-    border-radius: 0;
+    border-radius: 12px;
     padding: 4.5rem 2rem;
     color: white;
     position: relative;
@@ -30,7 +30,7 @@
     display: inline-flex; align-items: center; gap: 0.4rem;
     background: rgba(0,0,0,0.2);
     border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 0;
+    border-radius: 20px;
     padding: 0.4rem 1rem;
     font-size: 0.8rem;
     font-weight: 600;
@@ -67,7 +67,7 @@
     background: var(--accent);
     color: #000;
     border: none;
-    border-radius: 0;
+    border-radius: 8px;
     padding: 0.75rem 1.75rem;
     font-weight: 700;
     font-size: 0.95rem;
@@ -80,7 +80,7 @@
     background: transparent;
     color: #fff;
     border: 2px solid rgba(255,255,255,0.45);
-    border-radius: 0;
+    border-radius: 8px;
     padding: 0.75rem 1.75rem;
     font-weight: 600;
     font-size: 0.95rem;
@@ -98,7 +98,7 @@
 
 /* Hero image */
 .hero-img {
-    border-radius: 0;
+    border-radius: 12px;
     max-width: 100%;
     object-fit: cover;
     height: 320px;
@@ -114,7 +114,7 @@
 }
 .trust-item {
     background: #fff;
-    border-radius: 0;
+    border-radius: 8px;
     padding: 1rem 1.25rem;
     display: flex; align-items: center; gap: 0.75rem;
     border: 1px solid var(--border);
@@ -123,7 +123,7 @@
 .trust-item:hover { background: var(--surface-2); }
 .trust-icon {
     width: 42px; height: 42px;
-    border-radius: 0;
+    border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
     font-size: 1.1rem;
     flex-shrink: 0;
@@ -146,7 +146,7 @@
     position: absolute; left: 0; top: 15%; bottom: 15%;
     width: 4px;
     background: var(--primary);
-    border-radius: 0;
+    border-radius: 4px;
 }
 .section-link {
     font-size: 0.85rem; font-weight: 600;
@@ -157,13 +157,13 @@
 .section-link:hover { gap: 0.5rem; color: var(--primary-dark); }
 
 /* ===== BANNER CAROUSEL ===== */
-.banner-carousel-wrap { border-radius: 0; overflow: hidden; margin-bottom: 2.5rem; border: 1px solid var(--border); }
+.banner-carousel-wrap { border-radius: 12px; overflow: hidden; margin-bottom: 2.5rem; border: 1px solid var(--border); }
 .carousel-item img { height: 380px; object-fit: cover; }
 
 /* ===== FLASH SALE ===== */
 .flash-sale-section {
     background: var(--danger);
-    border-radius: 0;
+    border-radius: 12px;
     padding: 2rem;
     color: white;
     margin-bottom: 2.5rem;
@@ -184,7 +184,7 @@
     background: #000;
     color: #fff;
     padding: 0.4rem 0.65rem;
-    border-radius: 0;
+    border-radius: 6px;
     font-weight: 900;
     min-width: 42px;
     text-align: center;
@@ -196,7 +196,7 @@
 .flash-card {
     background: #fff;
     border: 1px solid var(--border);
-    border-radius: 0;
+    border-radius: 8px;
     padding: 1.25rem;
     text-align: center;
     transition: all 0.3s ease;
@@ -226,14 +226,14 @@
     font-size: 0.65rem;
     font-weight: 800;
     padding: 0.15rem 0.45rem;
-    border-radius: 0;
+    border-radius: 4px;
     margin-bottom: 0.4rem;
 }
 
 /* ===== CATEGORY CARDS ===== */
 .category-card {
     background: #fff;
-    border-radius: 0;
+    border-radius: 8px;
     border: 1px solid var(--border);
     overflow: hidden;
     transition: var(--transition);
@@ -267,7 +267,7 @@
 /* ===== PRODUCT CARDS ===== */
 .product-card {
     background: #fff;
-    border-radius: 0;
+    border-radius: 8px;
     overflow: hidden;
     transition: var(--transition);
     border: 1px solid var(--border);
@@ -304,7 +304,7 @@
     background: var(--accent);
     color: #000;
     border: none;
-    border-radius: 0;
+    border-radius: 8px;
     padding: 0.5rem 1.25rem;
     font-size: 0.8rem;
     font-weight: 700;
@@ -320,14 +320,14 @@
     top: 0; left: 0;
     font-size: 0.7rem; font-weight: 800;
     padding: 0.25rem 0.6rem;
-    border-radius: 0;
+    border-radius: 8px 0 8px 0;
     z-index: 10;
 }
 .wishlist-btn {
     position: absolute;
     top: 0; right: 0;
     width: 32px; height: 32px;
-    border-radius: 0;
+    border-radius: 0 8px 0 8px;
     background: rgba(0,0,0,0.05);
     border: none;
     color: #999;
@@ -362,7 +362,7 @@
 .product-original { font-size: 0.78rem; color: #999; text-decoration: line-through; }
 .btn-add-cart {
     width: 100%; height: 36px;
-    border-radius: 0;
+    border-radius: 0 0 8px 8px;
     background: var(--accent);
     color: #000;
     border: none;
