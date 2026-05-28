@@ -7,15 +7,28 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
+/**
+ * Lớp OrderSeeder
+ *
+ * Khởi tạo dữ liệu mẫu cho Đơn hàng (Orders) và Chi tiết đơn hàng (Order Items).
+ * Mô phỏng các trạng thái giao dịch (chờ xử lý, đang giao, đã giao, đã thanh toán...).
+ */
 class OrderSeeder extends Seeder
 {
+    /**
+     * Thực thi chèn dữ liệu mẫu cho các đơn hàng.
+     *
+     * @return void
+     */
     public function run(): void
     {
+        // Gọi Seeder tài khoản và sản phẩm làm dữ liệu nền
         $this->call([
             UserManagementSeeder::class,
             CatalogSeeder::class,
         ]);
 
+        // Danh sách các đơn hàng giả lập với nhiều trạng thái khác nhau
         $orders = [
             [
                 'code' => 'ORD-20260508-001',
@@ -87,6 +100,7 @@ class OrderSeeder extends Seeder
             ],
         ];
 
+        // Lặp qua mảng đơn hàng để chèn dữ liệu và tính tổng tiền tự động
         foreach ($orders as $orderData) {
             $items = $orderData['items'];
             $userEmail = $orderData['user_email'];
@@ -99,6 +113,7 @@ class OrderSeeder extends Seeder
             $subtotal = 0;
             $preparedItems = [];
 
+            // Chuẩn bị chi tiết dòng sản phẩm và tính thành tiền
             foreach ($items as $item) {
                 $product = Product::query()->where('sku', $item['sku'])->first();
 
@@ -122,6 +137,7 @@ class OrderSeeder extends Seeder
                 continue;
             }
 
+            // Tạo/Cập nhật bản ghi đơn hàng
             $order = Order::query()->updateOrCreate(
                 ['code' => $orderData['code']],
                 $orderData + [
@@ -131,6 +147,7 @@ class OrderSeeder extends Seeder
                 ]
             );
 
+            // Làm sạch và chèn mới các dòng sản phẩm chi tiết
             $order->items()->delete();
 
             foreach ($preparedItems as $preparedItem) {

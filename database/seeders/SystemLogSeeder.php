@@ -5,10 +5,22 @@ namespace Database\Seeders;
 use App\Models\SystemLog;
 use Illuminate\Database\Seeder;
 
+/**
+ * Lớp SystemLogSeeder
+ *
+ * Khởi tạo dữ liệu mẫu cho Nhật ký hoạt động hệ thống (System Logs).
+ * Ghi lại các hoạt động của Quản trị viên, Nhân viên sản phẩm, Nhân viên đơn hàng và Thủ kho.
+ */
 class SystemLogSeeder extends Seeder
 {
+    /**
+     * Thực thi chèn dữ liệu mẫu nhật ký hệ thống.
+     *
+     * @return void
+     */
     public function run(): void
     {
+        // Danh sách các bản ghi nhật ký hoạt động giả lập
         $logs = [
             [
                 'user_name' => 'Admin User',
@@ -70,6 +82,7 @@ class SystemLogSeeder extends Seeder
             ],
         ];
 
+        // Lặp qua mảng và thêm hoặc cập nhật bản ghi nhật ký hoạt động
         foreach ($logs as $log) {
             SystemLog::query()->updateOrCreate(
                 [

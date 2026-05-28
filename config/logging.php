@@ -9,12 +9,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Log Channel
+    | Kênh Ghi Log Mặc Định (Default Log Channel)
     |--------------------------------------------------------------------------
     |
-    | This option defines the default log channel that is utilized to write
-    | messages to your logs. The value provided here should match one of
-    | the channels present in the list of "channels" configured below.
+    | Tùy chọn này định nghĩa kênh ghi log mặc định được sử dụng để lưu các thông
+    | báo lỗi hoặc thông tin của hệ thống. Giá trị ở đây phải tương ứng với
+    | một trong các kênh được cấu hình trong danh sách "channels" bên dưới.
     |
     */
 
@@ -22,12 +22,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Deprecations Log Channel
+    | Kênh Ghi Log Cho Các Tính Năng Bị Cảnh Báo Ngưng Hỗ Trợ (Deprecations)
     |--------------------------------------------------------------------------
     |
-    | This option controls the log channel that should be used to log warnings
-    | regarding deprecated PHP and library features. This allows you to get
-    | your application ready for upcoming major versions of dependencies.
+    | Tùy chọn này kiểm soát kênh ghi log được sử dụng để lưu trữ các cảnh báo
+    | liên quan đến các tính năng PHP hoặc các thư viện không còn được hỗ trợ.
+    | Điều này giúp chuẩn bị nâng cấp ứng dụng cho các phiên bản tiếp theo.
     |
     */
 
@@ -38,26 +38,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Log Channels
+    | Các Kênh Ghi Log (Log Channels)
     |--------------------------------------------------------------------------
     |
-    | Here you may configure the log channels for your application. Laravel
-    | utilizes the Monolog PHP logging library, which includes a variety
-    | of powerful log handlers and formatters that you're free to use.
+    | Tại đây bạn có thể cấu hình các kênh ghi log cho ứng dụng của mình. Laravel
+    | sử dụng thư viện ghi log Monolog của PHP, tích hợp sẵn nhiều handler và
+    | formatter ghi log mạnh mẽ để bạn sử dụng.
     |
-    | Available drivers: "single", "daily", "slack", "syslog",
-    |                    "errorlog", "monolog", "custom", "stack"
+    | Các driver khả dụng: "single", "daily", "slack", "syslog",
+    |                     "errorlog", "monolog", "custom", "stack"
     |
     */
 
     'channels' => [
 
+        // Kênh Stack: Kết hợp nhiều kênh log lại với nhau
         'stack' => [
             'driver' => 'stack',
             'channels' => explode(',', env('LOG_STACK', 'single')),
             'ignore_exceptions' => false,
         ],
 
+        // Kênh Single: Ghi log vào một tệp duy nhất
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
@@ -65,6 +67,7 @@ return [
             'replace_placeholders' => true,
         ],
 
+        // Kênh Daily: Ghi log chia theo ngày, tự động dọn dẹp các tệp cũ
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
@@ -73,6 +76,7 @@ return [
             'replace_placeholders' => true,
         ],
 
+        // Kênh Slack: Gửi cảnh báo log trực tiếp tới kênh Slack qua Webhook
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
@@ -82,6 +86,7 @@ return [
             'replace_placeholders' => true,
         ],
 
+        // Kênh Papertrail: Ghi log từ xa qua dịch vụ Papertrail
         'papertrail' => [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),
@@ -94,6 +99,7 @@ return [
             'processors' => [PsrLogMessageProcessor::class],
         ],
 
+        // Kênh Stderr: Xuất log ra lỗi tiêu chuẩn hệ thống (thường dùng cho Docker)
         'stderr' => [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),
@@ -105,6 +111,7 @@ return [
             'processors' => [PsrLogMessageProcessor::class],
         ],
 
+        // Kênh Syslog: Ghi log vào dịch vụ nhật ký hệ thống của hệ điều hành
         'syslog' => [
             'driver' => 'syslog',
             'level' => env('LOG_LEVEL', 'debug'),
@@ -112,17 +119,20 @@ return [
             'replace_placeholders' => true,
         ],
 
+        // Kênh Errorlog: Ghi log vào trình xử lý log mặc định của PHP/Apache/Nginx
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
         ],
 
+        // Kênh Null: Không làm gì cả (bỏ qua log hoàn toàn)
         'null' => [
             'driver' => 'monolog',
             'handler' => NullHandler::class,
         ],
 
+        // Kênh Emergency: Kênh ghi lỗi khẩn cấp dự phòng của Laravel
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],

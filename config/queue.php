@@ -4,12 +4,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Queue Connection Name
+    | Kết Nối Hàng Đợi Mặc Định (Default Queue Connection Name)
     |--------------------------------------------------------------------------
     |
-    | Laravel's queue supports a variety of backends via a single, unified
-    | API, giving you convenient access to each backend using identical
-    | syntax for each. The default queue connection is defined below.
+    | Hàng đợi của Laravel hỗ trợ nhiều backend lưu trữ hàng đợi thông qua một API
+    | hợp nhất và duy nhất, cung cấp cho bạn cú pháp lập trình giống nhau.
+    | Kết nối hàng đợi mặc định được định nghĩa bên dưới.
     |
     */
 
@@ -17,23 +17,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Queue Connections
+    | Các Kết Nối Hàng Đợi (Queue Connections)
     |--------------------------------------------------------------------------
     |
-    | Here you may configure the connection options for every queue backend
-    | used by your application. An example configuration is provided for
-    | each backend supported by Laravel. You're also free to add more.
+    | Tại đây bạn có thể cấu hình các tùy chọn kết nối cho các dịch vụ hàng đợi
+    | (queue backends) được sử dụng bởi ứng dụng của bạn. Các cấu hình mẫu đã được
+    | thiết lập sẵn cho mỗi dịch vụ được hỗ trợ bởi Laravel.
     |
-    | Drivers: "sync", "database", "beanstalkd", "sqs", "redis", "null"
+    | Các driver hỗ trợ: "sync", "database", "beanstalkd", "sqs", "redis", "null"
     |
     */
 
     'connections' => [
 
+        // Chế độ đồng bộ (Sync): Các job được xử lý ngay lập tức trên luồng chính (không bất đồng bộ)
         'sync' => [
             'driver' => 'sync',
         ],
 
+        // Hàng đợi lưu trong Cơ Sở Dữ Liệu (Database Queue)
         'database' => [
             'driver' => 'database',
             'connection' => env('DB_QUEUE_CONNECTION'),
@@ -43,6 +45,7 @@ return [
             'after_commit' => false,
         ],
 
+        // Hàng đợi Beanstalkd
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => env('BEANSTALKD_QUEUE_HOST', 'localhost'),
@@ -52,6 +55,7 @@ return [
             'after_commit' => false,
         ],
 
+        // Hàng đợi Amazon SQS (Simple Queue Service)
         'sqs' => [
             'driver' => 'sqs',
             'key' => env('AWS_ACCESS_KEY_ID'),
@@ -63,6 +67,7 @@ return [
             'after_commit' => false,
         ],
 
+        // Hàng đợi sử dụng Redis
         'redis' => [
             'driver' => 'redis',
             'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),
@@ -76,12 +81,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Job Batching
+    | Xử Lý Job Theo Lô (Job Batching)
     |--------------------------------------------------------------------------
     |
-    | The following options configure the database and table that store job
-    | batching information. These options can be updated to any database
-    | connection and table which has been defined by your application.
+    | Các tùy chọn sau cấu hình cơ sở dữ liệu và bảng lưu trữ thông tin về các
+    | job chạy theo lô (batching). Các tùy chọn này có thể trỏ tới bất kỳ kết nối
+    | cơ sở dữ liệu và bảng nào đã được định nghĩa trong ứng dụng.
     |
     */
 
@@ -92,14 +97,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Failed Queue Jobs
+    | Các Job Hàng Đợi Bị Lỗi (Failed Queue Jobs)
     |--------------------------------------------------------------------------
     |
-    | These options configure the behavior of failed queue job logging so you
-    | can control how and where failed jobs are stored. Laravel ships with
-    | support for storing failed jobs in a simple file or in a database.
+    | Các cấu hình này quy định hành vi lưu trữ và ghi nhận lại các công việc (jobs)
+    | trong hàng đợi bị thực hiện thất bại, cho phép bạn theo dõi và xử lý lại lỗi.
     |
-    | Supported drivers: "database-uuids", "dynamodb", "file", "null"
+    | Các driver hỗ trợ: "database-uuids", "dynamodb", "file", "null"
     |
     */
 
