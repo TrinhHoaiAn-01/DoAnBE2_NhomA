@@ -70,4 +70,9 @@ class OrderStatus
             })
             ->all();
     }
+
+    public static function canBeCancelled(?string $status): bool
+    {
+        return $status === 'pending';
+    }
 }

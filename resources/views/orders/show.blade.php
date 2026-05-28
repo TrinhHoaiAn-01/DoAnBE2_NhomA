@@ -7,9 +7,20 @@
             <h1 class="h2 fw-bold mb-1">{{ $order->code }}</h1>
             <p class="text-secondary mb-0">Đặt lúc {{ $order->created_at?->format('d/m/Y H:i') }}</p>
         </div>
-        <a class="btn btn-outline-secondary" href="{{ route('orders.index') }}">
-            <i class="bi bi-arrow-left me-1"></i>Quay lại
-        </a>
+        <div class="d-flex flex-wrap gap-2">
+            @if ($canCancel)
+                <form method="post" action="{{ route('orders.cancel', $order) }}" onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn hàng này?');">
+                    @csrf
+                    @method('patch')
+                    <button class="btn btn-outline-danger" type="submit">
+                        <i class="bi bi-x-circle me-1"></i>Hủy đơn
+                    </button>
+                </form>
+            @endif
+            <a class="btn btn-outline-secondary" href="{{ route('orders.index') }}">
+                <i class="bi bi-arrow-left me-1"></i>Quay lại
+            </a>
+        </div>
     </div>
 
     <div class="row g-4">

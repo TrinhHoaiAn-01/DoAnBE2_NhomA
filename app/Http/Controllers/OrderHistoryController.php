@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Support\DeliveryTimeSlot;
 use App\Support\OrderStatus;
 use App\Support\ShippingFeeCalculator;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -42,9 +43,27 @@ class OrderHistoryController extends Controller
             'order' => $order->load('items.product'),
             'statusOptions' => OrderStatus::labels(),
             'trackingSteps' => OrderStatus::steps($order->status),
+            'canCancel' => OrderStatus::canBeCancelled($order->status),
             'shippingDistrictLabel' => ShippingFeeCalculator::districtLabel($order->shipping_district),
             'shippingServiceLabel' => ShippingFeeCalculator::serviceLabel($order->shipping_service),
             'deliveryTimeSlotLabel' => DeliveryTimeSlot::label($order->delivery_time_slot),
         ]);
+    }
+
+    public function cancel(Request $request, Order $order): RedirectResponse
+    {
+        abort_unless((int) $order->user_id === (int) $request->user()->id, 404);
+
+        if (! OrderStatus::canBeCancelled($order->status)) {
+            return back()->with('error', 'Chỉ có thể hủy đơn trước khi đơn được xử lý.');
+        }
+
+        // Cap nhat trang thai huy de admin khong tiep tuc xu ly giao hang.
+        $order->update([
+            'status' => 'cancelled',
+            'payment_status' => $order->payment_status === 'paid' ? 'refund_pending' : $order->payment_status,
+        ]);
+
+        return to_route('orders.show', $order)->with('status', 'Đã hủy đơn hàng thành công.');
     }
 }

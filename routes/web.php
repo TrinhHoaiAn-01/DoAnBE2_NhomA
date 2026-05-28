@@ -127,6 +127,9 @@ Route::post('/logout', [AuthController::class, 'logout'])
     Route::get('/don-hang/{order}', [OrderHistoryController::class, 'show'])
         ->name('orders.show');
 
+    Route::patch('/don-hang/{order}/huy', [OrderHistoryController::class, 'cancel'])
+        ->name('orders.cancel');
+
 });
 
 /*
