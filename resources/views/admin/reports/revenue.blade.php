@@ -60,6 +60,19 @@
                 <div class="report-card p-3">
                     <div class="text-muted small text-uppercase fw-semibold">Đơn đã thanh toán</div>
                     <div class="fs-4 fw-bold mt-2">{{ number_format($paidOrdersCount ?? 0) }}</div>
+                    <div class="text-muted small mt-1">Chờ thanh toán: {{ number_format($pendingPaymentCount ?? 0) }}</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="report-card p-3">
+                    <div class="text-muted small text-uppercase fw-semibold">Giá trị trung bình</div>
+                    <div class="fs-4 fw-bold mt-2">{{ $money($averageOrderValue ?? 0) }}</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="report-card p-3">
+                    <div class="text-muted small text-uppercase fw-semibold">Doanh thu hoàn thành</div>
+                    <div class="fs-4 fw-bold mt-2">{{ $money($completedRevenue ?? 0) }}</div>
                 </div>
             </div>
         </div>

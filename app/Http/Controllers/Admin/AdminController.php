@@ -58,6 +58,13 @@ class AdminController extends Controller
         $paidOrdersCount = (clone $ordersQuery)
             ->where('payment_status', 'paid')
             ->count();
+        $pendingPaymentCount = (clone $ordersQuery)
+            ->where('payment_status', 'pending')
+            ->count();
+        $completedRevenue = (clone $ordersQuery)
+            ->where('status', 'completed')
+            ->sum('total');
+        $averageOrderValue = $ordersCount > 0 ? $totalRevenue / $ordersCount : 0;
         $chartRows = (clone $ordersQuery)
             ->get(['created_at', 'total'])
             ->groupBy(function (Order $order) use ($groupBy): string {
@@ -103,6 +110,9 @@ class AdminController extends Controller
             'ordersCount',
             'totalRevenue',
             'paidOrdersCount',
+            'pendingPaymentCount',
+            'completedRevenue',
+            'averageOrderValue',
             'revenueLabels',
             'revenueData'
         ));
