@@ -236,7 +236,7 @@
     border-radius: 8px;
     border: 1px solid var(--border);
     overflow: hidden;
-    transition: var(--transition);
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
     cursor: pointer;
     text-decoration: none;
     color: var(--text-primary);
@@ -244,26 +244,27 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 1.5rem 1rem;
+    padding: 1.25rem 0.75rem;
     height: 100%;
 }
 .category-card:hover {
     border-color: var(--primary);
     background: #fff;
     color: var(--primary);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 136, 72, 0.1);
 }
 .category-img-wrap {
     width: 100%;
-    height: 110px;
-    margin-bottom: 1rem;
+    height: 130px;
+    margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.35s ease;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .category-card:hover .category-img-wrap {
-    transform: translateY(-4px) scale(1.03);
+    transform: scale(1.1);
 }
 .category-img-wrap img {
     max-width: 100%;
@@ -535,19 +536,19 @@
         <div class="row g-3">
             @php
                 $categoryImages = [
-                    'thuc-pham' => 'https://images.unsplash.com/photo-1610832958506-ee5633619144?w=300&q=80', // Basket of fruits & veggies (white bg)
-                    'do-uong' => 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=80', // Beverages / soda cans (white bg)
-                    'my-pham' => 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=300&q=80', // Cosmetics & Care (white/clean bg)
-                    'gia-dung' => 'https://images.unsplash.com/photo-1585421514738-ee1a3b8d1f2b?w=300&q=80', // Detergents & Cleaning (white bg)
-                    'khuyen-mai' => 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=300&q=80', // Promotions
-                    'rau' => 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=300&q=80',
-                    'cu' => 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=300&q=80',
-                    'qua' => 'https://images.unsplash.com/photo-1610832958506-ee5633619144?w=300&q=80',
-                    'thit' => 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=300&q=80',
-                    'ca' => 'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=300&q=80',
-                    'hai-san' => 'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=300&q=80',
-                    'sua' => 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&q=80',
-                    'banh' => 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=300&q=80',
+                    'thuc-pham' => 'https://images.unsplash.com/photo-1610832958506-ee5633619144?w=400&q=80', // Basket of fruits & veggies (white bg)
+                    'do-uong' => 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&q=80', // Beverages / soda cans (white bg)
+                    'my-pham' => 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=400&q=80', // Cosmetics & Care (white/clean bg)
+                    'gia-dung' => 'https://images.unsplash.com/photo-1585421514738-ee1a3b8d1f2b?w=400&q=80', // Detergents & Cleaning (white bg)
+                    'khuyen-mai' => 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&q=80', // Promotions
+                    'rau' => 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=400&q=80',
+                    'cu' => 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=400&q=80',
+                    'qua' => 'https://images.unsplash.com/photo-1610832958506-ee5633619144?w=400&q=80',
+                    'thit' => 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400&q=80',
+                    'ca' => 'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=400&q=80',
+                    'hai-san' => 'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=400&q=80',
+                    'sua' => 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&q=80',
+                    'banh' => 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80',
                 ];
 
                 $getCategoryImage = function($category) use ($categoryImages) {
