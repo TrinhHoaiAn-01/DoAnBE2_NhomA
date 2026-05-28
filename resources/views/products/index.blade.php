@@ -9,85 +9,119 @@
 .custom-breadcrumb .breadcrumb-item.active { font-size: 0.85rem; color: var(--text-muted); }
 .custom-breadcrumb .breadcrumb-item + .breadcrumb-item::before { color: var(--text-muted); }
 
-/* ===== SIDEBAR ===== */
+/* ===== TOP SEARCH-SORT BAR ===== */
+.top-filter-bar {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 0.85rem 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+.top-filter-bar .search-wrap {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: var(--transition);
+}
+.top-filter-bar .search-wrap:focus-within {
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+.top-filter-bar .search-input {
+    flex: 1; border: none; background: transparent;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.875rem; color: var(--text-primary); outline: none;
+}
+.top-filter-bar .search-input::placeholder { color: var(--text-muted); }
+.top-filter-bar .search-btn {
+    background: var(--primary); border: none; color: #fff;
+    padding: 0 1rem; height: 100%; font-size: 0.85rem; cursor: pointer;
+    transition: background 0.2s;
+}
+.top-filter-bar .search-btn:hover { background: var(--primary-dark); }
+.sort-dropdown-wrap { display: flex; align-items: center; gap: 0.5rem; }
+.sort-dropdown-wrap label { font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
+.sort-select {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0.45rem 2rem 0.45rem 0.85rem;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    background: var(--surface-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236366f1' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") no-repeat right 0.65rem center;
+    -webkit-appearance: none; appearance: none;
+    cursor: pointer;
+    outline: none;
+    transition: var(--transition);
+    font-weight: 500;
+}
+.sort-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+
+/* ===== SIDEBAR – CATEGORY ===== */
 .filter-card {
     background: #fff;
-    border-radius: 20px;
     border: 1px solid var(--border);
     overflow: hidden;
     margin-bottom: 1rem;
 }
 .filter-card-header {
-    padding: 1rem 1.25rem;
+    padding: 0.9rem 1.25rem;
     border-bottom: 1px solid var(--border);
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     color: var(--text-primary);
     display: flex; align-items: center; gap: 0.5rem;
+    background: var(--surface-2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
-.filter-card-body { padding: 0.75rem; }
+.filter-card-body { padding: 0; }
 
 .cat-item {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0.55rem 0.75rem;
-    border-radius: var(--radius-sm);
+    padding: 0.7rem 1.25rem;
+    border-bottom: 1px solid var(--surface-3);
     text-decoration: none;
     color: var(--text-secondary);
     font-size: 0.875rem;
     font-weight: 500;
     transition: var(--transition);
     gap: 0.5rem;
+    border-left: 3px solid transparent;
 }
-.cat-item:hover { background: var(--primary-light); color: var(--primary); }
+.cat-item:last-child { border-bottom: none; }
+.cat-item:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-left-color: var(--primary);
+    padding-left: 1.5rem;
+}
 .cat-item.active {
     background: var(--primary-light);
     color: var(--primary);
     font-weight: 700;
-    border-left: 3px solid var(--primary);
+    border-left-color: var(--primary);
+    padding-left: 1.5rem;
 }
 .cat-count {
     background: var(--surface-3);
     color: var(--text-muted);
-    font-size: 0.72rem;
-    padding: 0.1rem 0.5rem;
-    border-radius: 50px;
-    font-weight: 600;
-}
-.cat-item.active .cat-count { background: rgba(99,102,241,0.15); color: var(--primary); }
-
-/* Sort radio */
-.sort-radio-item {
-    display: flex; align-items: center;
-    padding: 0.5rem 0.75rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    gap: 0.6rem;
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    transition: var(--transition);
-    text-decoration: none;
-}
-.sort-radio-item:hover { background: var(--primary-light); color: var(--primary); }
-.sort-radio-item.active { color: var(--primary); font-weight: 600; }
-.sort-radio-dot {
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
+    font-size: 0.7rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 20px;
+    font-weight: 700;
     flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    transition: var(--transition);
 }
-.sort-radio-item.active .sort-radio-dot {
-    border-color: var(--primary);
-    background: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-light);
-}
-.sort-radio-item.active .sort-radio-dot::after {
-    content: '';
-    width: 6px; height: 6px;
-    background: #fff;
-    border-radius: 50%;
-}
+.cat-item.active .cat-count { background: rgba(99,102,241,0.18); color: var(--primary); }
 
 /* ===== TOOLBAR ===== */
 .products-toolbar {
@@ -252,6 +286,34 @@
     </ol>
 </nav>
 
+{{-- ===== TOP SEARCH + SORT BAR ===== --}}
+<div class="top-filter-bar">
+    {{-- Search --}}
+    <form method="get" action="{{ route('products.index') }}" class="d-flex flex-grow-1" style="min-width:200px;max-width:480px;">
+        @if($categorySlug)
+            <input type="hidden" name="category" value="{{ $categorySlug }}">
+        @endif
+        @if($sort)
+            <input type="hidden" name="sort" value="{{ $sort }}">
+        @endif
+        <div class="search-wrap w-100">
+            <input type="text" name="search" class="search-input" placeholder="Tìm kiếm sản phẩm..." value="{{ $search }}" autocomplete="off">
+            <button type="submit" class="search-btn"><i class="bi bi-search"></i></button>
+        </div>
+    </form>
+
+    {{-- Sort dropdown --}}
+    <div class="sort-dropdown-wrap ms-auto">
+        <label for="sortSelect"><i class="bi bi-sort-down me-1"></i>Sắp xếp:</label>
+        <select id="sortSelect" class="sort-select" onchange="applySort(this.value)">
+            <option value="" {{ !$sort ? 'selected' : '' }}>Mới nhất</option>
+            <option value="price_asc" {{ $sort === 'price_asc' ? 'selected' : '' }}>Giá: Thấp → Cao</option>
+            <option value="price_desc" {{ $sort === 'price_desc' ? 'selected' : '' }}>Giá: Cao → Thấp</option>
+            <option value="name" {{ $sort === 'name' ? 'selected' : '' }}>Tên A → Z</option>
+        </select>
+    </div>
+</div>
+
 <div class="row g-4">
     {{-- ===== SIDEBAR ===== --}}
     <div class="col-lg-3">
@@ -280,52 +342,6 @@
             </div>
         </div>
 
-        {{-- Tìm kiếm --}}
-        <div class="filter-card">
-            <div class="filter-card-header">
-                <i class="bi bi-search text-primary"></i> Tìm kiếm
-            </div>
-            <div class="filter-card-body">
-                <form method="get" action="{{ route('products.index') }}">
-                    @if($categorySlug)
-                        <input type="hidden" name="category" value="{{ $categorySlug }}">
-                    @endif
-                    <div class="input-group input-group-sm" style="border-radius:50px;overflow:hidden;border:1.5px solid var(--border);">
-                        <input type="text" name="search" class="form-control border-0 bg-white"
-                               placeholder="Tên sản phẩm..." value="{{ $search }}"
-                               style="font-size:0.85rem;">
-                        <button class="btn btn-primary border-0 px-3" type="submit">
-                            <i class="bi bi-search" style="font-size:0.8rem;"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        {{-- Sắp xếp --}}
-        <div class="filter-card">
-            <div class="filter-card-header">
-                <i class="bi bi-sort-down text-primary"></i> Sắp xếp
-            </div>
-            <div class="filter-card-body">
-                @php
-                    $sortOptions = [
-                        '' => ['label' => 'Mới nhất', 'icon' => 'bi-clock'],
-                        'price_asc' => ['label' => 'Giá: Thấp → Cao', 'icon' => 'bi-sort-numeric-up'],
-                        'price_desc' => ['label' => 'Giá: Cao → Thấp', 'icon' => 'bi-sort-numeric-down'],
-                        'name' => ['label' => 'Tên A → Z', 'icon' => 'bi-sort-alpha-up'],
-                    ];
-                @endphp
-                @foreach($sortOptions as $key => $opt)
-                    <a href="{{ route('products.index', array_filter(['category' => $categorySlug, 'search' => $search, 'sort' => $key ?: null])) }}"
-                       class="sort-radio-item {{ $sort === $key ? 'active' : '' }}">
-                        <span class="sort-radio-dot"></span>
-                        <i class="bi {{ $opt['icon'] }} small opacity-70"></i>
-                        {{ $opt['label'] }}
-                    </a>
-                @endforeach
-            </div>
-        </div>
     </div>
 
     {{-- ===== PRODUCT AREA ===== --}}
@@ -352,25 +368,10 @@
                         <i class="bi bi-list-ul"></i>
                     </button>
                 </div>
-                <a href="{{ route('cart.index') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3 d-none d-sm-flex align-items-center gap-1">
-                    <i class="bi bi-bag"></i> Giỏ hàng
-                </a>
             </div>
         </div>
 
         {{-- Products --}}
-        @forelse ($products as $product)
-
-            {{-- GRID VIEW --}}
-            <div class="product-item-grid" id="view-grid">
-            </div>
-
-            {{-- LIST VIEW --}}
-            <div class="product-item-list d-none" id="view-list">
-            </div>
-
-        @empty
-        @endforelse
 
         {{-- Grid + List rendered together --}}
         @if($products->isEmpty())
@@ -523,6 +524,14 @@
         const icon = btn.querySelector('i');
         icon.classList.toggle('bi-heart');
         icon.classList.toggle('bi-heart-fill');
+    }
+
+    // Sort dropdown redirect
+    function applySort(val) {
+        const url = new URL(window.location.href);
+        if (val) url.searchParams.set('sort', val);
+        else url.searchParams.delete('sort');
+        window.location.href = url.toString();
     }
 </script>
 @endpush
