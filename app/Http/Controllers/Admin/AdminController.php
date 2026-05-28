@@ -34,6 +34,23 @@ class AdminController extends Controller
         return Order::query()->where('status', '!=', 'cancelled');
     }
 
+    private function soldProductReportQuery(Carbon $fromDate, Carbon $toDate)
+    {
+        // Gom doanh so theo san pham tu cac don hang hop le trong khoang loc.
+        return OrderItem::query()
+            ->select(
+                'product_name',
+                'sku',
+                DB::raw('SUM(quantity) as sold_quantity'),
+                DB::raw('SUM(subtotal) as sold_revenue')
+            )
+            ->whereHas('order', function ($query) use ($fromDate, $toDate): void {
+                $query->where('status', '!=', 'cancelled')
+                    ->whereBetween('created_at', [$fromDate, $toDate]);
+            })
+            ->groupBy('product_name', 'sku');
+    }
+
     public function revenueReport(Request $request)
     {
         $filters = $request->validate([
@@ -127,6 +144,74 @@ class AdminController extends Controller
             'revenueLabels',
             'revenueData',
             'revenueRows'
+        ));
+    }
+
+    public function productSalesReport(Request $request)
+    {
+        $filters = $request->validate([
+            'from_date' => ['nullable', 'date'],
+            'to_date' => ['nullable', 'date'],
+            'limit' => ['nullable', 'integer', 'min:5', 'max:30'],
+        ]);
+        $fromDate = isset($filters['from_date'])
+            ? Carbon::parse($filters['from_date'])->startOfDay()
+            : now()->subDays(29)->startOfDay();
+        $toDate = isset($filters['to_date'])
+            ? Carbon::parse($filters['to_date'])->endOfDay()
+            : now()->endOfDay();
+        $limit = (int) ($filters['limit'] ?? 10);
+
+        if ($fromDate->greaterThan($toDate)) {
+            [$fromDate, $toDate] = [$toDate->copy()->startOfDay(), $fromDate->copy()->endOfDay()];
+        }
+
+        // Lay nhung san pham co so luong ban cao nhat tu cac don hang hop le.
+        $bestSellingProducts = $this->soldProductReportQuery($fromDate, $toDate)
+            ->orderByDesc('sold_quantity')
+            ->take($limit)
+            ->get();
+        $slowSellingProducts = Product::query()
+            ->select(
+                'products.name as product_name',
+                'products.sku',
+                'products.stock',
+                DB::raw('COALESCE(SUM(CASE WHEN orders.id IS NOT NULL THEN order_items.quantity ELSE 0 END), 0) as sold_quantity'),
+                DB::raw('COALESCE(SUM(CASE WHEN orders.id IS NOT NULL THEN order_items.subtotal ELSE 0 END), 0) as sold_revenue')
+            )
+            ->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
+            ->leftJoin('orders', function ($join) use ($fromDate, $toDate): void {
+                $join->on('orders.id', '=', 'order_items.order_id')
+                    ->where('orders.status', '!=', 'cancelled')
+                    ->whereBetween('orders.created_at', [$fromDate, $toDate]);
+            })
+            ->groupBy('products.id', 'products.name', 'products.sku', 'products.stock')
+            ->orderByRaw('sold_quantity ASC')
+            ->orderByDesc('products.stock')
+            ->take($limit)
+            ->get();
+        $totalSoldQuantity = (int) $bestSellingProducts->sum('sold_quantity');
+        $totalSoldRevenue = (float) $bestSellingProducts->sum('sold_revenue');
+        $topProduct = $bestSellingProducts->first();
+        $slowProduct = $slowSellingProducts->first();
+        $bestProductLabels = $bestSellingProducts->pluck('product_name')->values();
+        $bestProductQuantities = $bestSellingProducts
+            ->pluck('sold_quantity')
+            ->map(fn ($value) => (int) $value)
+            ->values();
+
+        return view('admin.reports.products', compact(
+            'fromDate',
+            'toDate',
+            'limit',
+            'bestSellingProducts',
+            'slowSellingProducts',
+            'totalSoldQuantity',
+            'totalSoldRevenue',
+            'topProduct',
+            'slowProduct',
+            'bestProductLabels',
+            'bestProductQuantities'
         ));
     }
 

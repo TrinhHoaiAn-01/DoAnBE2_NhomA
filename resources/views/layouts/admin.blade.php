@@ -268,6 +268,11 @@
                         <i class="bi bi-graph-up-arrow"></i> Báo cáo doanh thu
                     </a>
                 </li>
+                <li class="{{ request()->routeIs('admin.reports.products') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.products') }}">
+                        <i class="bi bi-trophy"></i> Báo cáo sản phẩm
+                    </a>
+                </li>
             </ul>
 
 			<!-- PROFILE -->
