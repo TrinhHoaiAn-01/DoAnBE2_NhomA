@@ -12,6 +12,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController as ShopProductController;
 use App\Http\Controllers\ProfileUserController;
@@ -118,6 +119,10 @@ Route::middleware('auth')->group(function (): void {
 
 Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
+
+    // ORDER HISTORY
+    Route::get('/don-hang', [OrderHistoryController::class, 'index'])
+        ->name('orders.index');
 
 });
 
