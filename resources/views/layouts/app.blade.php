@@ -16,18 +16,18 @@
            DESIGN SYSTEM – CSS Variables
         ============================================================ */
         :root {
-            --primary:        #6366f1;
-            --primary-dark:   #4f46e5;
-            --primary-light:  #e0e7ff;
-            --accent:         #f59e0b;
-            --accent-light:   #fef3c7;
-            --danger:         #ef4444;
+            --primary:        #008848;
+            --primary-dark:   #006b38;
+            --primary-light:  #e6f3eb;
+            --accent:         #ffb416;
+            --accent-light:   #fff5e0;
+            --danger:         #d0021b;
             --success:        #10b981;
             --warning:        #f59e0b;
             --surface:        #ffffff;
-            --surface-2:      #f8fafc;
-            --surface-3:      #f1f5f9;
-            --border:         #e2e8f0;
+            --surface-2:      #f1f1f1;
+            --surface-3:      #e5e5e5;
+            --border:         #ddd;
             --text-primary:   #0f172a;
             --text-secondary: #475569;
             --text-muted:     #94a3b8;
@@ -87,8 +87,8 @@
            TOP NAVBAR
         ============================================================ */
         .top-nav {
-            background: #1a1a1a;
-            border-bottom: 2px solid var(--primary);
+            background: var(--primary);
+            border-bottom: 4px solid var(--accent);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -98,46 +98,39 @@
         /* Brand */
         .brand-logo {
             font-weight: 900;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             letter-spacing: -0.5px;
             text-decoration: none;
             line-height: 1;
             white-space: nowrap;
             padding: 1rem 0;
+            text-transform: uppercase;
         }
-        .brand-logo .neo { color: #fff; font-style: italic; }
-        .brand-logo .mart { color: var(--primary); font-style: italic; }
+        .brand-logo .neo { color: #fff; }
+        .brand-logo .mart { color: var(--accent); }
 
         /* Search bar */
         .nav-search-form {
             flex: 1;
-            max-width: 350px;
-            margin: 0.5rem 0;
+            max-width: 500px;
+            margin: 0 2rem;
         }
         .nav-search-wrap {
-            position: relative;
             display: flex;
             background: #fff;
-            border: 1px solid #333;
             border-radius: 0;
             overflow: hidden;
-            transition: var(--transition);
-        }
-        .nav-search-wrap:focus-within {
-            border-color: var(--primary);
+            height: 40px;
         }
         .nav-search-input {
             flex: 1;
             border: none;
-            background: transparent;
-            padding: 0.4rem 1rem;
-            font-size: 0.85rem;
-            color: #333;
+            padding: 0 1rem;
             outline: none;
+            font-size: 0.9rem;
+            color: #000;
         }
-        .nav-search-input::placeholder { color: #888; }
         .nav-search-btn {
-            background: transparent;
             border: none;
             color: #333;
             padding: 0 0.8rem;
@@ -151,18 +144,18 @@
         /* Nav links */
         .nav-links { display: flex; align-items: stretch; height: 100%; margin-left: 2rem; }
         .nav-link-item {
-            color: #ccc;
-            font-size: 0.85rem;
+            color: #fff;
+            font-size: 0.9rem;
             font-weight: 700;
             padding: 1.2rem 1rem;
             text-decoration: none;
-            text-transform: uppercase;
             white-space: nowrap;
             display: flex; align-items: center;
-            border-bottom: 3px solid transparent;
+            border-bottom: 4px solid transparent;
+            opacity: 0.9;
         }
-        .nav-link-item:hover { color: #fff; border-bottom-color: var(--text-muted); }
-        .nav-link-item.active { color: #fff; border-bottom-color: var(--primary); }
+        .nav-link-item:hover { opacity: 1; background: rgba(0,0,0,0.1); }
+        .nav-link-item.active { opacity: 1; border-bottom-color: var(--accent); background: rgba(0,0,0,0.15); }
 
         /* Cart icon */
         .cart-btn {
@@ -175,12 +168,12 @@
             text-decoration: none;
             font-size: 1.15rem;
         }
-        .cart-btn:hover { color: var(--primary); }
+        .cart-btn:hover { background: rgba(0,0,0,0.1); }
         .cart-badge {
             position: absolute;
             top: 4px; right: 2px;
-            background: var(--primary);
-            color: #fff;
+            background: var(--accent);
+            color: #000;
             font-size: 0.65rem;
             font-weight: 800;
             width: 18px; height: 18px;
@@ -192,20 +185,20 @@
         /* User dropdown */
         .user-btn {
             display: flex; align-items: center; gap: 0.5rem;
-            background: transparent;
-            border: 1px solid #444;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
             padding: 0.25rem 0.75rem 0.25rem 0.25rem;
             cursor: pointer;
             color: #fff;
             font-size: 0.85rem;
             font-weight: 600;
         }
-        .user-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .user-btn:hover { background: rgba(0,0,0,0.3); }
         .user-avatar {
             width: 28px; height: 28px;
-            background: var(--primary);
+            background: var(--accent);
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 0.75rem; font-weight: 700;
+            color: #000; font-size: 0.75rem; font-weight: 800;
             flex-shrink: 0;
         }
         .dropdown-menu {
@@ -435,6 +428,23 @@
                     <i class="bi bi-grid me-1"></i>Sản phẩm
                 </a>
             </div>
+
+            <!-- Search bar BHX style -->
+            <form class="nav-search-form d-none d-md-flex mx-auto" method="GET" action="{{ route('products.index') }}">
+                <div class="nav-search-wrap w-100">
+                    <input
+                        type="text"
+                        name="search"
+                        class="nav-search-input"
+                        placeholder="Bạn tìm gì..."
+                        value="{{ request('search') }}"
+                        autocomplete="off"
+                    >
+                    <button class="nav-search-btn" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
 
             <!-- Right actions -->
             <div class="d-flex align-items-center gap-2 ms-auto flex-shrink-0 h-100">

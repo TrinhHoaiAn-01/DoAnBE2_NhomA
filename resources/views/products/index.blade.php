@@ -13,7 +13,7 @@
 .top-filter-bar {
     background: #fff;
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 0;
     padding: 0.85rem 1.25rem;
     margin-bottom: 1.25rem;
     display: flex;
@@ -28,7 +28,7 @@
     align-items: center;
     background: var(--surface-2);
     border: 1.5px solid var(--border);
-    border-radius: 10px;
+    border-radius: 0;
     overflow: hidden;
     transition: var(--transition);
 }
@@ -53,7 +53,7 @@
 .sort-dropdown-wrap label { font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
 .sort-select {
     border: 1.5px solid var(--border);
-    border-radius: 10px;
+    border-radius: 0;
     padding: 0.45rem 2rem 0.45rem 0.85rem;
     font-size: 0.85rem;
     color: var(--text-primary);
@@ -126,7 +126,7 @@
 /* ===== TOOLBAR ===== */
 .products-toolbar {
     background: #fff;
-    border-radius: 16px;
+    border-radius: 0;
     padding: 0.85rem 1.25rem;
     border: 1px solid var(--border);
     margin-bottom: 1.25rem;
@@ -139,7 +139,7 @@
 .view-toggle { display: flex; gap: 0.25rem; }
 .view-btn {
     width: 34px; height: 34px;
-    border-radius: 8px;
+    border-radius: 0;
     border: 1px solid var(--border);
     background: transparent;
     color: var(--text-muted);
@@ -153,7 +153,7 @@
 /* ===== PRODUCT GRID ===== */
 .product-grid-card {
     background: #fff;
-    border-radius: 18px;
+    border-radius: 0;
     overflow: hidden;
     border: 1px solid var(--border);
     transition: var(--transition);
@@ -180,17 +180,17 @@
 }
 .product-grid-card:hover .grid-img-wrap img { transform: scale(1.07); }
 .grid-badge {
-    position: absolute; top: 0.65rem; left: 0.65rem;
+    position: absolute; top: 0; left: 0;
     font-size: 0.68rem; font-weight: 800;
-    padding: 0.2rem 0.55rem; border-radius: 7px;
+    padding: 0.2rem 0.55rem; border-radius: 0;
 }
 .grid-wishlist {
-    position: absolute; top: 0.65rem; right: 0.65rem;
-    width: 30px; height: 30px; border-radius: 50%;
-    background: #fff; border: none;
-    color: #cbd5e1; font-size: 0.85rem;
+    position: absolute; top: 0; right: 0;
+    width: 30px; height: 30px; border-radius: 0;
+    background: rgba(0,0,0,0.05); border: none;
+    color: #999; font-size: 0.85rem;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; box-shadow: var(--shadow-sm);
+    cursor: pointer;
     transition: var(--transition);
 }
 .grid-wishlist:hover { color: #ef4444; transform: scale(1.12); }
@@ -208,34 +208,28 @@
 .grid-name:hover { color: var(--primary); }
 .grid-stars { color: #fbbf24; font-size: 0.72rem; margin-bottom: 0.6rem; }
 .grid-stars span { color: var(--text-muted); margin-left: 0.2rem; }
-.grid-footer { display: flex; align-items: flex-end; justify-content: space-between; margin-top: auto; gap: 0.5rem; }
-.grid-price { font-size: 1.1rem; font-weight: 900; color: var(--primary); }
-.grid-original { font-size: 0.75rem; color: var(--text-muted); text-decoration: line-through; }
-.grid-stock { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 20px; font-weight: 600; }
-.grid-actions { display: flex; gap: 0.4rem; margin-top: 0.75rem; }
-.btn-detail {
-    flex: 1; border-radius: 50px; font-size: 0.8rem; font-weight: 600;
-    padding: 0.45rem 0;
-    border: 1.5px solid var(--primary); color: var(--primary);
-    background: transparent; text-decoration: none;
-    text-align: center; transition: var(--transition);
-    display: flex; align-items: center; justify-content: center; gap: 0.3rem;
-}
-.btn-detail:hover { background: var(--primary); color: #fff; }
+.grid-footer { display: flex; flex-direction: column; margin-top: auto; gap: 0.5rem; }
+.grid-price { font-size: 1.15rem; font-weight: 900; color: var(--danger); }
+.grid-original { font-size: 0.75rem; color: #999; text-decoration: line-through; }
+.grid-stock { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 0; font-weight: 600; }
+.grid-actions { display: flex; margin-top: 0.75rem; width: 100%; }
+.btn-detail { display: none; }
 .btn-cart-grid {
-    width: 34px; flex-shrink: 0; border-radius: 50px;
-    border: none; background: var(--primary);
-    color: #fff; font-size: 0.85rem;
+    flex: 1; border-radius: 0;
+    border: none; background: var(--accent);
+    color: #000; font-size: 0.85rem; font-weight: bold;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; transition: var(--transition);
+    padding: 0.5rem 0;
+    text-transform: uppercase;
 }
-.btn-cart-grid:hover { background: var(--primary-dark); }
+.btn-cart-grid:hover { background: #ffc107; color: #000; }
 .btn-cart-grid:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ===== LIST VIEW ===== */
 .product-list-card {
     background: #fff;
-    border-radius: 18px;
+    border-radius: 0;
     border: 1px solid var(--border);
     transition: var(--transition);
     display: flex; overflow: hidden;
@@ -254,8 +248,8 @@
 .list-name:hover { color: var(--primary); }
 .list-cat { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem; }
 .list-actions { display: flex; align-items: center; gap: 0.75rem; margin-top: auto; flex-wrap: wrap; }
-.list-price { font-size: 1.2rem; font-weight: 900; color: var(--primary); }
-.list-original { font-size: 0.8rem; color: var(--text-muted); text-decoration: line-through; }
+.list-price { font-size: 1.2rem; font-weight: 900; color: var(--danger); }
+.list-original { font-size: 0.8rem; color: #999; text-decoration: line-through; }
 
 /* ===== EMPTY STATE ===== */
 .empty-state {
@@ -384,7 +378,7 @@
                 @else Cửa hàng chưa có sản phẩm nào đang bán.
                 @endif
             </p>
-            <a class="btn btn-primary rounded-pill px-4" href="{{ route('products.index') }}">Xem tất cả sản phẩm</a>
+            <a class="btn btn-primary rounded-0 px-4" href="{{ route('products.index') }}">Xem tất cả sản phẩm</a>
         </div>
         @else
         {{-- Grid View --}}
@@ -429,13 +423,10 @@
                                 </span>
                             </div>
                             <div class="grid-actions">
-                                <a class="btn-detail" href="{{ route('products.show', $product) }}">
-                                    <i class="bi bi-eye"></i> Chi tiết
-                                </a>
-                                <form method="post" action="{{ route('cart.add', $product) }}">
+                                <form method="post" action="{{ route('cart.add', $product) }}" class="w-100">
                                     @csrf
                                     <button class="btn-cart-grid" type="submit" @disabled($product->stock <= 0) title="Thêm vào giỏ">
-                                        <i class="bi bi-cart-plus"></i>
+                                        CHỌN MUA
                                     </button>
                                 </form>
                             </div>
@@ -474,13 +465,13 @@
                         <span class="grid-stock {{ $product->stock > 0 ? 'bg-success bg-opacity-10 text-success' : 'bg-secondary bg-opacity-10 text-secondary' }}">
                             {{ $product->stock > 0 ? 'Còn hàng' : 'Hết hàng' }}
                         </span>
-                        <a class="btn btn-outline-primary btn-sm rounded-pill px-3" href="{{ route('products.show', $product) }}">
+                        <a class="btn btn-outline-primary btn-sm rounded-0 px-3" href="{{ route('products.show', $product) }}">
                             <i class="bi bi-eye me-1"></i>Chi tiết
                         </a>
                         <form method="post" action="{{ route('cart.add', $product) }}">
                             @csrf
-                            <button class="btn btn-primary btn-sm rounded-pill px-3" type="submit" @disabled($product->stock <= 0)>
-                                <i class="bi bi-cart-plus me-1"></i>Thêm giỏ
+                            <button class="btn btn-primary btn-sm rounded-0 px-3" style="background:var(--accent);color:#000;border:none;font-weight:bold;" type="submit" @disabled($product->stock <= 0)>
+                                CHỌN MUA
                             </button>
                         </form>
                     </div>

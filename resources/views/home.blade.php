@@ -4,14 +4,13 @@
 <style>
 /* ===== HERO ===== */
 .hero-section {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #6366f1 100%);
-    border-radius: 28px;
+    background: var(--primary-dark);
+    border-radius: 0;
     padding: 4.5rem 2rem;
     color: white;
     position: relative;
     overflow: hidden;
     margin-bottom: 2.5rem;
-    box-shadow: 0 25px 60px rgba(99,102,241,0.35);
 }
 .hero-section::before {
     content: '';
@@ -19,7 +18,6 @@
     top: -80px; right: -80px;
     width: 320px; height: 320px;
     background: rgba(255,255,255,0.06);
-    border-radius: 50%;
 }
 .hero-section::after {
     content: '';
@@ -27,14 +25,12 @@
     bottom: -100px; left: 30%;
     width: 260px; height: 260px;
     background: rgba(255,255,255,0.04);
-    border-radius: 50%;
 }
 .hero-badge {
     display: inline-flex; align-items: center; gap: 0.4rem;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 50px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 0;
     padding: 0.4rem 1rem;
     font-size: 0.8rem;
     font-weight: 600;
@@ -68,24 +64,23 @@
 }
 .hero-cta-group { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .hero-btn-primary {
-    background: #fff;
-    color: #4f46e5;
+    background: var(--accent);
+    color: #000;
     border: none;
-    border-radius: 50px;
+    border-radius: 0;
     padding: 0.75rem 1.75rem;
     font-weight: 700;
     font-size: 0.95rem;
     text-decoration: none;
     display: inline-flex; align-items: center; gap: 0.5rem;
     transition: all 0.25s;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
 }
-.hero-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); color: #4f46e5; }
+.hero-btn-primary:hover { background: #ffc107; color: #000; }
 .hero-btn-outline {
     background: transparent;
     color: #fff;
     border: 2px solid rgba(255,255,255,0.45);
-    border-radius: 50px;
+    border-radius: 0;
     padding: 0.75rem 1.75rem;
     font-weight: 600;
     font-size: 0.95rem;
@@ -103,17 +98,11 @@
 
 /* Hero image */
 .hero-img {
-    border-radius: 24px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-    animation: float 5s ease-in-out infinite;
+    border-radius: 0;
     max-width: 100%;
     object-fit: cover;
     height: 320px;
     width: 100%;
-}
-@keyframes float {
-    0%,100% { transform: translateY(0) rotate(-1deg); }
-    50%      { transform: translateY(-15px) rotate(1deg); }
 }
 
 /* ===== TRUST STRIP ===== */
@@ -125,17 +114,16 @@
 }
 .trust-item {
     background: #fff;
-    border-radius: 16px;
+    border-radius: 0;
     padding: 1rem 1.25rem;
     display: flex; align-items: center; gap: 0.75rem;
-    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border);
     transition: var(--transition);
 }
-.trust-item:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.trust-item:hover { background: var(--surface-2); }
 .trust-icon {
     width: 42px; height: 42px;
-    border-radius: 12px;
+    border-radius: 0;
     display: flex; align-items: center; justify-content: center;
     font-size: 1.1rem;
     flex-shrink: 0;
@@ -157,8 +145,8 @@
     content: '';
     position: absolute; left: 0; top: 15%; bottom: 15%;
     width: 4px;
-    background: linear-gradient(180deg, var(--primary), var(--accent));
-    border-radius: 10px;
+    background: var(--primary);
+    border-radius: 0;
 }
 .section-link {
     font-size: 0.85rem; font-weight: 600;
@@ -169,89 +157,83 @@
 .section-link:hover { gap: 0.5rem; color: var(--primary-dark); }
 
 /* ===== BANNER CAROUSEL ===== */
-.banner-carousel-wrap { border-radius: 20px; overflow: hidden; margin-bottom: 2.5rem; box-shadow: var(--shadow-md); }
+.banner-carousel-wrap { border-radius: 0; overflow: hidden; margin-bottom: 2.5rem; border: 1px solid var(--border); }
 .carousel-item img { height: 380px; object-fit: cover; }
 
 /* ===== FLASH SALE ===== */
 .flash-sale-section {
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-    border-radius: 24px;
+    background: var(--danger);
+    border-radius: 0;
     padding: 2rem;
     color: white;
     margin-bottom: 2.5rem;
     position: relative;
     overflow: hidden;
 }
-.flash-sale-section::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent), #ef4444);
-}
 .flash-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
 .flash-label {
     display: flex; align-items: center; gap: 0.5rem;
     font-size: 1.3rem; font-weight: 900;
+    text-transform: uppercase;
 }
 .flash-label .icon { color: #fbbf24; font-size: 1.4rem; animation: shake 0.5s infinite alternate; }
 @keyframes shake { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
 .timer-wrap { display: flex; align-items: center; gap: 0.4rem; }
-.timer-label { font-size: 0.8rem; color: #94a3b8; }
+.timer-label { font-size: 0.8rem; color: #fff; }
 .timer-box {
-    background: #ef4444;
+    background: #000;
+    color: #fff;
     padding: 0.4rem 0.65rem;
-    border-radius: 8px;
+    border-radius: 0;
     font-weight: 900;
     min-width: 42px;
     text-align: center;
     font-size: 1rem;
     font-variant-numeric: tabular-nums;
-    box-shadow: 0 4px 10px rgba(239,68,68,0.4);
 }
-.timer-sep { font-weight: 900; color: #ef4444; }
+.timer-sep { font-weight: 900; color: #fff; }
 
 .flash-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 18px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 0;
     padding: 1.25rem;
     text-align: center;
     transition: all 0.3s ease;
     cursor: pointer;
     text-decoration: none;
-    color: #fff;
+    color: var(--text-primary);
     display: block;
     height: 100%;
 }
 .flash-card:hover {
-    background: rgba(255,255,255,0.12);
-    transform: translateY(-6px);
-    border-color: rgba(255,255,255,0.25);
-    color: #fff;
+    border-color: var(--accent);
+    color: var(--text-primary);
 }
 .flash-card img {
     height: 110px; object-fit: contain;
     margin-bottom: 0.75rem;
     transition: transform 0.4s ease;
 }
-.flash-card:hover img { transform: scale(1.08); }
+.flash-card:hover img { transform: scale(1.05); }
 .flash-card-name { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; min-height: 2.2rem; }
-.flash-price { font-size: 1.1rem; font-weight: 900; color: #fbbf24; }
-.flash-original { font-size: 0.75rem; color: #64748b; text-decoration: line-through; margin-top: 2px; }
+.flash-price { font-size: 1.1rem; font-weight: 900; color: var(--danger); }
+.flash-original { font-size: 0.75rem; color: #999; text-decoration: line-through; margin-top: 2px; }
 .flash-discount-badge {
     display: inline-block;
-    background: #ef4444;
-    color: #fff;
+    background: var(--accent);
+    color: #000;
     font-size: 0.65rem;
     font-weight: 800;
     padding: 0.15rem 0.45rem;
-    border-radius: 6px;
+    border-radius: 0;
     margin-bottom: 0.4rem;
 }
 
 /* ===== CATEGORY CARDS ===== */
 .category-card {
     background: #fff;
-    border-radius: 20px;
+    border-radius: 0;
     border: 1px solid var(--border);
     overflow: hidden;
     transition: var(--transition);
@@ -262,9 +244,7 @@
     height: 100%;
 }
 .category-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--primary);
+    background: var(--surface-2);
     color: var(--text-primary);
 }
 .category-icon-wrap {
@@ -287,17 +267,14 @@
 /* ===== PRODUCT CARDS ===== */
 .product-card {
     background: #fff;
-    border-radius: 20px;
+    border-radius: 0;
     overflow: hidden;
     transition: var(--transition);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     border: 1px solid var(--border);
     display: flex; flex-direction: column;
     height: 100%;
 }
 .product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.10);
     border-color: var(--primary);
 }
 .product-img-wrap {
@@ -324,41 +301,39 @@
 }
 .product-card:hover .product-overlay-btn { opacity: 1; }
 .product-quick-btn {
-    background: var(--primary);
-    color: #fff;
+    background: var(--accent);
+    color: #000;
     border: none;
-    border-radius: 50px;
+    border-radius: 0;
     padding: 0.5rem 1.25rem;
     font-size: 0.8rem;
     font-weight: 700;
     cursor: pointer;
-    transform: translateY(10px);
-    transition: transform 0.3s;
+    transition: var(--transition);
     text-decoration: none;
     display: flex; align-items: center; gap: 0.4rem;
 }
-.product-card:hover .product-quick-btn { transform: translateY(0); }
+.product-quick-btn:hover { background: #ffc107; color: #000; }
 
 .badge-corner {
     position: absolute;
-    top: 0.75rem; left: 0.75rem;
+    top: 0; left: 0;
     font-size: 0.7rem; font-weight: 800;
     padding: 0.25rem 0.6rem;
-    border-radius: 8px;
+    border-radius: 0;
     z-index: 10;
 }
 .wishlist-btn {
     position: absolute;
-    top: 0.75rem; right: 0.75rem;
+    top: 0; right: 0;
     width: 32px; height: 32px;
-    border-radius: 50%;
-    background: #fff;
+    border-radius: 0;
+    background: rgba(0,0,0,0.05);
     border: none;
-    color: #cbd5e1;
+    color: #999;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
     font-size: 0.9rem;
-    box-shadow: var(--shadow-sm);
     transition: var(--transition);
     z-index: 10;
 }
@@ -382,22 +357,23 @@
 .product-name:hover { color: var(--primary); }
 .star-rating { color: #fbbf24; font-size: 0.75rem; margin-bottom: 0.6rem; }
 .star-count { color: var(--text-muted); font-size: 0.72rem; margin-left: 0.25rem; }
-.product-price-row { display: flex; align-items: flex-end; justify-content: space-between; margin-top: auto; gap: 0.5rem; }
-.product-price { font-size: 1.15rem; font-weight: 900; color: var(--primary); }
-.product-original { font-size: 0.78rem; color: var(--text-muted); text-decoration: line-through; }
+.product-price-row { display: flex; flex-direction: column; margin-top: auto; gap: 0.5rem; }
+.product-price { font-size: 1.15rem; font-weight: 900; color: var(--danger); }
+.product-original { font-size: 0.78rem; color: #999; text-decoration: line-through; }
 .btn-add-cart {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    background: var(--primary-light);
-    color: var(--primary);
+    width: 100%; height: 36px;
+    border-radius: 0;
+    background: var(--accent);
+    color: #000;
     border: none;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
     transition: var(--transition);
-    flex-shrink: 0;
 }
-.btn-add-cart:hover { background: var(--primary); color: #fff; }
+.btn-add-cart:hover { background: #ffc107; color: #000; }
 .btn-add-cart:disabled { opacity: 0.4; cursor: not-allowed; }
 </style>
 @endpush
@@ -411,14 +387,14 @@
             <div class="col-lg-6 position-relative" style="z-index:1">
                 <div class="hero-badge">
                     <span class="dot"></span>
-                    Siêu thị trực tuyến #1 Việt Nam
+                    Đi chợ Online - Giao hàng siêu tốc
                 </div>
                 <h1 class="hero-title">
-                    Mua sắm thông minh<br>
-                    <span>Tiết kiệm hơn mỗi ngày</span>
+                    Thịt rau tươi sống<br>
+                    <span>Giá rẻ mỗi ngày</span>
                 </h1>
                 <p class="hero-subtitle">
-                    Hàng ngàn sản phẩm công nghệ chính hãng, giao hàng siêu tốc 2 giờ, bảo hành tận tâm. Trải nghiệm mua sắm khác biệt cùng NeoMart.
+                    Hàng ngàn mặt hàng tươi sống, nhu yếu phẩm chất lượng. Giao hàng siêu tốc trong 2 giờ. Mua sắm dễ dàng, an tâm tuyệt đối cùng NeoMart.
                 </p>
                 <div class="hero-cta-group">
                     <a href="{{ route('products.index') }}" class="hero-btn-primary">
@@ -448,8 +424,8 @@
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block position-relative" style="z-index:1">
-                <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=900&auto=format&fit=crop"
-                     alt="NeoMart Shopping" class="hero-img">
+                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=900&auto=format&fit=crop"
+                     alt="NeoMart Groceries" class="hero-img">
             </div>
         </div>
     </div>
@@ -508,7 +484,7 @@
                 @foreach($banners as $index => $banner)
                     <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
                         <img src="{{ $banner['image'] }}" class="d-block w-100" alt="{{ $banner['title'] }}">
-                        <div class="carousel-caption text-start" style="left:6%;right:auto;bottom:15%;background:rgba(15,23,42,0.55);backdrop-filter:blur(8px);border-radius:16px;padding:1.5rem 2rem;">
+                        <div class="carousel-caption text-start" style="left:6%;right:auto;bottom:15%;background:rgba(0,0,0,0.6);padding:1.5rem 2rem;border-radius:0;">
                             <h2 class="fw-black text-white mb-3" style="font-size:clamp(1.2rem,3vw,1.8rem);">{{ $banner['title'] }}</h2>
                             <a href="{{ $banner['link'] }}" class="hero-btn-primary" style="font-size:0.85rem;padding:0.55rem 1.25rem;">
                                 Mua ngay <i class="bi bi-arrow-right ms-1"></i>
@@ -653,10 +629,10 @@
                                     <div class="product-original">{{ number_format((float)$product->original_price, 0, ',', '.') }}đ</div>
                                 @endif
                             </div>
-                            <form method="post" action="{{ route('cart.add', $product) }}">
+                            <form method="post" action="{{ route('cart.add', $product) }}" class="w-100">
                                 @csrf
                                 <button type="submit" class="btn-add-cart" title="Thêm vào giỏ" @disabled($product->stock <= 0)>
-                                    <i class="bi bi-plus-lg"></i>
+                                    CHỌN MUA
                                 </button>
                             </form>
                         </div>
