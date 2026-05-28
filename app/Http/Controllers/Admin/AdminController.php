@@ -58,6 +58,43 @@ class AdminController extends Controller
         $paidOrdersCount = (clone $ordersQuery)
             ->where('payment_status', 'paid')
             ->count();
+        $chartRows = (clone $ordersQuery)
+            ->get(['created_at', 'total'])
+            ->groupBy(function (Order $order) use ($groupBy): string {
+                return match ($groupBy) {
+                    'month' => $order->created_at->format('Y-m'),
+                    'year' => $order->created_at->format('Y'),
+                    default => $order->created_at->format('Y-m-d'),
+                };
+            })
+            ->map(fn ($orders) => (float) $orders->sum('total'));
+        $revenueLabels = [];
+        $revenueData = [];
+        $cursor = match ($groupBy) {
+            'month' => $fromDate->copy()->startOfMonth(),
+            'year' => $fromDate->copy()->startOfYear(),
+            default => $fromDate->copy(),
+        };
+
+        while ($cursor->lte($toDate)) {
+            $key = match ($groupBy) {
+                'month' => $cursor->format('Y-m'),
+                'year' => $cursor->format('Y'),
+                default => $cursor->format('Y-m-d'),
+            };
+            $revenueLabels[] = match ($groupBy) {
+                'month' => $cursor->format('m/Y'),
+                'year' => $cursor->format('Y'),
+                default => $cursor->format('d/m'),
+            };
+            $revenueData[] = (float) ($chartRows[$key] ?? 0);
+
+            match ($groupBy) {
+                'month' => $cursor->addMonth(),
+                'year' => $cursor->addYear(),
+                default => $cursor->addDay(),
+            };
+        }
 
         return view('admin.reports.revenue', compact(
             'fromDate',
@@ -65,7 +102,9 @@ class AdminController extends Controller
             'groupBy',
             'ordersCount',
             'totalRevenue',
-            'paidOrdersCount'
+            'paidOrdersCount',
+            'revenueLabels',
+            'revenueData'
         ));
     }
 

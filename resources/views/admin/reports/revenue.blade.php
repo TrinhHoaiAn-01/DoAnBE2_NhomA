@@ -26,6 +26,10 @@
             background: #ffffff;
             min-height: 120px;
         }
+
+        .report-chart {
+            min-height: 340px;
+        }
     </style>
 
     <div class="report-shell">
@@ -86,5 +90,71 @@
                 </div>
             </form>
         </div>
+
+        <div class="report-panel p-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div>
+                    <h2 class="h5 fw-bold mb-1">Biểu đồ doanh thu</h2>
+                    <div class="text-muted small">{{ $fromDate->format('d/m/Y') }} - {{ $toDate->format('d/m/Y') }}</div>
+                </div>
+            </div>
+            <div class="report-chart">
+                <canvas id="revenueReportChart"></canvas>
+            </div>
+        </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const canvas = document.getElementById('revenueReportChart');
+
+            if (!canvas) {
+                return;
+            }
+
+            new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: @json($revenueLabels),
+                    datasets: [{
+                        label: 'Doanh thu',
+                        data: @json($revenueData),
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.68)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(context.parsed.y || 0);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return new Intl.NumberFormat('vi-VN').format(value) + 'đ';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+@endpush
