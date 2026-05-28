@@ -60,9 +60,20 @@
                                     <span class="badge text-bg-light border">{{ $statusOptions[$order->status] ?? $order->status }}</span>
                                 </td>
                                 <td class="text-end">
-                                    <a class="btn btn-sm btn-outline-primary" href="{{ route('orders.show', $order) }}">
-                                        Theo dõi
-                                    </a>
+                                    <div class="d-inline-flex gap-2">
+                                        <a class="btn btn-sm btn-outline-primary" href="{{ route('orders.show', $order) }}">
+                                            Theo dõi
+                                        </a>
+                                        @if (in_array($order->status, ['pending', 'processing'], true))
+                                            <form method="post" action="{{ route('orders.cancel', $order) }}" onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn hàng này?');">
+                                                @csrf
+                                                @method('patch')
+                                                <button class="btn btn-sm btn-outline-danger" type="submit">
+                                                    Hủy
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

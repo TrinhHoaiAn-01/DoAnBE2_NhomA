@@ -43,6 +43,7 @@ class OrderHistoryController extends Controller
             'order' => $order->load('items.product'),
             'statusOptions' => OrderStatus::labels(),
             'trackingSteps' => OrderStatus::steps($order->status),
+            'canCancel' => in_array($order->status, ['pending', 'processing'], true),
             'shippingDistrictLabel' => ShippingFeeCalculator::districtLabel($order->shipping_district),
             'shippingServiceLabel' => ShippingFeeCalculator::serviceLabel($order->shipping_service),
             'deliveryTimeSlotLabel' => DeliveryTimeSlot::label($order->delivery_time_slot),
