@@ -69,6 +69,7 @@
                         <tr>
                             <th>Sản phẩm</th>
                             <th>SKU</th>
+                            <th class="text-end">Tồn kho</th>
                             <th class="text-end">Số lượng bán</th>
                             <th class="text-end">Doanh thu</th>
                         </tr>
@@ -110,12 +111,13 @@
                             <tr>
                                 <td class="fw-semibold">{{ $product->product_name }}</td>
                                 <td class="text-muted">{{ $product->sku ?: 'Không có SKU' }}</td>
+                                <td class="text-end">{{ number_format($product->stock) }}</td>
                                 <td class="text-end">{{ number_format($product->sold_quantity) }}</td>
                                 <td class="text-end fw-semibold">{{ $money($product->sold_revenue) }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td class="text-center py-4 text-muted" colspan="4">Chưa có dữ liệu bán chậm.</td>
+                                <td class="text-center py-4 text-muted" colspan="5">Chưa có dữ liệu bán chậm.</td>
                             </tr>
                         @endforelse
                     </tbody>

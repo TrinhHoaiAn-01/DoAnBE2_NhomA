@@ -161,19 +161,23 @@ class AdminController extends Controller
             ->orderByDesc('sold_quantity')
             ->take($limit)
             ->get();
-        $slowSellingProducts = OrderItem::query()
+        $slowSellingProducts = Product::query()
             ->select(
-                'product_name',
-                'sku',
-                DB::raw('SUM(quantity) as sold_quantity'),
-                DB::raw('SUM(subtotal) as sold_revenue')
+                'products.name as product_name',
+                'products.sku',
+                'products.stock',
+                DB::raw('COALESCE(SUM(CASE WHEN orders.id IS NOT NULL THEN order_items.quantity ELSE 0 END), 0) as sold_quantity'),
+                DB::raw('COALESCE(SUM(CASE WHEN orders.id IS NOT NULL THEN order_items.subtotal ELSE 0 END), 0) as sold_revenue')
             )
-            ->whereHas('order', function ($query) use ($fromDate, $toDate): void {
-                $query->where('status', '!=', 'cancelled')
-                    ->whereBetween('created_at', [$fromDate, $toDate]);
+            ->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
+            ->leftJoin('orders', function ($join) use ($fromDate, $toDate): void {
+                $join->on('orders.id', '=', 'order_items.order_id')
+                    ->where('orders.status', '!=', 'cancelled')
+                    ->whereBetween('orders.created_at', [$fromDate, $toDate]);
             })
-            ->groupBy('product_name', 'sku')
-            ->orderBy('sold_quantity')
+            ->groupBy('products.id', 'products.name', 'products.sku', 'products.stock')
+            ->orderByRaw('sold_quantity ASC')
+            ->orderByDesc('products.stock')
             ->take($limit)
             ->get();
 
