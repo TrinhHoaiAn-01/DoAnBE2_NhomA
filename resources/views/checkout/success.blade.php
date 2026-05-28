@@ -7,6 +7,16 @@
                 <p class="text-uppercase text-success small fw-semibold mb-2">Đặt hàng thành công</p>
                 <h1 class="h2 fw-bold mb-3">Mã đơn {{ $order->code }}</h1>
                 <p class="text-secondary mb-4">NeoMart đã ghi nhận đơn hàng và sẽ xử lý theo trạng thái demo.</p>
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    @auth
+                        <a class="btn btn-primary" href="{{ route('orders.show', $order) }}">
+                            <i class="bi bi-receipt me-1"></i>Theo dõi đơn hàng
+                        </a>
+                    @endauth
+                    <a class="btn btn-outline-secondary" href="{{ route('products.index') }}">
+                        Tiếp tục mua hàng
+                    </a>
+                </div>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="soft-surface rounded-3 p-3">
