@@ -115,6 +115,34 @@
                 <canvas id="revenueReportChart"></canvas>
             </div>
         </div>
+
+        <div class="report-panel">
+            <div class="p-3 border-bottom">
+                <h2 class="h5 fw-bold mb-0">Chi tiết doanh thu</h2>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Kỳ báo cáo</th>
+                            <th class="text-end">Doanh thu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($revenueRows as $row)
+                            <tr>
+                                <td class="fw-semibold">{{ $row['label'] }}</td>
+                                <td class="text-end fw-semibold">{{ $money($row['revenue']) }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td class="text-center py-4 text-muted" colspan="2">Chưa có dữ liệu doanh thu trong khoảng này.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 @endsection
 

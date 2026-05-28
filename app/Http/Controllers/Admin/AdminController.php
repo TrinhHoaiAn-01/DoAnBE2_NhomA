@@ -81,6 +81,7 @@ class AdminController extends Controller
             ->map(fn ($orders) => (float) $orders->sum('total'));
         $revenueLabels = [];
         $revenueData = [];
+        $revenueRows = [];
         $cursor = match ($groupBy) {
             'month' => $fromDate->copy()->startOfMonth(),
             'year' => $fromDate->copy()->startOfYear(),
@@ -93,12 +94,18 @@ class AdminController extends Controller
                 'year' => $cursor->format('Y'),
                 default => $cursor->format('Y-m-d'),
             };
-            $revenueLabels[] = match ($groupBy) {
+            $label = match ($groupBy) {
                 'month' => $cursor->format('m/Y'),
                 'year' => $cursor->format('Y'),
                 default => $cursor->format('d/m'),
             };
-            $revenueData[] = (float) ($chartRows[$key] ?? 0);
+            $revenueLabels[] = $label;
+            $revenue = (float) ($chartRows[$key] ?? 0);
+            $revenueData[] = $revenue;
+            $revenueRows[] = [
+                'label' => $label,
+                'revenue' => $revenue,
+            ];
 
             match ($groupBy) {
                 'month' => $cursor->addMonth(),
@@ -118,7 +125,8 @@ class AdminController extends Controller
             'completedRevenue',
             'averageOrderValue',
             'revenueLabels',
-            'revenueData'
+            'revenueData',
+            'revenueRows'
         ));
     }
 
