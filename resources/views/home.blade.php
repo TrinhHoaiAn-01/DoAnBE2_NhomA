@@ -134,18 +134,19 @@
 /* ===== SECTION TITLE ===== */
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
 .section-title {
-    font-weight: 800;
-    color: var(--text-primary);
-    font-size: 1.35rem;
+    font-weight: 900;
+    color: var(--primary) !important;
+    font-size: 1.8rem;
     position: relative;
-    padding-left: 1rem;
+    padding-left: 1.25rem;
     margin: 0;
+    letter-spacing: -0.5px;
 }
 .section-title::before {
     content: '';
-    position: absolute; left: 0; top: 15%; bottom: 15%;
-    width: 4px;
-    background: var(--primary);
+    position: absolute; left: 0; top: 10%; bottom: 10%;
+    width: 5px;
+    background: var(--accent);
     border-radius: 4px;
 }
 .section-link {
@@ -253,7 +254,7 @@
 }
 .category-img-wrap {
     width: 100%;
-    height: 150px;
+    height: 180px;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -269,12 +270,12 @@
     transition: transform 0.4s ease;
 }
 .category-body {
-    padding: 1rem 0.75rem;
+    padding: 1.25rem 1rem;
     text-align: center;
 }
 .category-name {
-    font-weight: 700;
-    font-size: 0.95rem;
+    font-weight: 800;
+    font-size: 1.15rem;
     color: var(--text-primary);
     margin: 0;
     transition: color 0.2s;
@@ -533,31 +534,32 @@
         <div class="row g-3">
             @php
                 $getCategoryImage = function($category) {
+                    $id = (int)$category->id;
                     $slug = trim(strtolower($category->slug));
                     $name = mb_strtolower(trim($category->name), 'UTF-8');
                     
-                    // 1. Food / Groceries / Thực phẩm
-                    if (str_contains($slug, 'thuc-pham') || str_contains($slug, 'thucpham') || str_contains($name, 'thực phẩm') || str_contains($name, 'thuc pham') || str_contains($slug, 'food') || str_contains($name, 'ăn')) {
+                    // 1. Food / Groceries / Thực phẩm (ID 1)
+                    if ($id === 1 || str_contains($slug, 'thuc-pham') || str_contains($slug, 'thucpham') || str_contains($name, 'thực phẩm') || str_contains($name, 'thuc pham') || str_contains($slug, 'food') || str_contains($name, 'ăn')) {
                         return 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80'; // Ultra-vibrant fresh market stand
                     }
                     
-                    // 2. Drinks / Đồ uống
-                    if (str_contains($slug, 'do-uong') || str_contains($slug, 'douong') || str_contains($name, 'đồ uống') || str_contains($name, 'do uong') || str_contains($slug, 'drink') || str_contains($slug, 'beverage') || str_contains($name, 'nước') || str_contains($name, 'sữa')) {
+                    // 2. Drinks / Đồ uống (ID 2)
+                    if ($id === 2 || str_contains($slug, 'do-uong') || str_contains($slug, 'douong') || str_contains($name, 'đồ uống') || str_contains($name, 'do uong') || str_contains($slug, 'drink') || str_contains($slug, 'beverage') || str_contains($name, 'nước') || str_contains($name, 'sữa')) {
                         return 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop&q=80'; // Vibrant tropical cocktails & beverages
                     }
                     
-                    // 3. Cosmetics / Mỹ phẩm
-                    if (str_contains($slug, 'my-pham') || str_contains($slug, 'mypham') || str_contains($name, 'mỹ phẩm') || str_contains($name, 'my pham') || str_contains($slug, 'cosmetic') || str_contains($slug, 'beauty') || str_contains($name, 'tóc') || str_contains($name, 'da')) {
+                    // 3. Cosmetics / Mỹ phẩm (ID 3)
+                    if ($id === 3 || str_contains($slug, 'my-pham') || str_contains($slug, 'mypham') || str_contains($name, 'mỹ phẩm') || str_contains($name, 'my pham') || str_contains($slug, 'cosmetic') || str_contains($slug, 'beauty') || str_contains($name, 'tóc') || str_contains($name, 'da')) {
                         return 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=500&auto=format&fit=crop&q=80'; // Bright modern cosmetic bottles
                     }
                     
-                    // 4. Houseware / Detergents / Gia dụng (handles 'da dung' typo too!)
-                    if (str_contains($slug, 'gia-dung') || str_contains($slug, 'giadung') || str_contains($name, 'gia dụng') || str_contains($name, 'gia dung') || str_contains($name, 'da dung') || str_contains($slug, 'house') || str_contains($slug, 'home') || str_contains($slug, 'clean') || str_contains($name, 'chén') || str_contains($name, 'giấy')) {
-                        return 'https://images.unsplash.com/photo-1583947268964-b28dc8f51f92?w=500&auto=format&fit=crop&q=80'; // Colorful household tools and clean elements
+                    // 4. Houseware / Detergents / Gia dụng (ID 4 - handles 'da dung' typo too!)
+                    if ($id === 4 || str_contains($slug, 'gia-dung') || str_contains($slug, 'giadung') || str_contains($name, 'gia dụng') || str_contains($name, 'gia dung') || str_contains($name, 'da dung') || str_contains($slug, 'house') || str_contains($slug, 'home') || str_contains($slug, 'clean') || str_contains($name, 'chén') || str_contains($name, 'giấy')) {
+                        return 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=500&auto=format&fit=crop&q=80'; // Extremely bright, working cleaning supplies image
                     }
                     
-                    // 5. Promotions / Khuyến mãi
-                    if (str_contains($slug, 'khuyen-mai') || str_contains($slug, 'khuyenmai') || str_contains($name, 'khuyến mãi') || str_contains($name, 'khuyen mai') || str_contains($slug, 'promo') || str_contains($slug, 'sale') || str_contains($name, 'tặng')) {
+                    // 5. Promotions / Khuyến mãi (ID 5)
+                    if ($id === 5 || str_contains($slug, 'khuyen-mai') || str_contains($slug, 'khuyenmai') || str_contains($name, 'khuyến mãi') || str_contains($name, 'khuyen mai') || str_contains($slug, 'promo') || str_contains($slug, 'sale') || str_contains($name, 'tặng')) {
                         return 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=500&auto=format&fit=crop&q=80'; // Bright glowing shopping bags & promotions
                     }
                     
@@ -566,7 +568,7 @@
                 };
             @endphp
             @foreach($categories as $i => $category)
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="col-6 col-md-4 col-lg-3">
                 <a href="{{ route('products.index', ['category' => $category->slug]) }}" class="category-card">
                     <div class="category-img-wrap">
                         <img src="{{ $getCategoryImage($category) }}" alt="{{ $category->name }}" loading="lazy">
