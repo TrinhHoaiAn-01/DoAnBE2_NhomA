@@ -4,12 +4,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Authentication Defaults
+    | Cấu Hình Xác Thực Mặc Định (Authentication Defaults)
     |--------------------------------------------------------------------------
     |
-    | This option defines the default authentication "guard" and password
-    | reset "broker" for your application. You may change these values
-    | as required, but they're a perfect start for most applications.
+    | Tùy chọn này xác định "guard" xác thực mặc định và bộ môi giới khôi phục
+    | mật khẩu (password reset broker) cho ứng dụng của bạn. Bạn có thể thay
+    | đổi các giá trị này tùy theo yêu cầu hệ thống.
     |
     */
 
@@ -20,18 +20,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Authentication Guards
+    | Bộ Bảo Vệ Xác Thực (Authentication Guards)
     |--------------------------------------------------------------------------
     |
-    | Next, you may define every authentication guard for your application.
-    | Of course, a great default configuration has been defined for you
-    | which utilizes session storage plus the Eloquent user provider.
+    | Tại đây bạn có thể định nghĩa các bộ bảo vệ (guards) xác thực cho ứng dụng.
+    | Cấu hình mặc định sử dụng session storage và nhà cung cấp người dùng Eloquent.
     |
-    | All authentication guards have a user provider, which defines how the
-    | users are actually retrieved out of your database or other storage
-    | system used by the application. Typically, Eloquent is utilized.
+    | Tất cả các guard xác thực đều cần một user provider để xác định cách người dùng
+    | được truy xuất từ cơ sở dữ liệu hoặc hệ thống lưu trữ khác.
     |
-    | Supported: "session"
+    | Hỗ trợ: "session"
     |
     */
 
@@ -44,18 +42,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | User Providers
+    | Nhà Cung Cấp Người Dùng (User Providers)
     |--------------------------------------------------------------------------
     |
-    | All authentication guards have a user provider, which defines how the
-    | users are actually retrieved out of your database or other storage
-    | system used by the application. Typically, Eloquent is utilized.
+    | Nhà cung cấp người dùng (user providers) định nghĩa cách người dùng được
+    | truy xuất từ cơ sở dữ liệu của bạn. Eloquent thường là lựa chọn phổ biến nhất.
     |
-    | If you have multiple user tables or models you may configure multiple
-    | providers to represent the model / table. These providers may then
-    | be assigned to any extra authentication guards you have defined.
+    | Nếu bạn có nhiều bảng hoặc model người dùng khác nhau, bạn có thể cấu hình
+    | nhiều provider tương ứng để liên kết với các guard xác thực khác nhau.
     |
-    | Supported: "database", "eloquent"
+    | Hỗ trợ: "database", "eloquent"
     |
     */
 
@@ -73,20 +69,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Resetting Passwords
+    | Khôi Phục Mật Khẩu (Resetting Passwords)
     |--------------------------------------------------------------------------
     |
-    | These configuration options specify the behavior of Laravel's password
-    | reset functionality, including the table utilized for token storage
-    | and the user provider that is invoked to actually retrieve users.
+    | Các cấu hình này quy định hành vi của tính năng khôi phục mật khẩu của Laravel,
+    | bao gồm bảng lưu trữ token khôi phục và user provider được gọi để lấy thông tin.
     |
-    | The expiry time is the number of minutes that each reset token will be
-    | considered valid. This security feature keeps tokens short-lived so
-    | they have less time to be guessed. You may change this as needed.
-    |
-    | The throttle setting is the number of seconds a user must wait before
-    | generating more password reset tokens. This prevents the user from
-    | quickly generating a very large amount of password reset tokens.
+    | Thời gian hết hạn (expire) là số phút token khôi phục có hiệu lực (tính bảo mật).
+    | Giới hạn tần suất (throttle) ngăn chặn việc gửi yêu cầu khôi phục liên tục.
     |
     */
 
@@ -101,12 +91,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Password Confirmation Timeout
+    | Thời Gian Chờ Xác Nhận Mật Khẩu (Password Confirmation Timeout)
     |--------------------------------------------------------------------------
     |
-    | Here you may define the amount of seconds before a password confirmation
-    | window expires and users are asked to re-enter their password via the
-    | confirmation screen. By default, the timeout lasts for three hours.
+    | Định nghĩa khoảng thời gian (tính bằng giây) trước khi cửa sổ xác nhận mật khẩu
+    | hết hạn và người dùng phải nhập lại mật khẩu trên màn hình xác nhận.
+    | Mặc định là 3 giờ (10800 giây).
     |
     */
 
