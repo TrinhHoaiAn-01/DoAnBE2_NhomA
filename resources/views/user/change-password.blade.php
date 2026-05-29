@@ -318,13 +318,21 @@
 
         </form>
 
-        <a href="/profileuser"
-           class="back-btn">
+        @if(Auth::user()->role_id == 5)
 
-            <i class="fa-solid fa-arrow-left"></i>
-            Back To Profile
+			<a href="{{ route('profile.admin') }}" class="back-btn">
+				<i class="fa-solid fa-arrow-left"></i>
+				Back To Profile
+			</a>
 
-        </a>
+		@else
+
+			<a href="{{ route('profile') }}" class="back-btn">
+				<i class="fa-solid fa-arrow-left"></i>
+				Back To Profile
+			</a>
+
+		@endif
 
     </div>
 

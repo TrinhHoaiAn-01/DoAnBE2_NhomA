@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\HandlesCrudSafety;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Support\DeliveryTimeSlot;
 use App\Support\ShippingFeeCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,6 +13,8 @@ use Illuminate\View\View;
 
 class OrderController extends Controller
 {
+    use HandlesCrudSafety;
+
     public function index(Request $request): View
     {
         $search = trim((string) $request->string('search'));
@@ -51,18 +55,26 @@ class OrderController extends Controller
             'statusOptions' => $this->statusOptions(),
             'shippingDistrictLabel' => ShippingFeeCalculator::districtLabel($order->shipping_district),
             'shippingServiceLabel' => ShippingFeeCalculator::serviceLabel($order->shipping_service),
+            'deliveryTimeSlotLabel' => DeliveryTimeSlot::label($order->delivery_time_slot),
         ]);
     }
 
     public function update(Request $request, Order $order): RedirectResponse
     {
-        $data = $request->validate([
+        $data = $this->validateCrud($request, [
             'status' => ['required', 'in:pending,processing,shipping,completed,cancelled'],
         ]);
 
-        $order->update($data);
+        return $this->runCrudOperation(function () use ($request, $order, $data): RedirectResponse {
+            $this->transaction(function () use ($request, $order, $data): void {
+                $lockedOrder = $this->lockForCrud($order);
+                $this->assertFreshRecord($request, $lockedOrder, 'đơn hàng');
+                $lockedOrder->update($data);
+            });
 
-        return to_route('admin.orders.show', $order)->with('status', 'Đã cập nhật trạng thái đơn hàng.');
+            return to_route('admin.orders.show', $order)
+                ->with('status', 'Đã cập nhật trạng thái đơn hàng. Hệ thống đã kiểm tra phiên chỉnh sửa trước khi lưu.');
+        }, 'cập nhật đơn hàng');
     }
 
     private function statusOptions(): array

@@ -7,68 +7,85 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Thực thi tạo cấu trúc các bảng users, password_reset_tokens, và sessions.
+     *
+     * @return void
      */
     public function up(): void
     {
+        // Tạo bảng Người dùng (users)
         Schema::create('users', function (Blueprint $table) {
 
-            $table->id();
+            $table->id(); // Khóa chính tự sinh
 
-            // profile
-            $table->string('name');
+            // Thông tin cá nhân
+            $table->string('name'); // Họ và tên
 
-            $table->string('email')->unique();
+            $table->string('username')->unique(); // Tên đăng nhập (Duy nhất)
 
-            $table->string('phone')->nullable();
+            $table->string('email')->unique(); // Địa chỉ Email (Duy nhất)
 
-            $table->string('avatar_url')->nullable();
+            $table->string('phone')->nullable(); // Số điện thoại
 
-            // role
-            // 1 = admin
-            // 2 = user
+            $table->string('avatar_url')->nullable(); // Đường dẫn ảnh đại diện
+
+            $table->text('home_address')->nullable(); // Địa chỉ nhà
+
+            // Giới tính (male, female, other)
+            $table->string('gender')->nullable();
+
+            $table->date('date_of_birth')->nullable(); // Ngày sinh
+
+            // Trạng thái tài khoản (true = hoạt động, false = bị khóa)
+            $table->boolean('status')->default(true);
+
+            // Vai trò người dùng (ROLE_1 đến ROLE_5)
             $table->integer('role_id')->default(2);
 
-            // auth
-            $table->timestamp('email_verified_at')->nullable();
+            // Thông tin xác thực & mật khẩu
+            $table->timestamp('email_verified_at')->nullable(); // Thời điểm xác minh email
 
-            $table->string('password');
+            $table->string('password'); // Mật khẩu đã mã hóa
 
-            $table->rememberToken();
+            $table->rememberToken(); // Token ghi nhớ đăng nhập
 
-            $table->timestamps();
+            $table->timestamps(); // Thời điểm tạo và cập nhật bản ghi
 
         });
 
+        // Tạo bảng lưu mã khôi phục mật khẩu (password_reset_tokens)
         Schema::create('password_reset_tokens', function (Blueprint $table) {
 
-            $table->string('email')->primary();
+            $table->string('email')->primary(); // Email người nhận mã (Khóa chính)
 
-            $table->string('token');
+            $table->string('token'); // Token bảo mật dùng để xác thực khôi phục
 
-            $table->timestamp('created_at')->nullable();
+            $table->timestamp('created_at')->nullable(); // Thời điểm tạo token
 
         });
 
+        // Tạo bảng lưu phiên làm việc của người dùng (sessions)
         Schema::create('sessions', function (Blueprint $table) {
 
-            $table->string('id')->primary();
+            $table->string('id')->primary(); // ID phiên làm việc (Khóa chính)
 
-            $table->foreignId('user_id')->nullable()->index();
+            $table->foreignId('user_id')->nullable()->index(); // Liên kết với người dùng (Khóa ngoại)
 
-            $table->string('ip_address', 45)->nullable();
+            $table->string('ip_address', 45)->nullable(); // Địa chỉ IP của máy truy cập
 
-            $table->text('user_agent')->nullable();
+            $table->text('user_agent')->nullable(); // Thông tin trình duyệt/thiết bị truy cập
 
-            $table->longText('payload');
+            $table->longText('payload'); // Dữ liệu phiên lưu trữ dưới dạng chuỗi hóa
 
-            $table->integer('last_activity')->index();
+            $table->integer('last_activity')->index(); // Thời điểm hoạt động cuối cùng
 
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Hủy bỏ các bảng users, password_reset_tokens và sessions khi rollback.
+     *
+     * @return void
      */
     public function down(): void
     {

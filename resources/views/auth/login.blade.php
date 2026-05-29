@@ -1,4 +1,7 @@
-@extends('layouts.app', ['title' => 'Đăng nhập NeoMart'])
+@extends('layouts.app', [
+    'title' => 'Đăng nhập NeoMart',
+    'hideNavbar' => true
+])
 
 @section('content')
 
@@ -14,13 +17,13 @@
 
         min-height:100vh;
 
-        overflow-x:hidden;
+        overflow:hidden;
 
         font-family:'Segoe UI',sans-serif;
 
         background:
-            radial-gradient(circle at top left, rgba(37,99,235,0.18), transparent 25%),
-            radial-gradient(circle at bottom right, rgba(124,58,237,0.18), transparent 25%),
+            radial-gradient(circle at top left, rgba(37,99,235,0.20), transparent 25%),
+            radial-gradient(circle at bottom right, rgba(124,58,237,0.20), transparent 25%),
             linear-gradient(
                 135deg,
                 #020617,
@@ -32,10 +35,6 @@
 
         position:relative;
     }
-
-    /* =========================
-        HIDE DEFAULT NAVBAR
-    ========================== */
 
     .navbar:first-of-type{
         display:none !important;
@@ -55,7 +54,7 @@
 
         z-index:-1;
 
-        opacity:0.45;
+        opacity:0.4;
     }
 
     .bg-light.one{
@@ -71,8 +70,8 @@
 
     .bg-light.two{
 
-        width:320px;
-        height:320px;
+        width:340px;
+        height:340px;
 
         background:#7c3aed;
 
@@ -81,176 +80,19 @@
     }
 
     /* =========================
-        NAVBAR
-    ========================== */
-
-    .custom-navbar{
-
-        width:88%;
-        max-width:1450px;
-
-        margin:32px auto 0;
-
-        padding:16px 22px;
-
-        border-radius:24px;
-
-        display:flex;
-
-        align-items:center;
-        justify-content:space-between;
-
-        background:
-            rgba(5,10,28,0.75);
-
-        backdrop-filter:blur(18px);
-
-        border:
-            1px solid rgba(96,165,250,0.16);
-
-        box-shadow:
-            0 0 25px rgba(37,99,235,0.12);
-    }
-
-    .logo{
-
-        font-size:26px;
-
-        font-weight:800;
-
-        letter-spacing:1px;
-
-        color:white;
-
-        text-transform:uppercase;
-    }
-
-    /* =========================
-        MENU
-    ========================== */
-
-    .nav-menu{
-
-        display:flex;
-
-        align-items:center;
-
-        gap:10px;
-    }
-
-    .nav-item-custom{
-
-        text-decoration:none;
-
-        color:#dbeafe;
-
-        font-size:14px;
-        font-weight:600;
-
-        padding:13px 20px;
-
-        border-radius:16px;
-
-        transition:0.3s;
-
-        position:relative;
-    }
-
-    .nav-item-custom:hover{
-
-        color:white;
-
-        background:
-            rgba(255,255,255,0.05);
-    }
-
-    .nav-item-custom.active{
-
-        color:white;
-
-        background:
-            linear-gradient(
-                135deg,
-                rgba(37,99,235,0.24),
-                rgba(124,58,237,0.18)
-            );
-
-        border:
-            1px solid rgba(96,165,250,0.2);
-    }
-
-    /* =========================
-        AUTH BUTTON
-    ========================== */
-
-    .nav-auth{
-
-        display:flex;
-
-        align-items:center;
-
-        gap:12px;
-    }
-
-    .btn-auth{
-
-        text-decoration:none;
-
-        font-size:14px;
-        font-weight:700;
-
-        padding:13px 22px;
-
-        border-radius:16px;
-
-        transition:0.3s;
-    }
-
-    .btn-login{
-
-        color:white;
-
-        border:
-            1px solid rgba(255,255,255,0.08);
-
-        background:
-            rgba(255,255,255,0.04);
-    }
-
-    .btn-register{
-
-        color:white;
-
-        background:
-            linear-gradient(
-                135deg,
-                #2563eb,
-                #7c3aed
-            );
-    }
-
-    .btn-auth:hover{
-
-        transform:translateY(-2px);
-
-        opacity:0.9;
-    }
-
-    /* =========================
         LOGIN WRAPPER
     ========================== */
 
     .login-wrapper{
 
-        min-height:
-            calc(100vh - 130px);
+        min-height:100vh;
 
         display:flex;
 
         justify-content:center;
         align-items:center;
 
-        padding:40px 20px;
+        padding:30px 20px;
     }
 
     /* =========================
@@ -260,11 +102,11 @@
     .login-card{
 
         width:100%;
-        max-width:500px;
+        max-width:540px;
 
-        padding:42px;
+        padding:45px;
 
-        border-radius:28px;
+        border-radius:34px;
 
         background:
             rgba(255,255,255,0.06);
@@ -275,37 +117,60 @@
             1px solid rgba(255,255,255,0.08);
 
         box-shadow:
-            0 10px 40px rgba(0,0,0,0.4);
+            0 10px 40px rgba(0,0,0,0.45);
 
         position:relative;
 
         overflow:hidden;
+		
+		margin-top: -50px;
     }
 
-    .mini-title{
+    /* =========================
+        LOGIN IMAGE
+    ========================== */
 
-        text-align:center;
+    .login-image{
 
-        text-transform:uppercase;
+        width:100%;
 
-        letter-spacing:3px;
+        height:230px;
 
-        color:#93c5fd;
+        display:flex;
 
-        font-size:11px;
+        justify-content:center;
+        align-items:center;
 
-        margin-bottom:10px;
+        overflow:hidden;
+		
+		margin-top:-30px;
+		
+        margin-bottom:-20px;
     }
 
-    .main-title{
+    .login-image img{
 
-        text-align:center;
+        width:340px;
 
-        font-size:36px;
+        max-width:100%;
 
-        font-weight:800;
+        height:auto;
 
-        margin-bottom:14px;
+        object-fit:contain;
+
+        display:block;
+
+        filter:
+            drop-shadow(
+                0 20px 45px rgba(37,99,235,0.35)
+            );
+
+        transition:0.3s;
+    }
+
+    .login-image img:hover{
+
+        transform:scale(1.03);
     }
 
     /* =========================
@@ -333,9 +198,9 @@
 
         width:100%;
 
-        padding:15px 18px;
+        padding:17px 18px;
 
-        border-radius:16px;
+        border-radius:18px;
 
         border:
             1px solid rgba(255,255,255,0.08);
@@ -343,11 +208,19 @@
         background:
             rgba(255,255,255,0.05);
 
-        color:white;
+        color:#ffffff !important;
 
         font-size:14px;
 
         transition:0.3s;
+
+        caret-color:#ffffff;
+
+        outline:none;
+
+        appearance:none;
+
+        -webkit-appearance:none;
     }
 
     .form-control::placeholder{
@@ -356,8 +229,6 @@
 
     .form-control:focus{
 
-        outline:none;
-
         border-color:#3b82f6;
 
         background:
@@ -365,26 +236,77 @@
 
         box-shadow:
             0 0 0 4px rgba(37,99,235,0.15);
+
+        color:#ffffff !important;
     }
 
-    /* REMEMBER */
+    input,
+    textarea{
+
+        color:#ffffff !important;
+    }
+
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus{
+
+        -webkit-text-fill-color:#ffffff !important;
+
+        box-shadow:
+            0 0 0px 1000px #0f172a inset !important;
+
+        transition:
+            background-color 9999s ease-in-out 0s;
+    }
+
+    /* =========================
+        REMEMBER
+    ========================== */
 
     .remember{
 
         display:flex;
 
         align-items:center;
+        justify-content:space-between;
 
-        gap:10px;
-
-        margin-bottom:26px;
+        margin-bottom:24px;
 
         color:#cbd5e1;
 
         font-size:14px;
     }
 
-    /* BUTTON */
+    .remember-left{
+
+        display:flex;
+
+        align-items:center;
+
+        gap:10px;
+    }
+
+    .remember-left input{
+
+        accent-color:#2563eb;
+    }
+
+    .remember a{
+
+        color:#93c5fd;
+
+        text-decoration:none;
+
+        transition:0.3s;
+    }
+
+    .remember a:hover{
+        color:white;
+    }
+
+    /* =========================
+        BUTTON
+    ========================== */
 
     .submit-btn{
 
@@ -392,9 +314,9 @@
 
         border:none;
 
-        padding:16px;
+        padding:17px;
 
-        border-radius:16px;
+        border-radius:20px;
 
         color:white;
 
@@ -413,18 +335,55 @@
             );
 
         box-shadow:
-            0 10px 25px rgba(124,58,237,0.22);
+            0 12px 30px rgba(124,58,237,0.22);
     }
 
     .submit-btn:hover{
 
-        transform:translateY(-2px);
+        transform:translateY(-3px);
 
         box-shadow:
-            0 14px 30px rgba(124,58,237,0.3);
+            0 18px 35px rgba(124,58,237,0.32);
     }
 
-    /* SOCIAL */
+    /* =========================
+        DIVIDER
+    ========================== */
+
+    .divider{
+
+        display:flex;
+
+        align-items:center;
+
+        gap:14px;
+
+        margin:30px 0;
+    }
+
+    .divider::before,
+    .divider::after{
+
+        content:'';
+
+        flex:1;
+
+        height:1px;
+
+        background:
+            rgba(255,255,255,0.08);
+    }
+
+    .divider span{
+
+        color:#94a3b8;
+
+        font-size:13px;
+    }
+
+    /* =========================
+        SOCIAL LOGIN
+    ========================== */
 
     .social-login{
 
@@ -433,32 +392,37 @@
         flex-direction:column;
 
         gap:14px;
-
-        margin-top:18px;
     }
 
     .social-btn{
 
         width:100%;
 
-        padding:14px;
+        display:flex;
 
-        border-radius:16px;
+        align-items:center;
+        justify-content:center;
 
-        border:
-            1px solid rgba(255,255,255,0.08);
+        gap:14px;
 
-        background:
-            rgba(255,255,255,0.04);
+        padding:16px;
+
+        border-radius:20px;
+
+        text-decoration:none;
 
         color:white;
 
         font-size:14px;
         font-weight:600;
 
-        cursor:pointer;
+        transition:0.35s;
 
-        transition:0.3s;
+        border:
+            1px solid rgba(255,255,255,0.08);
+
+        background:
+            rgba(255,255,255,0.04);
     }
 
     .social-btn:hover{
@@ -467,28 +431,52 @@
 
         background:
             rgba(255,255,255,0.08);
+
+        border-color:
+            rgba(96,165,250,0.18);
     }
 
-    /* LINKS */
+    .social-btn img{
 
-    .links{
+        width:22px;
+        height:22px;
+    }
+
+    .social-github img{
+
+        background:white;
+
+        border-radius:50%;
+    }
+
+    /* =========================
+        REGISTER
+    ========================== */
+
+    .register-link{
 
         text-align:center;
 
-        margin-top:20px;
+        margin-top:28px;
 
         font-size:14px;
+
+        color:#cbd5e1;
     }
 
-    .links a{
+    .register-link a{
 
         color:#93c5fd;
 
         text-decoration:none;
+
+        font-weight:600;
+
+        transition:0.3s;
     }
 
-    .links span{
-        color:#cbd5e1;
+    .register-link a:hover{
+        color:white;
     }
 
 </style>
@@ -497,55 +485,20 @@
 <div class="bg-light one"></div>
 <div class="bg-light two"></div>
 
-<!-- NAVBAR -->
-<div class="custom-navbar">
-
-    <!-- LOGO -->
-    <div class="logo">
-        NEOMART
-    </div>
-
-    <!-- MENU -->
-    <div class="nav-menu">
-
-        <a href="#" class="nav-item-custom active">
-            Trang chủ
-        </a>
-
-        <a href="#" class="nav-item-custom">
-            Sản phẩm
-        </a>
-
-        <a href="#" class="nav-item-custom">
-            Giỏ hàng
-        </a>
-
-        <a href="#" class="nav-item-custom">
-            Danh mục
-        </a>
-
-        <a href="#" class="nav-item-custom">
-            Liên hệ
-        </a>
-
-    </div>
-
-
-</div>
-
 <!-- LOGIN -->
 <div class="login-wrapper">
 
     <div class="login-card">
 
-        <!-- TITLE -->
-        <div class="mini-title">
-            Tài khoản người dùng
-        </div>
+        <!-- LOGO -->
+        <div class="login-image">
 
-        <h1 class="main-title">
-            Đăng nhập
-        </h1>
+            <img
+                src="{{ asset('images/logo.png') }}"
+                alt="NeoMart Logo"
+            >
+
+        </div>
 
         <!-- FORM -->
         <form
@@ -567,6 +520,7 @@
                     name="email"
                     class="form-control"
                     placeholder="Nhập email..."
+                    autocomplete="off"
                     required
                 >
 
@@ -584,6 +538,7 @@
                     name="password"
                     class="form-control"
                     placeholder="Nhập mật khẩu..."
+                    autocomplete="off"
                     required
                 >
 
@@ -592,28 +547,18 @@
             <!-- REMEMBER -->
             <div class="remember">
 
-                <input
-                    type="checkbox"
-                    name="remember"
-                >
+                <div class="remember-left">
 
-                <span>
-                    Ghi nhớ đăng nhập
-                </span>
+                    <input
+                        type="checkbox"
+                        name="remember"
+                    >
 
-            </div>
+                    <span>
+                        Ghi nhớ đăng nhập
+                    </span>
 
-            <!-- BUTTON -->
-            <button
-                type="submit"
-                class="submit-btn"
-            >
-                Đăng nhập
-            </button>
-
-
-            <!-- LINKS -->
-            <div class="links">
+                </div>
 
                 <a href="{{ route('password.request') }}">
                     Quên mật khẩu?
@@ -621,11 +566,66 @@
 
             </div>
 
-            <div class="links">
+            <!-- LOGIN BUTTON -->
+            <button
+                type="submit"
+                class="submit-btn"
+            >
+                Đăng nhập
+            </button>
+
+            <!-- DIVIDER -->
+            <div class="divider">
 
                 <span>
-                    Chưa có tài khoản?
+                    Hoặc tiếp tục với
                 </span>
+
+            </div>
+
+            <!-- SOCIAL -->
+            <div class="social-login">
+
+                <!-- GOOGLE -->
+                <a
+                    href="#"
+                    class="social-btn"
+                >
+
+                    <img
+                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+                        alt="Google"
+                    >
+
+                    <span>
+                        Đăng nhập với Google
+                    </span>
+
+                </a>
+
+                <!-- GITHUB -->
+                <a
+                    href="#"
+                    class="social-btn social-github"
+                >
+
+                    <img
+                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+                        alt="Github"
+                    >
+
+                    <span>
+                        Đăng nhập với Github
+                    </span>
+
+                </a>
+
+            </div>
+
+            <!-- REGISTER -->
+            <div class="register-link">
+
+                Chưa có tài khoản?
 
                 <a href="{{ route('register') }}">
                     Đăng ký ngay

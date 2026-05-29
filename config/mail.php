@@ -4,13 +4,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Mailer
+    | Trình Gửi Thư Mặc Định (Default Mailer)
     |--------------------------------------------------------------------------
     |
-    | This option controls the default mailer that is used to send all email
-    | messages unless another mailer is explicitly specified when sending
-    | the message. All additional mailers can be configured within the
-    | "mailers" array. Examples of each type of mailer are provided.
+    | Tùy chọn này điều khiển bộ gửi thư (mailer) mặc định sẽ được sử dụng để
+    | gửi tất cả các email, trừ khi một bộ gửi thư khác được chỉ định cụ thể.
+    | Các cấu hình bộ gửi thư bổ sung nằm trong mảng "mailers" dưới đây.
     |
     */
 
@@ -18,25 +17,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Mailer Configurations
+    | Cấu Hình Trình Gửi Thư (Mailer Configurations)
     |--------------------------------------------------------------------------
     |
-    | Here you may configure all of the mailers used by your application plus
-    | their respective settings. Several examples have been configured for
-    | you and you are free to add your own as your application requires.
+    | Tại đây bạn có thể cấu hình tất cả các bộ gửi thư được sử dụng bởi ứng dụng
+    | cùng với các cài đặt tương ứng. Một số ví dụ đã được cấu hình sẵn.
     |
-    | Laravel supports a variety of mail "transport" drivers that can be used
-    | when delivering an email. You may specify which one you're using for
-    | your mailers below. You may also add additional mailers if needed.
+    | Laravel hỗ trợ nhiều driver gửi thư khác nhau (mail transport). Bạn có thể
+    | cấu hình chi tiết cho từng loại tùy thuộc vào nhu cầu của hệ thống.
     |
-    | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
-    |            "postmark", "resend", "log", "array",
-    |            "failover", "roundrobin"
+    | Các driver hỗ trợ: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
+    |                    "postmark", "resend", "log", "array",
+    |                    "failover", "roundrobin"
     |
     */
 
     'mailers' => [
 
+        // Cấu hình gửi thư qua SMTP
         'smtp' => [
             'transport' => 'smtp',
             'scheme' => env('MAIL_SCHEME'),
@@ -49,10 +47,12 @@ return [
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
+        // Cấu hình gửi thư qua dịch vụ Amazon SES
         'ses' => [
             'transport' => 'ses',
         ],
 
+        // Cấu hình gửi thư qua Postmark
         'postmark' => [
             'transport' => 'postmark',
             // 'message_stream_id' => env('POSTMARK_MESSAGE_STREAM_ID'),
@@ -61,24 +61,29 @@ return [
             // ],
         ],
 
+        // Cấu hình gửi thư qua dịch vụ Resend
         'resend' => [
             'transport' => 'resend',
         ],
 
+        // Cấu hình gửi thư qua Sendmail tích hợp sẵn trên server Linux
         'sendmail' => [
             'transport' => 'sendmail',
             'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
         ],
 
+        // Ghi log email thay vì gửi thực tế (thường dùng trong môi trường phát triển)
         'log' => [
             'transport' => 'log',
             'channel' => env('MAIL_LOG_CHANNEL'),
         ],
 
+        // Lưu email vào mảng bộ nhớ (dùng cho mục đích kiểm thử/testing)
         'array' => [
             'transport' => 'array',
         ],
 
+        // Dự phòng (Failover): Tự động chuyển đổi sang kênh log nếu SMTP lỗi
         'failover' => [
             'transport' => 'failover',
             'mailers' => [
@@ -87,6 +92,7 @@ return [
             ],
         ],
 
+        // Phân phối Roundrobin: Chia đều tải gửi email giữa SES và Postmark
         'roundrobin' => [
             'transport' => 'roundrobin',
             'mailers' => [
@@ -99,12 +105,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Global "From" Address
+    | Địa Chỉ Gửi Mặc Định Toàn Cục (Global "From" Address)
     |--------------------------------------------------------------------------
     |
-    | You may wish for all emails sent by your application to be sent from
-    | the same address. Here you may specify a name and address that is
-    | used globally for all emails that are sent by your application.
+    | Bạn có thể muốn tất cả các email gửi từ ứng dụng sử dụng chung một địa chỉ
+    | người gửi cố định. Tại đây bạn có thể chỉ định tên và địa chỉ người gửi
+    | mặc định toàn cục cho ứng dụng của mình.
     |
     */
 

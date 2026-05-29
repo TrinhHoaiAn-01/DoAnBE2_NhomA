@@ -7,10 +7,21 @@ use App\Models\Product;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
+/**
+ * Lớp CatalogSeeder
+ *
+ * Khởi tạo dữ liệu mẫu cho danh mục sản phẩm (Categories) và các sản phẩm (Products) tương ứng.
+ */
 class CatalogSeeder extends Seeder
 {
+    /**
+     * Thực thi chèn dữ liệu mẫu danh mục và sản phẩm.
+     *
+     * @return void
+     */
     public function run(): void
     {
+        // Danh sách các danh mục mẫu của hệ thống cửa hàng tiện lợi
         $categories = [
             [
                 'name' => 'Thuc pham',
@@ -49,6 +60,7 @@ class CatalogSeeder extends Seeder
             ],
         ];
 
+        // Lặp qua mảng và thêm hoặc cập nhật danh mục vào cơ sở dữ liệu
         foreach ($categories as $category) {
             Category::query()->updateOrCreate(
                 ['slug' => Str::slug($category['name'])],
@@ -56,6 +68,7 @@ class CatalogSeeder extends Seeder
             );
         }
 
+        // Danh sách các sản phẩm mẫu tương ứng với từng danh mục
         $products = [
             [
                 'category' => 'Do uong',
@@ -139,6 +152,7 @@ class CatalogSeeder extends Seeder
             ],
         ];
 
+        // Lặp qua mảng sản phẩm và liên kết khóa ngoại với danh mục để thêm/cập nhật
         foreach ($products as $item) {
             $category = Category::query()->where('name', $item['category'])->first();
 

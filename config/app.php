@@ -4,12 +4,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Name
+    | Tên Ứng Dụng (Application Name)
     |--------------------------------------------------------------------------
     |
-    | This value is the name of your application, which will be used when the
-    | framework needs to place the application's name in a notification or
-    | other UI elements where an application name needs to be displayed.
+    | Giá trị này là tên ứng dụng của bạn, được sử dụng khi framework cần hiển thị
+    | tên ứng dụng trong các thông báo hoặc các thành phần giao diện người dùng khác.
     |
     */
 
@@ -17,12 +16,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Environment
+    | Môi Trường Ứng Dụng (Application Environment)
     |--------------------------------------------------------------------------
     |
-    | This value determines the "environment" your application is currently
-    | running in. This may determine how you prefer to configure various
-    | services the application utilizes. Set this in your ".env" file.
+    | Giá trị này quyết định "môi trường" hiện tại ứng dụng của bạn đang chạy.
+    | Cấu hình này có thể thay đổi cách bạn thiết lập các dịch vụ khác nhau
+    | mà ứng dụng sử dụng. Thiết lập giá trị này trong tệp ".env".
     |
     */
 
@@ -30,12 +29,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Debug Mode
+    | Chế Độ Kiểm Lỗi Ứng Dụng (Application Debug Mode)
     |--------------------------------------------------------------------------
     |
-    | When your application is in debug mode, detailed error messages with
-    | stack traces will be shown on every error that occurs within your
-    | application. If disabled, a simple generic error page is shown.
+    | Khi ứng dụng ở chế độ debug, các thông báo lỗi chi tiết cùng với stack trace
+    | sẽ được hiển thị khi xảy ra lỗi. Nếu bị vô hiệu hóa, một trang lỗi chung chung
+    | đơn giản sẽ được hiển thị.
     |
     */
 
@@ -43,12 +42,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application URL
+    | URL Ứng Dụng (Application URL)
     |--------------------------------------------------------------------------
     |
-    | This URL is used by the console to properly generate URLs when using
-    | the Artisan command line tool. You should set this to the root of
-    | the application so that it's available within Artisan commands.
+    | URL này được sử dụng bởi console để tạo ra các liên kết (URL) chính xác
+    | khi sử dụng công cụ dòng lệnh Artisan. Bạn nên đặt giá trị này khớp với
+    | URL gốc của ứng dụng.
     |
     */
 
@@ -56,12 +55,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Timezone
+    | Múi Giờ Ứng Dụng (Application Timezone)
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the default timezone for your application, which
-    | will be used by the PHP date and date-time functions. The timezone
-    | is set to "UTC" by default as it is suitable for most use cases.
+    | Tại đây bạn có thể chỉ định múi giờ mặc định cho ứng dụng, múi giờ này
+    | sẽ được sử dụng bởi các hàm định dạng ngày và giờ của PHP.
+    | Múi giờ mặc định được đặt là "UTC".
     |
     */
 
@@ -69,29 +68,31 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Locale Configuration
+    | Cấu Hình Ngôn Ngữ Ứng Dụng (Application Locale Configuration)
     |--------------------------------------------------------------------------
     |
-    | The application locale determines the default locale that will be used
-    | by Laravel's translation / localization methods. This option can be
-    | set to any locale for which you plan to have translation strings.
+    | Ngôn ngữ ứng dụng quyết định ngôn ngữ mặc định sẽ được sử dụng bởi
+    | các phương thức dịch thuật / đa ngôn ngữ của Laravel. Có thể đặt thành
+    | bất kỳ ngôn ngữ nào mà ứng dụng hỗ trợ.
     |
     */
 
     'locale' => env('APP_LOCALE', 'en'),
 
+    // Ngôn ngữ dự phòng khi ngôn ngữ hiện tại không có bản dịch
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
+    // Ngôn ngữ mặc định cho thư viện tạo dữ liệu giả Faker
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 
     /*
     |--------------------------------------------------------------------------
-    | Encryption Key
+    | Khóa Mã Hóa (Encryption Key)
     |--------------------------------------------------------------------------
     |
-    | This key is utilized by Laravel's encryption services and should be set
-    | to a random, 32 character string to ensure that all encrypted values
-    | are secure. You should do this prior to deploying the application.
+    | Khóa này được sử dụng bởi các dịch vụ mã hóa của Laravel và phải được đặt
+    | là một chuỗi ngẫu nhiên 32 ký tự để đảm bảo tính bảo mật cho tất cả các
+    | giá trị được mã hóa. Hãy thiết lập trước khi triển khai ứng dụng.
     |
     */
 
@@ -107,14 +108,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Maintenance Mode Driver
+    | Trình Quản Lý Chế Độ Bảo Trì (Maintenance Mode Driver)
     |--------------------------------------------------------------------------
     |
-    | These configuration options determine the driver used to determine and
-    | manage Laravel's "maintenance mode" status. The "cache" driver will
-    | allow maintenance mode to be controlled across multiple machines.
+    | Các tùy chọn cấu hình này xác định driver được sử dụng để quản lý trạng thái
+    | "chế độ bảo trì" của Laravel. Driver "cache" cho phép kiểm soát trạng thái
+    | bảo trì trên nhiều máy chủ khác nhau.
     |
-    | Supported drivers: "file", "cache"
+    | Các driver hỗ trợ: "file", "cache"
     |
     */
 

@@ -70,9 +70,15 @@
                     <div>{{ $order->customer_email ?: 'Chưa có email' }}</div>
                     <div>{{ $order->shipping_address }}</div>
                     <div>Vận chuyển: {{ $shippingDistrictLabel }} - {{ $shippingServiceLabel }}</div>
-                    @if ($order->note)
-                        <div>Ghi chú: {{ $order->note }}</div>
-                    @endif
+                    <div>
+                        Lịch giao:
+                        {{ $order->delivery_date?->format('d/m/Y') ?: 'Chưa chọn ngày' }}
+                        - {{ $deliveryTimeSlotLabel }}
+                    </div>
+                    <div>
+                        <div class="small text-secondary">Ghi chú đơn hàng</div>
+                        <div class="text-break">{{ $order->note ?: 'Không có ghi chú' }}</div>
+                    </div>
                 </div>
             </div>
 
@@ -81,6 +87,7 @@
                 <form method="post" action="{{ route('admin.orders.update', $order) }}">
                     @csrf
                     @method('patch')
+                    <input type="hidden" name="_record_updated_at" value="{{ $order->updated_at?->getTimestamp() }}">
                     <div class="mb-3">
                         <label class="form-label" for="status">Trạng thái</label>
                         <select class="form-select" id="status" name="status">

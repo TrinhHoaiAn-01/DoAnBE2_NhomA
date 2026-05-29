@@ -1,4 +1,7 @@
-@extends('layouts.app', ['title' => 'Đăng ký NeoMart'])
+@extends('layouts.app', [
+    'title' => 'Đăng ký NeoMart',
+    'hideNavbar' => true
+])
 
 @section('content')
 
@@ -14,13 +17,13 @@
 
         min-height:100vh;
 
-        overflow-x:hidden;
+        overflow:hidden;
 
         font-family:'Segoe UI',sans-serif;
 
         background:
-            radial-gradient(circle at top left, rgba(37,99,235,0.18), transparent 25%),
-            radial-gradient(circle at bottom right, rgba(124,58,237,0.18), transparent 25%),
+            radial-gradient(circle at top left, rgba(37,99,235,0.20), transparent 25%),
+            radial-gradient(circle at bottom right, rgba(124,58,237,0.20), transparent 25%),
             linear-gradient(
                 135deg,
                 #020617,
@@ -32,10 +35,6 @@
 
         position:relative;
     }
-
-    /* =========================
-        HIDE DEFAULT NAVBAR
-    ========================== */
 
     .navbar:first-of-type{
         display:none !important;
@@ -55,7 +54,7 @@
 
         z-index:-1;
 
-        opacity:0.45;
+        opacity:0.4;
     }
 
     .bg-light.one{
@@ -71,8 +70,8 @@
 
     .bg-light.two{
 
-        width:320px;
-        height:320px;
+        width:340px;
+        height:340px;
 
         background:#7c3aed;
 
@@ -81,117 +80,19 @@
     }
 
     /* =========================
-        NAVBAR
-    ========================== */
-
-    .custom-navbar{
-
-        width:88%;
-        max-width:1450px;
-
-        margin:32px auto 0;
-
-        padding:16px 22px;
-
-        border-radius:24px;
-
-        display:flex;
-
-        align-items:center;
-        justify-content:space-between;
-
-        background:
-            rgba(5,10,28,0.75);
-
-        backdrop-filter:blur(18px);
-
-        border:
-            1px solid rgba(96,165,250,0.16);
-
-        box-shadow:
-            0 0 25px rgba(37,99,235,0.12);
-    }
-
-    .logo{
-
-        font-size:26px;
-
-        font-weight:800;
-
-        letter-spacing:1px;
-
-        color:white;
-
-        text-transform:uppercase;
-    }
-
-    /* =========================
-        MENU
-    ========================== */
-
-    .nav-menu{
-
-        display:flex;
-
-        align-items:center;
-
-        gap:10px;
-    }
-
-    .nav-item-custom{
-
-        text-decoration:none;
-
-        color:#dbeafe;
-
-        font-size:14px;
-        font-weight:600;
-
-        padding:13px 20px;
-
-        border-radius:16px;
-
-        transition:0.3s;
-    }
-
-    .nav-item-custom:hover{
-
-        color:white;
-
-        background:
-            rgba(255,255,255,0.05);
-    }
-
-    .nav-item-custom.active{
-
-        color:white;
-
-        background:
-            linear-gradient(
-                135deg,
-                rgba(37,99,235,0.24),
-                rgba(124,58,237,0.18)
-            );
-
-        border:
-            1px solid rgba(96,165,250,0.2);
-    }
-
-    /* =========================
         REGISTER WRAPPER
     ========================== */
 
     .register-wrapper{
 
-        min-height:
-            calc(100vh - 130px);
+        min-height:100vh;
 
         display:flex;
 
         justify-content:center;
-        align-items:center;
+        align-items:flex-start;
 
-        padding:40px 20px;
+        padding:120px 20px 30px;
     }
 
     /* =========================
@@ -201,11 +102,11 @@
     .register-card{
 
         width:100%;
-        max-width:760px;
+        max-width:560px;
 
-        padding:42px;
+        padding:45px;
 
-        border-radius:28px;
+        border-radius:34px;
 
         background:
             rgba(255,255,255,0.06);
@@ -216,70 +117,47 @@
             1px solid rgba(255,255,255,0.08);
 
         box-shadow:
-            0 10px 40px rgba(0,0,0,0.4);
+            0 10px 40px rgba(0,0,0,0.45);
 
         position:relative;
 
         overflow:hidden;
+
+        margin-top:-110px;
     }
 
-    .mini-title{
-
-        text-align:center;
-
-        text-transform:uppercase;
-
-        letter-spacing:3px;
-
-        color:#93c5fd;
-
-        font-size:11px;
-
-        margin-bottom:10px;
-    }
+    /* =========================
+        TITLE
+    ========================== */
 
     .main-title{
 
         text-align:center;
 
-        font-size:36px;
+        font-size:34px;
 
         font-weight:800;
 
-        margin-bottom:12px;
+        margin-bottom:10px;
     }
 
     .sub-title{
 
         text-align:center;
 
-        color:#cbd5e1;
+        color:#94a3b8;
 
         font-size:14px;
 
-        margin-bottom:34px;
+        margin-bottom:35px;
     }
 
     /* =========================
         FORM
     ========================== */
 
-    .form-grid{
-
-        display:grid;
-
-        grid-template-columns:
-            repeat(2,1fr);
-
-        gap:20px;
-    }
-
-    .full-width{
-        grid-column:1/-1;
-    }
-
     .form-group{
-        margin-bottom:4px;
+        margin-bottom:22px;
     }
 
     .form-label{
@@ -295,14 +173,13 @@
         font-weight:600;
     }
 
-    .form-control,
-    .form-select{
+    .form-control{
 
         width:100%;
 
-        padding:15px 18px;
+        padding:17px 18px;
 
-        border-radius:16px;
+        border-radius:18px;
 
         border:
             1px solid rgba(255,255,255,0.08);
@@ -310,25 +187,26 @@
         background:
             rgba(255,255,255,0.05);
 
-        color:white;
+        color:#ffffff !important;
 
         font-size:14px;
 
         transition:0.3s;
-    }
 
-    .form-select option{
-        background:#0f172a;
+        caret-color:#ffffff;
+
+        outline:none;
+
+        appearance:none;
+
+        -webkit-appearance:none;
     }
 
     .form-control::placeholder{
         color:#94a3b8;
     }
 
-    .form-control:focus,
-    .form-select:focus{
-
-        outline:none;
+    .form-control:focus{
 
         border-color:#3b82f6;
 
@@ -337,6 +215,59 @@
 
         box-shadow:
             0 0 0 4px rgba(37,99,235,0.15);
+
+        color:#ffffff !important;
+    }
+
+    input,
+    textarea{
+
+        color:#ffffff !important;
+    }
+
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus{
+
+        -webkit-text-fill-color:#ffffff !important;
+
+        box-shadow:
+            0 0 0px 1000px #0f172a inset !important;
+
+        transition:
+            background-color 9999s ease-in-out 0s;
+    }
+
+    /* =========================
+        CAPTCHA
+    ========================== */
+
+    .captcha-wrapper{
+
+        width:100%;
+
+        min-height:78px;
+
+        border-radius:18px;
+
+        border:
+            1px dashed rgba(255,255,255,0.12);
+
+        background:
+            rgba(255,255,255,0.04);
+
+        display:flex;
+
+        align-items:center;
+        justify-content:center;
+
+        padding:20px;
+
+        color:#94a3b8;
+
+        font-size:14px;
+
+        text-align:center;
     }
 
     /* =========================
@@ -362,9 +293,9 @@
 
         border:none;
 
-        padding:16px;
+        padding:17px;
 
-        border-radius:16px;
+        border-radius:20px;
 
         color:white;
 
@@ -373,7 +304,7 @@
 
         cursor:pointer;
 
-        margin-top:28px;
+        margin-top:10px;
 
         transition:0.35s;
 
@@ -385,39 +316,45 @@
             );
 
         box-shadow:
-            0 10px 25px rgba(124,58,237,0.22);
+            0 12px 30px rgba(124,58,237,0.22);
     }
 
     .submit-btn:hover{
 
-        transform:translateY(-2px);
+        transform:translateY(-3px);
 
         box-shadow:
-            0 14px 30px rgba(124,58,237,0.3);
+            0 18px 35px rgba(124,58,237,0.32);
     }
 
     /* =========================
-        LINKS
+        LOGIN LINK
     ========================== */
 
-    .links{
+    .login-link{
 
         text-align:center;
 
-        margin-top:22px;
+        margin-top:28px;
 
         font-size:14px;
-    }
 
-    .links span{
         color:#cbd5e1;
     }
 
-    .links a{
+    .login-link a{
 
         color:#93c5fd;
 
         text-decoration:none;
+
+        font-weight:600;
+
+        transition:0.3s;
+    }
+
+    .login-link a:hover{
+        color:white;
     }
 
     /* =========================
@@ -426,28 +363,17 @@
 
     @media(max-width:768px){
 
-        .custom-navbar{
-
-            flex-direction:column;
-
-            gap:18px;
-        }
-
-        .nav-menu{
-            flex-wrap:wrap;
-            justify-content:center;
+        .register-wrapper{
+            padding-top:70px;
         }
 
         .register-card{
-            padding:32px 22px;
-        }
 
-        .form-grid{
-            grid-template-columns:1fr;
+            padding:32px 24px;
         }
 
         .main-title{
-            font-size:30px;
+            font-size:28px;
         }
     }
 
@@ -457,54 +383,18 @@
 <div class="bg-light one"></div>
 <div class="bg-light two"></div>
 
-<!-- NAVBAR -->
-<div class="custom-navbar">
-
-    <div class="logo">
-        NEOMART
-    </div>
-
-    <div class="nav-menu">
-
-        <a href="#" class="nav-item-custom active">
-            Trang chủ
-        </a>
-
-        <a href="#" class="nav-item-custom">
-            Sản phẩm
-        </a>
-
-        <a href="#" class="nav-item-custom">
-            Giỏ hàng
-        </a>
-
-        <a href="#" class="nav-item-custom">
-            Danh mục
-        </a>
-
-        <a href="#" class="nav-item-custom">
-            Liên hệ
-        </a>
-
-    </div>
-
-</div>
-
 <!-- REGISTER -->
 <div class="register-wrapper">
 
     <div class="register-card">
 
-        <div class="mini-title">
-            Tài khoản người dùng
-        </div>
-
+        <!-- TITLE -->
         <h1 class="main-title">
             Đăng ký tài khoản
         </h1>
 
         <p class="sub-title">
-            Tạo tài khoản để mua sắm và quản lý thông tin cá nhân
+            Tạo tài khoản để tiếp tục mua sắm cùng NeoMart
         </p>
 
         <!-- FORM -->
@@ -515,148 +405,120 @@
 
             @csrf
 
-            <div class="form-grid">
+            <!-- ACCOUNT NAME -->
+            <div class="form-group">
 
-                <!-- NAME -->
-                <div class="form-group">
+                <label class="form-label">
+                    Tên tài khoản
+                </label>
 
-                    <label class="form-label">
-                        Họ tên
-                    </label>
+                <input
+                    type="text"
+                    name="username"
+                    value="{{ old('username') }}"
+                    class="form-control @error('username') is-invalid @enderror"
+                    placeholder="Nhập tên tài khoản..."
+                    autocomplete="off"
+                    required
+                >
 
-                    <input
-                        type="text"
-                        name="name"
-                        value="{{ old('name') }}"
-                        class="form-control @error('name') is-invalid @enderror"
-                        placeholder="Nhập họ tên..."
-                        required
-                    >
+                @error('username')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
 
-                    @error('name')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
+            </div>
 
-                </div>
+            <!-- EMAIL -->
+            <div class="form-group">
 
-                <!-- PHONE -->
-                <div class="form-group">
+                <label class="form-label">
+                    Email
+                </label>
 
-                    <label class="form-label">
-                        Số điện thoại
-                    </label>
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    class="form-control @error('email') is-invalid @enderror"
+                    placeholder="Nhập email..."
+                    autocomplete="off"
+                    required
+                >
 
-                    <input
-                        type="text"
-                        name="phone"
-                        value="{{ old('phone') }}"
-                        class="form-control @error('phone') is-invalid @enderror"
-                        placeholder="Nhập số điện thoại..."
-                    >
+                @error('email')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
 
-                    @error('phone')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
+            </div>
 
-                </div>
+            <!-- PASSWORD -->
+            <div class="form-group">
 
-                <!-- EMAIL -->
-                <div class="form-group full-width">
+                <label class="form-label">
+                    Mật khẩu
+                </label>
 
-                    <label class="form-label">
-                        Email
-                    </label>
+                <input
+                    type="password"
+                    name="password"
+                    class="form-control @error('password') is-invalid @enderror"
+                    placeholder="Nhập mật khẩu..."
+                    autocomplete="off"
+                    required
+                >
 
-                    <input
-                        type="email"
-                        name="email"
-                        value="{{ old('email') }}"
-                        class="form-control @error('email') is-invalid @enderror"
-                        placeholder="Nhập email..."
-                        required
-                    >
+                @error('password')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
 
-                    @error('email')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
+            </div>
 
-                </div>
+            <!-- CONFIRM PASSWORD -->
+            <div class="form-group">
 
-                <!-- PASSWORD -->
-                <div class="form-group">
+                <label class="form-label">
+                    Nhập lại mật khẩu
+                </label>
 
-                    <label class="form-label">
-                        Mật khẩu
-                    </label>
+                <input
+                    type="password"
+                    name="password_confirmation"
+                    class="form-control"
+                    placeholder="Nhập lại mật khẩu..."
+                    autocomplete="off"
+                    required
+                >
 
-                    <input
-                        type="password"
-                        name="password"
-                        class="form-control @error('password') is-invalid @enderror"
-                        placeholder="Nhập mật khẩu..."
-                        required
-                    >
+            </div>
 
-                    @error('password')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
+            <!-- CAPTCHA -->
+            <div class="form-group">
 
-                </div>
+                <label class="form-label">
+                    CAPTCHA
+                </label>
 
-                <!-- CONFIRM -->
-                <div class="form-group">
+                <div class="captcha-wrapper">
 
-                    <label class="form-label">
-                        Nhập lại mật khẩu
-                    </label>
-
-                    <input
-                        type="password"
-                        name="password_confirmation"
-                        class="form-control"
-                        placeholder="Nhập lại mật khẩu..."
-                        required
-                    >
+                    Khu vực tích hợp Google reCAPTCHA
+                    <br>
+                    hoặc Cloudflare Turnstile
 
                 </div>
 
-                <!-- ROLE -->
-                <div class="form-group full-width">
-
-                    <label class="form-label">
-                        Vai trò
-                    </label>
-
-                    <select
-                        name="role_id"
-                        class="form-select @error('role_id') is-invalid @enderror"
-                    >
-
-                        <option value="1">
-                            Admin
-                        </option>
-
-                        <option value="2" selected>
-                            User
-                        </option>
-
-                    </select>
-
-                    @error('role_id')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-
+                <!-- Ví dụ API -->
+                <!--
+                <div
+                    class="g-recaptcha"
+                    data-sitekey="YOUR_SITE_KEY">
                 </div>
+                -->
 
             </div>
 
@@ -668,12 +530,10 @@
                 Tạo tài khoản
             </button>
 
-            <!-- LINKS -->
-            <div class="links">
+            <!-- LOGIN -->
+            <div class="login-link">
 
-                <span>
-                    Đã có tài khoản?
-                </span>
+                Đã có tài khoản?
 
                 <a href="{{ route('login') }}">
                     Đăng nhập ngay

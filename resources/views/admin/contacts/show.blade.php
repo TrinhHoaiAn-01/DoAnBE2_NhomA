@@ -69,12 +69,36 @@
                     <form action="{{ route('admin.contacts.reply', $contact->id) }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label">Nội dung email trả lời <span class="text-danger">*</span></label>
-                            <textarea name="reply_message" class="form-control" rows="8" placeholder="Nhập nội dung phản hồi. Hệ thống sẽ tự động gửi email cho khách..." required></textarea>
-                            <div class="form-text">Thư sẽ được gửi tới: <strong>{{ $contact->email }}</strong></div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0 fw-semibold">Nội dung email trả lời <span class="text-danger">*</span></label>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-lightning-charge-fill text-warning"></i> Mẫu trả lời nhanh
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                        <li><a class="dropdown-item quick-reply-template" href="#" data-text="Xin chào {{ $contact->name }},\n\nCảm ơn bạn đã liên hệ với NeoMart. Chúng tôi đã ghi nhận đóng góp ý kiến của bạn về chủ đề '{{ $contact->subject }}' và đang tiến hành xử lý.\n\nNếu có thêm bất kỳ câu hỏi nào, vui lòng phản hồi trực tiếp qua email này.\n\nTrân trọng,\nĐội ngũ CSKH NeoMart.">Cảm ơn & Ghi nhận ý kiến</a></li>
+                                        <li><a class="dropdown-item quick-reply-template" href="#" data-text="Xin chào {{ $contact->name }},\n\nYêu cầu hỗ trợ của bạn liên quan đến '{{ $contact->subject }}' đã được chúng tôi giải quyết thành công trên hệ thống.\n\nBạn vui lòng kiểm tra lại dịch vụ của mình. Nếu có vấn đề phát sinh, hãy liên hệ lại để chúng tôi kịp thời xử lý.\n\nTrân trọng,\nĐội ngũ kỹ thuật NeoMart.">Xử lý thành công / Đã giải quyết</a></li>
+                                        <li><a class="dropdown-item quick-reply-template" href="#" data-text="Xin chào {{ $contact->name }},\n\nĐể hỗ trợ bạn tốt nhất về vấn đề '{{ $contact->subject }}', bạn vui lòng cung cấp thêm cho chúng tôi một số thông tin chi tiết (Ví dụ: Mã đơn hàng, Số điện thoại đăng ký hoặc Ảnh chụp màn hình lỗi nếu có).\n\nRất mong nhận được phản hồi sớm từ bạn.\n\nTrân trọng,\nĐội ngũ CSKH NeoMart.">Yêu cầu thêm thông tin</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <textarea id="reply_message" name="reply_message" class="form-control" rows="8" placeholder="Nhập nội dung phản hồi. Hệ thống sẽ tự động gửi email cho khách..." required></textarea>
+                            <div class="form-text text-muted">Thư sẽ được gửi tới hòm thư: <strong>{{ $contact->email }}</strong></div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100"><i class="bi bi-send me-1"></i> Gửi phản hồi & Đóng Yêu Cầu</button>
+                        <button type="submit" class="btn btn-primary w-100 py-2.5 fw-semibold shadow-sm"><i class="bi bi-send me-1"></i> Gửi phản hồi & Đóng yêu cầu</button>
                     </form>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            document.querySelectorAll('.quick-reply-template').forEach(item => {
+                                item.addEventListener('click', function(e) {
+                                    e.preventDefault();
+                                    const text = this.getAttribute('data-text').split('\\n').join('\n');
+                                    document.getElementById('reply_message').value = text;
+                                });
+                            });
+                        });
+                    </script>
                 @endif
             </div>
         </div>

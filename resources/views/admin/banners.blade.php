@@ -63,6 +63,7 @@
                             <td class="text-center">
                                 <form action="{{ route('admin.banners.toggle', $banner->id) }}" method="POST">
                                     @csrf
+                                    <input type="hidden" name="_record_updated_at" value="{{ $banner->updated_at?->getTimestamp() }}">
                                     <button type="submit" class="btn btn-sm {{ $banner->is_active ? 'btn-success' : 'btn-secondary' }}">
                                         {!! $banner->is_active ? '<i class="bi bi-eye"></i> Đang hiện' : '<i class="bi bi-eye-slash"></i> Đã ẩn' !!}
                                     </button>

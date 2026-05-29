@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\HandlesCrudSafety;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -10,11 +11,13 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
+    use HandlesCrudSafety;
+
     public function index(Request $request): View
     {
         $search = trim((string) $request->string('search'));
         $roleId = $request->integer('role_id');
-        $status = $request->string('status')->toString();
+        $status = $request->input('status');
 
         $users = User::query()
             ->when($search !== '', function ($query) use ($search): void {
@@ -28,58 +31,72 @@ class UserController extends Controller
             ->when($roleId > 0, function ($query) use ($roleId): void {
                 $query->where('role_id', $roleId);
             })
-            ->when($status !== '', function ($query) use ($status): void {
-                $query->where('status', $status);
+            ->when($status !== null && $status !== '', function ($query) use ($status): void {
+                $query->where('status', (bool) $status);
             })
             ->latest()
             ->paginate(15)
             ->withQueryString();
 
-        return view('admin.users.index', [
+        return view('admin.users', [
             'users' => $users,
             'search' => $search,
             'roleId' => $roleId,
             'status' => $status,
             'roleOptions' => $this->roleOptions(),
             'statusOptions' => $this->statusOptions(),
-            'adminCount' => User::query()->where('role_id', 1)->count(),
-            'customerCount' => User::query()->where('role_id', 2)->count(),
-            'lockedCount' => User::query()->where('status', 'locked')->count(),
+            'adminCount' => User::query()->where('role_id', 5)->count(),
+            'customerCount' => User::query()->where('role_id', 1)->count(),
+            'lockedCount' => User::query()->where('status', false)->count(),
         ]);
     }
 
     public function update(Request $request, User $user): RedirectResponse
     {
-        $data = $request->validate([
+        $data = $this->validateCrud($request, [
             'role_id' => ['required', 'integer', 'in:1,2,3,4,5'],
-            'status' => ['required', 'in:active,locked'],
+            'status' => ['required', 'in:0,1'],
         ]);
 
-        if ($request->user()?->is($user) && $data['status'] === 'locked') {
-            return to_route('admin.users.index')->with('error', 'Không thể khóa tài khoản đang đăng nhập.');
+        $statusVal = (bool) $data['status'];
+
+        if ($request->user()?->is($user) && ! $statusVal) {
+            return to_route('admin.users.index')
+                ->with('error', 'Không thể khóa tài khoản đang đăng nhập. Thao tác này đã bị chặn để tránh mất quyền truy cập.');
         }
 
-        $user->update($data);
+        return $this->runCrudOperation(function () use ($request, $user, $data, $statusVal): RedirectResponse {
+            $this->transaction(function () use ($request, $user, $data, $statusVal): void {
+                $lockedUser = $this->lockForCrud($user);
+                $this->assertFreshRecord($request, $lockedUser, 'người dùng');
 
-        return to_route('admin.users.index')->with('status', 'Đã cập nhật người dùng.');
+                $lockedUser->update([
+                    'role_id' => $data['role_id'],
+                    'status' => $statusVal,
+                ]);
+            });
+
+            return to_route('admin.users.index')
+                ->with('status', 'Đã cập nhật người dùng. Hệ thống đã kiểm tra phiên chỉnh sửa và quyền thao tác trước khi lưu.');
+        }, 'cập nhật người dùng');
     }
 
     private function roleOptions(): array
     {
         return [
-            1 => 'Quản trị viên',
-            2 => 'Khách hàng',
-            3 => 'Bán hàng',
-            4 => 'Kho vận',
-            5 => 'Hỗ trợ',
+            5 => 'Quản trị viên',
+            4 => 'Nhân viên Kho',
+            3 => 'Nhân viên Đơn hàng',
+            2 => 'Nhân viên Sản phẩm',
+            1 => 'Khách hàng',
         ];
     }
 
     private function statusOptions(): array
     {
         return [
-            'active' => 'Đang hoạt động',
-            'locked' => 'Đã khóa',
+            1 => 'Đang hoạt động',
+            0 => 'Đã khóa',
         ];
     }
 }
