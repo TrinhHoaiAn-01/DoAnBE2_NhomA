@@ -63,6 +63,7 @@
                             <td class="text-center">
                                 <form action="{{ route('admin.faqs.toggle', $faq->id) }}" method="POST">
                                     @csrf
+                                    <input type="hidden" name="_record_updated_at" value="{{ $faq->updated_at?->getTimestamp() }}">
                                     <button type="submit" class="btn btn-sm {{ $faq->is_active ? 'btn-success bg-gradient' : 'btn-secondary' }} px-2.5">
                                         {!! $faq->is_active ? '<i class="bi bi-eye-fill"></i> Đang hiện' : '<i class="bi bi-eye-slash-fill"></i> Đã ẩn' !!}
                                     </button>

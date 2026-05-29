@@ -2,26 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\HandlesCrudSafety;
 use App\Http\Controllers\Controller;
 use App\Models\Supplier;
+use App\Models\SystemLog;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\SystemLog;
+use Illuminate\Validation\Rule;
 
-/**
- * Controller SupplierController
- *
- * Quản lý danh sách các Nhà cung cấp (Supplier) hàng hóa của hệ thống.
- * Hỗ trợ các tính năng quản trị: Xem danh sách, thêm mới, cập nhật và xóa nhà cung cấp.
- * Mọi thay đổi về dữ liệu (Thêm, Sửa, Xóa) đều được ghi chép chi tiết vào bảng Nhật ký hệ thống (SystemLog).
- */
 class SupplierController extends Controller
 {
-    /**
-     * Hiển thị danh sách toàn bộ các nhà cung cấp, bản ghi mới nhất xếp lên đầu.
-     *
-     * @return \Illuminate\View\View
-     */
+    use HandlesCrudSafety;
+
     public function index()
     {
         $suppliers = Supplier::latest()->get();
@@ -29,100 +22,104 @@ class SupplierController extends Controller
         return view('admin.suppliers', compact('suppliers'));
     }
 
-    /**
-     * Xử lý thêm mới một Nhà cung cấp.
-     * Ghi nhận dữ liệu cũ/mới vào SystemLog.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        // 1. Xác thực dữ liệu
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:255',
-        ]);
+        $data = $this->validatedSupplier($request);
 
-        // 2. Tạo bản ghi mới trong Database
-        $supplier = Supplier::create($data);
+        return $this->runCrudOperation(function () use ($data): RedirectResponse {
+            $supplier = Supplier::create($data);
 
-        // 3. Ghi chép hành động vào Nhật ký hệ thống (System Log)
-        SystemLog::create([
-            'user_name' => Auth::user()->name ?? 'Hệ thống',
-            'action' => 'Thêm Nhà cung cấp mới',
-            'target_type' => 'Nhà cung cấp',
-            'old_data' => [], // Không có dữ liệu cũ
-            'new_data' => $supplier->toArray(), // Lưu lại mảng dữ liệu mới tạo
-        ]);
+            SystemLog::create([
+                'user_name' => Auth::user()->name ?? 'Hệ thống',
+                'action' => 'Thêm Nhà cung cấp mới',
+                'target_type' => 'Nhà cung cấp',
+                'old_data' => [],
+                'new_data' => $supplier->toArray(),
+            ]);
 
-        return redirect()->back()->with('success', 'Thêm nhà cung cấp thành công!');
+            return redirect()->back()
+                ->with('success', 'Đã thêm nhà cung cấp. Hệ thống đã kiểm tra tên để tránh bản ghi trùng.');
+        }, 'thêm nhà cung cấp');
     }
 
-    /**
-     * Xóa vĩnh viễn một Nhà cung cấp khỏi Database.
-     * Ghi nhận dữ liệu đã xóa vào SystemLog.
-     *
-     * @param int $id ID của nhà cung cấp cần xóa
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
-        $supplier = Supplier::findOrFail($id);
+        $supplier = Supplier::find($id);
 
-        // Lưu lại bản sao dữ liệu trước khi xóa để làm log đối chứng
-        $oldData = $supplier->toArray();
+        if (! $supplier) {
+            return redirect()->back()
+                ->with('error', 'Nhà cung cấp này đã được xóa trước đó. Danh sách đã được làm mới để tránh xóa nhầm.');
+        }
 
-        // Tiến hành xóa
-        $supplier->delete();
+        return $this->runCrudOperation(function () use ($supplier): RedirectResponse {
+            $oldData = [];
 
-        // Ghi chép hành động xóa vào Nhật ký hệ thống (System Log)
-        SystemLog::create([
-            'user_name' => Auth::user()->name ?? 'Hệ thống',
-            'action' => 'Xóa Nhà cung cấp',
-            'target_type' => 'Nhà cung cấp',
-            'old_data' => $oldData,
-            'new_data' => [], // Sau khi xóa không còn dữ liệu mới
-        ]);
+            $this->transaction(function () use ($supplier, &$oldData): void {
+                $lockedSupplier = $this->lockForCrud($supplier);
+                $oldData = $lockedSupplier->toArray();
+                $lockedSupplier->delete();
+            });
 
-        return redirect()->back()->with('success', 'Đã xóa nhà cung cấp.');
+            SystemLog::create([
+                'user_name' => Auth::user()->name ?? 'Hệ thống',
+                'action' => 'Xóa Nhà cung cấp',
+                'target_type' => 'Nhà cung cấp',
+                'old_data' => $oldData,
+                'new_data' => [],
+            ]);
+
+            return redirect()->back()
+                ->with('success', 'Đã xóa nhà cung cấp. Hệ thống đã kiểm tra xung đột trong lúc xóa.');
+        }, 'xóa nhà cung cấp');
     }
 
-    /**
-     * Cập nhật thông tin chi tiết của một Nhà cung cấp.
-     * Ghi nhận lại đầy đủ trạng thái dữ liệu cũ và dữ liệu mới vào SystemLog.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id ID của nhà cung cấp cần cập nhật
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
-        $supplier = Supplier::findOrFail($id);
-        
-        // Lưu dữ liệu cũ trước khi cập nhật
-        $oldData = $supplier->toArray();
+        $supplier = Supplier::find($id);
 
-        // 1. Xác thực dữ liệu cập nhật
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:255',
+        if (! $supplier) {
+            return redirect()->back()
+                ->with('error', 'Nhà cung cấp không còn tồn tại. Vui lòng tải lại trang trước khi sửa.');
+        }
+
+        $data = $this->validatedSupplier($request, $supplier);
+
+        return $this->runCrudOperation(function () use ($request, $supplier, $data): RedirectResponse {
+            $oldData = [];
+            $newData = [];
+
+            $this->transaction(function () use ($request, $supplier, $data, &$oldData, &$newData): void {
+                $lockedSupplier = $this->lockForCrud($supplier);
+                $this->assertFreshRecord($request, $lockedSupplier, 'nhà cung cấp');
+
+                $oldData = $lockedSupplier->toArray();
+                $lockedSupplier->update($data);
+                $newData = $lockedSupplier->fresh()->toArray();
+            });
+
+            SystemLog::create([
+                'user_name' => Auth::user()->name ?? 'Hệ thống',
+                'action' => 'Cập nhật Nhà cung cấp',
+                'target_type' => 'Nhà cung cấp',
+                'old_data' => $oldData,
+                'new_data' => $newData,
+            ]);
+
+            return redirect()->back()
+                ->with('success', 'Đã cập nhật nhà cung cấp. Hệ thống đã kiểm tra phiên chỉnh sửa trước khi lưu.');
+        }, 'cập nhật nhà cung cấp');
+    }
+
+    private function validatedSupplier(Request $request, ?Supplier $supplier = null): array
+    {
+        return $this->validateCrud($request, [
+            'name' => ['required', 'string', 'max:255', Rule::unique('suppliers', 'name')->ignore($supplier)],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'address' => ['nullable', 'string', 'max:255'],
+        ], [
+            'name' => 'tên nhà cung cấp',
+            'phone' => 'số điện thoại nhà cung cấp',
+            'address' => 'địa chỉ nhà cung cấp',
         ]);
-
-        // 2. Thực hiện cập nhật trong Database
-        $supplier->update($data);
-
-        // 3. Ghi chép hành động cập nhật kèm lịch sử dữ liệu vào Nhật ký hệ thống
-        SystemLog::create([
-            'user_name' => Auth::user()->name ?? 'Hệ thống',
-            'action' => 'Cập nhật Nhà cung cấp',
-            'target_type' => 'Nhà cung cấp',
-            'old_data' => $oldData,
-            'new_data' => $supplier->toArray(),
-        ]);
-
-        return redirect()->back()->with('success', 'Cập nhật nhà cung cấp thành công!');
     }
 }

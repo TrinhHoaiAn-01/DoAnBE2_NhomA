@@ -146,6 +146,7 @@
                         <form action="{{ route('admin.suppliers.update', $supplier->id) }}" method="POST">
                             @csrf
                             @method('PUT')
+                            <input type="hidden" name="_record_updated_at" value="{{ $supplier->updated_at?->getTimestamp() }}">
                             <div class="mb-4">
                                 <label for="name{{ $supplier->id }}" class="form-label fw-medium text-dark">Tên Nhà Cung Cấp <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control form-control-lg bg-light" id="name{{ $supplier->id }}" name="name" value="{{ $supplier->name }}" required>

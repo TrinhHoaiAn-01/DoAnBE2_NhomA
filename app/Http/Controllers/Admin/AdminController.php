@@ -556,4 +556,3 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Đã lưu Phân quyền hệ thống và ghi vào Nhật ký Hệ thống thành công!');
     }
 }
-

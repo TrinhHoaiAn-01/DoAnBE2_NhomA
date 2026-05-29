@@ -93,6 +93,7 @@
                                 <form class="d-flex justify-content-end gap-2" method="post" action="{{ route('admin.users.update', $user) }}">
                                     @csrf
                                     @method('patch')
+                                    <input type="hidden" name="_record_updated_at" value="{{ $user->updated_at?->getTimestamp() }}">
                                     <select class="form-select form-select-sm" name="role_id" style="max-width: 150px">
                                         @foreach ($roleOptions as $value => $label)
                                             <option value="{{ $value }}" @selected((int) $user->role_id === $value)>{{ $label }}</option>

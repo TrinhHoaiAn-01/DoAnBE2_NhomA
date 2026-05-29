@@ -2,84 +2,88 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\HandlesCrudSafety;
 use App\Http\Controllers\Controller;
 use App\Models\Faq;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
-/**
- * Controller FaqController
- *
- * Quản lý danh sách các Câu hỏi thường gặp (FAQs - Frequently Asked Questions) của website.
- * Cung cấp các tính năng quản trị: Xem danh sách, thêm mới câu hỏi (phân nhóm chuyên mục),
- * thay đổi trạng thái hoạt động (bật/tắt hiển thị lên client) và xóa câu hỏi thường gặp.
- */
 class FaqController extends Controller
 {
-    /**
-     * Hiển thị danh sách toàn bộ các câu hỏi thường gặp.
-     * Sắp xếp theo thứ tự ưu tiên (sort_order) tăng dần và ngày tạo giảm dần.
-     *
-     * @return \Illuminate\View\View
-     */
+    use HandlesCrudSafety;
+
     public function index()
     {
         $faqs = Faq::orderBy('sort_order', 'asc')->orderBy('created_at', 'desc')->get();
+
         return view('admin.faqs', compact('faqs'));
     }
 
-    /**
-     * Xử lý thêm mới một câu hỏi thường gặp.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        // 1. Xác thực dữ liệu câu hỏi FAQ
-        $request->validate([
-            'category' => 'required|string|max:255', // Chuyên mục (vd: Tài khoản, Thanh toán, Vận chuyển)
-            'question' => 'required|string|max:500',
-            'answer' => 'required|string',
-            'sort_order' => 'nullable|integer'
+        $data = $this->validateCrud($request, [
+            'category' => ['required', 'string', 'max:255'],
+            'question' => ['required', 'string', 'max:500', Rule::unique('faqs', 'question')],
+            'answer' => ['required', 'string'],
+            'sort_order' => ['nullable', 'integer', 'min:0'],
+        ], [
+            'category' => 'danh mục FAQ',
+            'question' => 'câu hỏi FAQ',
+            'answer' => 'câu trả lời FAQ',
         ]);
 
-        // 2. Lưu câu hỏi mới vào Database
-        Faq::create([
-            'category' => $request->category,
-            'question' => $request->question,
-            'answer' => $request->answer,
-            'sort_order' => $request->sort_order ?? 0,
-        ]);
+        return $this->runCrudOperation(function () use ($data): RedirectResponse {
+            Faq::create([
+                'category' => $data['category'],
+                'question' => $data['question'],
+                'answer' => $data['answer'],
+                'sort_order' => $data['sort_order'] ?? 0,
+            ]);
 
-        return redirect()->back()->with('success', 'Đã thêm câu hỏi FAQ mới!');
+            return redirect()->back()
+                ->with('success', 'Đã thêm câu hỏi FAQ mới. Hệ thống đã kiểm tra để tránh câu hỏi trùng.');
+        }, 'thêm FAQ');
     }
 
-    /**
-     * Bật/tắt trạng thái ẩn hiển (Kích hoạt/Vô hiệu hóa) của câu hỏi thường gặp.
-     *
-     * @param int $id ID của câu hỏi
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function toggle($id)
+    public function toggle(Request $request, $id): RedirectResponse
     {
-        $faq = Faq::findOrFail($id);
-        
-        // Đảo ngược trạng thái hoạt động của FAQ hiện tại
-        $faq->update(['is_active' => !$faq->is_active]);
-        
-        return redirect()->back()->with('success', 'Đã thay đổi trạng thái hiển thị của FAQ!');
+        $faq = Faq::find($id);
+
+        if (! $faq) {
+            return redirect()->back()
+                ->with('error', 'FAQ này không còn tồn tại. Vui lòng tải lại danh sách trước khi thao tác.');
+        }
+
+        return $this->runCrudOperation(function () use ($request, $faq): RedirectResponse {
+            $this->transaction(function () use ($request, $faq): void {
+                $lockedFaq = $this->lockForCrud($faq);
+                $this->assertFreshRecord($request, $lockedFaq, 'FAQ');
+                $lockedFaq->update(['is_active' => ! $lockedFaq->is_active]);
+            });
+
+            return redirect()->back()
+                ->with('success', 'Đã thay đổi trạng thái hiển thị FAQ. Hệ thống đã kiểm tra phiên chỉnh sửa trước khi lưu.');
+        }, 'đổi trạng thái FAQ');
     }
 
-    /**
-     * Xóa câu hỏi thường gặp vĩnh viễn khỏi Database.
-     *
-     * @param int $id ID của câu hỏi cần xóa
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
-        Faq::findOrFail($id)->delete();
-        return redirect()->back()->with('success', 'Đã xóa câu hỏi FAQ!');
+        $faq = Faq::find($id);
+
+        if (! $faq) {
+            return redirect()->back()
+                ->with('error', 'FAQ này đã được xóa trước đó. Danh sách đã được làm mới để tránh xóa nhầm.');
+        }
+
+        return $this->runCrudOperation(function () use ($faq): RedirectResponse {
+            $this->transaction(function () use ($faq): void {
+                $lockedFaq = $this->lockForCrud($faq);
+                $lockedFaq->delete();
+            });
+
+            return redirect()->back()
+                ->with('success', 'Đã xóa câu hỏi FAQ. Hệ thống đã khóa bản ghi trong lúc xóa để tránh thao tác trùng.');
+        }, 'xóa FAQ');
     }
 }
-

@@ -86,7 +86,7 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center gap-3">
-                                            <img class="rounded border" src="{{ $product->image_url }}" alt="{{ $product->name }}" width="56" height="56" style="object-fit: cover">
+                                            <img class="rounded border" src="{{ $product->image_url ?: 'https://placehold.co/96x96?text='.urlencode($product->name) }}" alt="{{ $product->name }}" width="56" height="56" style="object-fit: cover">
                                             <div>
                                                 <div class="fw-semibold">{{ $product->name }}</div>
                                                 <div class="small text-secondary">{{ $product->sku }}{{ $product->brand ? ' - '.$product->brand : '' }}</div>
@@ -130,10 +130,11 @@
         <div class="col-xl-5">
             <div class="surface rounded-4 p-4">
                 <h2 class="h4 fw-bold mb-3">{{ $editing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm' }}</h2>
-                <form method="post" action="{{ $editing ? route('admin.products.update', $editing) : route('admin.products.store') }}">
+                <form method="post" action="{{ $editing ? route('admin.products.update', $editing) : route('admin.products.store') }}" enctype="multipart/form-data">
                     @csrf
                     @if ($editing)
                         @method('put')
+                        <input type="hidden" name="_record_updated_at" value="{{ $editing->updated_at?->getTimestamp() }}">
                     @endif
 
                     <div class="mb-3">
@@ -172,6 +173,20 @@
                             @error('image_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                     </div>
+
+                    <div class="mt-3">
+                        <label class="form-label" for="product_image">Tải ảnh sản phẩm</label>
+                        <input class="form-control @error('product_image') is-invalid @enderror" id="product_image" name="product_image" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+                        <div class="form-text">Nếu tải ảnh mới, hệ thống sẽ tự cập nhật link ảnh cho sản phẩm.</div>
+                        @error('product_image')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    @if ($editing?->image_url)
+                        <div class="mt-3">
+                            <div class="small text-secondary mb-2">Ảnh hiện tại</div>
+                            <img class="rounded border" src="{{ $editing->image_url }}" alt="{{ $editing->name }}" width="120" height="120" style="object-fit: cover">
+                        </div>
+                    @endif
 
                     <div class="row g-3 mt-1">
                         <div class="col-md-4">

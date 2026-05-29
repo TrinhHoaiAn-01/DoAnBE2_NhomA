@@ -2,101 +2,103 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\HandlesCrudSafety;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-/**
- * Controller BannerController
- *
- * Quản lý các Banner quảng cáo của hệ thống trong trang quản trị Admin.
- * Hỗ trợ các chức năng: Xem danh sách, thêm mới banner quảng cáo (tải lên hình ảnh),
- * thay đổi trạng thái hoạt động (bật/tắt ẩn hiện) và xóa banner (đồng thời xóa tệp tin ảnh khỏi Storage).
- */
 class BannerController extends Controller
 {
-    /**
-     * Hiển thị danh sách toàn bộ banner quảng cáo, sắp xếp theo thứ tự hiển thị.
-     *
-     * @return \Illuminate\View\View
-     */
+    use HandlesCrudSafety;
+
     public function index()
     {
         $banners = Banner::orderBy('sort_order', 'asc')->get();
+
         return view('admin.banners', compact('banners'));
     }
 
-    /**
-     * Xử lý thêm mới banner quảng cáo và lưu hình ảnh tải lên.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        // 1. Xác thực dữ liệu banner
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'image' => 'required|image|max:2048', // Bắt buộc là ảnh và tối đa 2MB
-            'link' => 'nullable|string',
-            'position' => 'required|string',
+        $data = $this->validateCrud($request, [
+            'title' => ['required', 'string', 'max:255'],
+            'image' => ['required', 'image', 'max:2048'],
+            'link' => ['nullable', 'url', 'max:2048'],
+            'position' => ['required', 'string', 'max:50'],
+            'sort_order' => ['nullable', 'integer', 'min:0'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+        ], [
+            'title' => 'tiêu đề banner',
+            'image' => 'hình ảnh banner',
         ]);
 
-        // 2. Tải và lưu trữ ảnh banner vào thư mục banners trong Storage (public disk)
-        $path = $request->file('image')->store('banners', 'public');
+        return $this->runCrudOperation(function () use ($request, $data): RedirectResponse {
+            $path = $request->file('image')->store('banners', 'public');
 
-        // 3. Tạo bản ghi banner mới trong cơ sở dữ liệu
-        Banner::create([
-            'title' => $request->title,
-            'image_url' => '/storage/' . $path, // Lưu đường dẫn tương đối phục vụ hiển thị
-            'link' => $request->link,
-            'position' => $request->position,
-            'sort_order' => $request->sort_order ?? 0,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'is_active' => true, // Banner mới tạo mặc định hoạt động
-        ]);
+            Banner::create([
+                'title' => $data['title'],
+                'image_url' => '/storage/' . $path,
+                'link' => $data['link'] ?? null,
+                'position' => $data['position'],
+                'sort_order' => $data['sort_order'] ?? 0,
+                'start_date' => $data['start_date'] ?? null,
+                'end_date' => $data['end_date'] ?? null,
+                'is_active' => true,
+            ]);
 
-        return redirect()->back()->with('success', 'Đã tải lên banner mới thành công!');
+            return redirect()->back()
+                ->with('success', 'Đã tải lên banner mới. Dữ liệu đã được kiểm tra đầy đủ trước khi lưu.');
+        }, 'tạo banner');
     }
 
-    /**
-     * Bật/tắt trạng thái ẩn hiển (Kích hoạt/Vô hiệu hóa) của banner quảng cáo.
-     *
-     * @param int $id ID của banner
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function toggle($id)
+    public function toggle(Request $request, $id): RedirectResponse
     {
-        $banner = Banner::findOrFail($id);
-        
-        // Đảo ngược trạng thái hoạt động hiện tại
-        $banner->update(['is_active' => !$banner->is_active]);
-        
-        return redirect()->back()->with('success', 'Đã đổi trạng thái ẩn/hiện của banner!');
-    }
+        $banner = Banner::find($id);
 
-    /**
-     * Xóa banner quảng cáo vĩnh viễn và dọn dẹp ảnh đi kèm trong Storage.
-     *
-     * @param int $id ID của banner
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy($id)
-    {
-        $banner = Banner::findOrFail($id);
-        
-        // 1. Kiểm tra và xóa tệp tin hình ảnh vật lý trong Storage disk public
-        if ($banner->image_url) {
-            $path = str_replace('/storage/', '', $banner->image_url);
-            Storage::disk('public')->delete($path);
+        if (! $banner) {
+            return redirect()->back()
+                ->with('error', 'Banner này không còn tồn tại. Vui lòng tải lại danh sách trước khi thao tác.');
         }
-        
-        // 2. Xóa bản ghi banner trong Database
-        $banner->delete();
-        
-        return redirect()->back()->with('success', 'Đã xóa banner vĩnh viễn!');
+
+        return $this->runCrudOperation(function () use ($request, $banner): RedirectResponse {
+            $this->transaction(function () use ($request, $banner): void {
+                $lockedBanner = $this->lockForCrud($banner);
+                $this->assertFreshRecord($request, $lockedBanner, 'banner');
+                $lockedBanner->update(['is_active' => ! $lockedBanner->is_active]);
+            });
+
+            return redirect()->back()
+                ->with('success', 'Đã đổi trạng thái hiển thị banner. Hệ thống đã kiểm tra phiên chỉnh sửa trước khi lưu.');
+        }, 'đổi trạng thái banner');
+    }
+
+    public function destroy($id): RedirectResponse
+    {
+        $banner = Banner::find($id);
+
+        if (! $banner) {
+            return redirect()->back()
+                ->with('error', 'Banner này đã được xóa trước đó. Danh sách đã được làm mới để tránh xóa nhầm.');
+        }
+
+        return $this->runCrudOperation(function () use ($banner): RedirectResponse {
+            $imageUrl = null;
+
+            $this->transaction(function () use ($banner, &$imageUrl): void {
+                $lockedBanner = $this->lockForCrud($banner);
+                $imageUrl = $lockedBanner->image_url;
+                $lockedBanner->delete();
+            });
+
+            if ($imageUrl) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $imageUrl));
+            }
+
+            return redirect()->back()
+                ->with('success', 'Đã xóa banner. Tệp ảnh liên quan cũng đã được dọn dẹp an toàn.');
+        }, 'xóa banner');
     }
 }
-

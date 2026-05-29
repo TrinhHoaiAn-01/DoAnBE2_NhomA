@@ -426,6 +426,48 @@
     
 
     
+    <script>
+        document.addEventListener('submit', function (event) {
+            const form = event.target;
+
+            if (!(form instanceof HTMLFormElement)) {
+                return;
+            }
+
+            const methodInput = form.querySelector('input[name="_method"]');
+            const spoofedMethod = methodInput ? methodInput.value.toUpperCase() : form.method.toUpperCase();
+
+            if (spoofedMethod === 'DELETE' && !form.getAttribute('onsubmit')) {
+                const confirmed = window.confirm('Bạn có chắc chắn muốn xóa bản ghi này không? Thao tác này không thể hoàn tác.');
+
+                if (!confirmed) {
+                    event.preventDefault();
+                    return;
+                }
+            }
+
+            if (form.method.toUpperCase() !== 'POST') {
+                return;
+            }
+
+            if (form.dataset.submitted === 'true') {
+                event.preventDefault();
+                return;
+            }
+
+            form.dataset.submitted = 'true';
+            form.querySelectorAll('button[type="submit"], input[type="submit"]').forEach(button => {
+                button.disabled = true;
+
+                if (button.tagName === 'BUTTON') {
+                    button.innerHTML = 'Đang xử lý...';
+                } else {
+                    button.value = 'Đang xử lý...';
+                }
+            });
+        }, true);
+    </script>
+
     @stack('scripts')
 </body>
 </html>
