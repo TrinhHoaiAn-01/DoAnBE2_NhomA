@@ -107,6 +107,49 @@
     width: 100%;
 }
 
+/* Mobile adjustments for Hero and Buttons */
+@media (max-width: 991.98px) {
+    .hero-section {
+        padding: 2.5rem 1.5rem !important;
+        background: #047857 !important; /* solid deep green bg from screenshot */
+    }
+    .hero-section::before, .hero-section::after {
+        display: none !important;
+    }
+    .hero-cta-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    .hero-btn-primary, .hero-btn-outline {
+        justify-content: center;
+        width: 100%;
+        font-size: 0.9rem !important;
+        padding: 0.85rem 1.5rem !important;
+    }
+    .hero-btn-primary {
+        background-color: #fbbf24 !important; /* Yellow/orange button */
+        color: #000 !important;
+    }
+    .hero-stats {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem 1rem !important;
+        text-align: left;
+        margin-top: 2rem !important;
+    }
+    .hero-stat-item {
+        text-align: left !important;
+    }
+    .hero-stat-num {
+        font-size: 1.6rem !important;
+    }
+    .hero-stat-label {
+        font-size: 0.75rem !important;
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+}
+
 /* ===== TRUST STRIP ===== */
 .trust-strip {
     display: grid;
@@ -162,6 +205,131 @@
 /* ===== BANNER CAROUSEL ===== */
 .banner-carousel-wrap { border-radius: 12px; overflow: hidden; margin-bottom: 2.5rem; border: 1px solid var(--border); }
 .carousel-item img { height: 380px; object-fit: cover; }
+
+/* Mobile adjustments for carousel */
+@media (max-width: 767.98px) {
+    .banner-carousel-wrap {
+        border-radius: 16px;
+        border: none;
+        margin-bottom: 1.5rem;
+    }
+    /* Force-hide Bootstrap carousel-caption on mobile (it shows at 576px+) */
+    .carousel-caption {
+        display: none !important;
+    }
+    /* Hide the big background image on mobile for both slides */
+    .carousel-item > img.d-block {
+        display: none !important;
+    }
+    .carousel-item .position-absolute {
+        display: none !important;
+    }
+    /* Hide desktop layout blocks */
+    .carousel-item > .d-none.d-md-block {
+        display: none !important;
+    }
+    /* Hide carousel prev/next controls on mobile (user swipes) */
+    .carousel-control-prev,
+    .carousel-control-next {
+        display: none !important;
+    }
+    /* Hide carousel indicators on mobile */
+    .carousel-indicators {
+        display: none !important;
+    }
+    /* Remove the dark green bg from carousel-inner on mobile */
+    .carousel-inner {
+        background: transparent !important;
+    }
+
+    /* --- Yellow pill button used in ALL mobile slides --- */
+    .mobile-slide0-btn {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 0.35rem;
+        background: #fbbf24 !important;
+        color: #1a1a1a !important;
+        border: none !important;
+        border-radius: 50px !important;
+        padding: 0.5rem 1.1rem !important;
+        font-size: 0.8rem !important;
+        font-weight: 700 !important;
+        text-decoration: none !important;
+        transition: background 0.2s;
+        pointer-events: auto;
+        cursor: pointer;
+    }
+    .mobile-slide0-btn:hover,
+    .mobile-slide0-btn:active {
+        background: #f59e0b !important;
+        color: #1a1a1a !important;
+    }
+
+    /* --- Mobile Slide 0: Green card with text --- */
+    .mobile-slide0-card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #00a859 0%, #047857 100%);
+        min-height: 140px;
+        border-radius: 16px;
+        margin: 0;
+        padding: 1.25rem 1.5rem;
+        position: relative;
+        z-index: 5;
+    }
+    .mobile-slide0-card h3 {
+        color: #fff;
+        font-size: 1.05rem;
+        font-weight: 800;
+        line-height: 1.4;
+        margin: 0 0 0.75rem 0;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+
+    /* --- Mobile Slide 1: Newest product card --- */
+    .mobile-slide-flex {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(135deg, #00a859 0%, #047857 100%);
+        min-height: 140px;
+        border-radius: 16px;
+        margin: 0;
+        padding: 1.25rem 1.5rem;
+        position: relative;
+        z-index: 5;
+        pointer-events: auto;
+    }
+    .mobile-slide-left {
+        flex: 1;
+        padding-right: 0.75rem;
+    }
+    .mobile-slide-left h4 {
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 800 !important;
+        line-height: 1.35;
+        margin-bottom: 0.75rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+    .mobile-slide-right {
+        flex-shrink: 0;
+    }
+    .mobile-slide-right img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        background: #fff;
+        border-radius: 14px;
+        padding: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+}
 
 /* ===== FLASH SALE ===== */
 .flash-sale-section {
@@ -291,47 +459,45 @@
 /* ===== PRODUCT CARDS ===== */
 .product-card {
     background: #ffffff;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
-    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid var(--border);
     display: flex; flex-direction: column;
     height: 100%;
 }
 .product-card:hover {
     border-color: var(--primary);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0,136,72,0.15);
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0, 136, 72, 0.12);
 }
 .product-img-wrap {
     position: relative;
-    padding: 0;
-    background: transparent;
+    padding: 1rem;
+    background: #f8fafc;
     border: none;
     border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 260px; /* uniform height */
+    height: 220px; /* uniform height */
     overflow: hidden;
-    aspect-ratio: 1 / 1; /* keep square */
-    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .product-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
     transition: transform 0.4s ease;
 }
 .product-card:hover .product-img-wrap img {
-    transform: scale(1.12);
-    box-shadow: 0 8px 16px rgba(0,136,72,0.15);
+    transform: scale(1.08);
 }
 .product-overlay-btn {
     position: absolute;
     inset: 0;
-    background: rgba(79,70,229,0.08);
+    background: rgba(0, 136, 72, 0.04);
     display: flex; align-items: center; justify-content: center;
     opacity: 0;
     transition: opacity 0.3s;
@@ -348,33 +514,34 @@
     cursor: pointer;
     transition: var(--transition);
     text-decoration: none;
-    display: flex; align-items: center; gap: 0.4rem;
+    display: inline-flex; align-items: center; gap: 0.4rem;
 }
 .product-quick-btn:hover { background: #ffc107; color: #000; }
 
 .badge-corner {
     position: absolute;
-    top: 0; left: 0;
-    font-size: 0.7rem; font-weight: 800;
-    padding: 0.25rem 0.6rem;
-    border-radius: 8px 0 8px 0;
+    top: 10px; left: 10px;
+    font-size: 0.68rem; font-weight: 800;
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
     z-index: 10;
 }
 .wishlist-btn {
     position: absolute;
-    top: 0; right: 0;
-    width: 32px; height: 32px;
-    border-radius: 0 8px 0 8px;
-    background: rgba(0,0,0,0.05);
+    top: 10px; right: 10px;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     border: none;
-    color: #999;
+    color: #94a3b8;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     transition: var(--transition);
     z-index: 10;
 }
-.wishlist-btn:hover { color: #ef4444; transform: scale(1.15); }
+.wishlist-btn:hover { color: #ef4444; background: #fff; transform: scale(1.1); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15); }
 .wishlist-btn.active { color: #ef4444; }
 
 .product-body {
@@ -400,24 +567,38 @@
 .product-name:hover { color: var(--primary); }
 .star-rating { color: #fbbf24; font-size: 0.75rem; margin-bottom: 0.6rem; }
 .star-count { color: var(--text-muted); font-size: 0.72rem; margin-left: 0.25rem; }
-.product-price-row { display: flex; flex-direction: column; margin-top: auto; gap: 0.5rem; }
+.product-price-row { display: flex; align-items: baseline; justify-content: space-between; margin-top: auto; gap: 0.5rem; flex-wrap: wrap; }
 .product-price { font-size: 1.15rem; font-weight: 900; color: var(--danger); }
 .product-original { font-size: 0.78rem; color: #999; text-decoration: line-through; }
 .btn-add-cart {
-    width: 100%; height: 36px;
-    border-radius: 0 0 8px 8px;
+    width: 100%; height: 40px;
+    border-radius: 8px;
     background: var(--accent);
-    color: #000;
+    color: #0f172a;
     border: none;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
     font-size: 0.85rem;
-    font-weight: bold;
+    font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
     transition: var(--transition);
 }
-.btn-add-cart:hover { background: #ffc107; color: #000; }
+.btn-add-cart:hover { background: #e09b0f; color: #0f172a; }
 .btn-add-cart:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ===== CATEGORY CARDS ===== */
+.group-card {
+    transition: all 0.3s ease;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    background: #fff;
+}
+.group-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 136, 72, 0.08) !important;
+    border-color: var(--primary) !important;
+}
 </style>
 @endpush
 
@@ -441,32 +622,32 @@
                 </p>
                 <div class="hero-cta-group">
                     <a href="{{ route('products.index') }}" class="hero-btn-primary">
-                        <i class="bi bi-bag-heart"></i> Mua sắm ngay
+                        <i class="bi bi-cart-fill"></i> Mua sắm ngay
                     </a>
                     <a href="{{ route('products.index') }}" class="hero-btn-outline">
-                        <i class="bi bi-lightning"></i> Khuyến mãi hot
+                        <i class="bi bi-lightning-fill" style="color:#fbbf24;"></i> Khuyến mãi hot
                     </a>
                 </div>
                 <div class="hero-stats">
                     <div class="hero-stat-item">
                         <div class="hero-stat-num">10K+</div>
-                        <div class="hero-stat-label">Sản phẩm</div>
+                        <div class="hero-stat-label">SẢN PHẨM</div>
                     </div>
                     <div class="hero-stat-item">
                         <div class="hero-stat-num">50K+</div>
-                        <div class="hero-stat-label">Khách hàng</div>
+                        <div class="hero-stat-label">KHÁCH HÀNG</div>
                     </div>
                     <div class="hero-stat-item">
                         <div class="hero-stat-num">4.9★</div>
-                        <div class="hero-stat-label">Đánh giá</div>
+                        <div class="hero-stat-label">ĐÁNH GIÁ</div>
                     </div>
                     <div class="hero-stat-item">
                         <div class="hero-stat-num">2h</div>
-                        <div class="hero-stat-label">Giao hàng</div>
+                        <div class="hero-stat-label">GIAO HÀNG</div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 d-none d-lg-block position-relative" style="z-index:1">
+            <div class="col-lg-6 position-relative mt-4 mt-lg-0" style="z-index:1">
                 <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=900&auto=format&fit=crop"
                      alt="NeoMart Groceries" class="hero-img">
             </div>
@@ -484,23 +665,106 @@
                 @endforeach
             </div>
             <div class="carousel-inner" style="background: #047857;">
-                @foreach($banners as $index => $banner)
-                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                        @if($index == 0)
-                            <img src="{{ $banner['image'] }}" class="d-block w-100" style="object-fit: cover; opacity: 0.85;" alt="{{ $banner['title'] }}">
-                        @else
-                            <div class="d-block w-100 position-relative" style="height: 380px; background: linear-gradient(90deg, #047857 0%, #059669 35%, #ecfdf5 70%, #f3f4f6 100%);">
-                                <img src="{{ $banner['image'] }}" class="position-absolute" style="right: 5%; top: 50%; transform: translateY(-50%); max-height: 80%; max-width: 40%; object-fit: contain; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); background: white; padding: 1rem;" alt="{{ $banner['title'] }}">
-                            </div>
-                        @endif
-                        <div class="carousel-caption text-start" style="left:0;right:auto;bottom:0;top:0;background:linear-gradient(90deg, rgba(4, 120, 87, 0.95) 0%, rgba(4, 120, 87, 0.5) 55%, transparent 100%);padding:2rem 2.5rem;border-radius:0;display:flex;flex-direction:column;justify-content:center;max-width:55%;">
-                            <h2 class="fw-black text-white mb-3" style="font-size:clamp(1.2rem,3vw,1.8rem);text-shadow:0 2px 8px rgba(0,0,0,0.3);">{{ $banner['title'] }}</h2>
-                            <a href="{{ $banner['link'] }}" class="hero-btn-primary" style="font-size:0.85rem;padding:0.55rem 1.25rem;align-self:flex-start;">
-                                Mua ngay <i class="bi bi-arrow-right ms-1"></i>
+
+                {{-- SLIDE 0: Mega Sale – chỉ dẫn đến trang sản phẩm --}}
+                <div class="carousel-item active">
+                    {{-- Desktop: full image + gradient overlay --}}
+                    <img src="{{ $banners[0]['image'] }}"
+                         class="d-block w-100" style="object-fit:cover;opacity:0.85;"
+                         alt="{{ $banners[0]['title'] }}">
+                    <div class="carousel-caption text-start d-none d-md-flex"
+                         style="left:0;right:auto;bottom:0;top:0;background:linear-gradient(90deg,rgba(4,120,87,.95) 0%,rgba(4,120,87,.5) 55%,transparent 100%);padding:2rem 2.5rem;border-radius:0;flex-direction:column;justify-content:center;max-width:55%;z-index:5;pointer-events:none;">
+                        <h2 class="fw-black text-white mb-3"
+                            style="font-size:clamp(1.2rem,3vw,1.8rem);text-shadow:0 2px 8px rgba(0,0,0,.3);">
+                            {{ $banners[0]['title'] }}
+                        </h2>
+                        <a href="{{ $banners[0]['link'] }}"
+                           class="hero-btn-primary"
+                           style="font-size:.85rem;padding:.55rem 1.25rem;align-self:flex-start;pointer-events:auto;">
+                            Mua ngay <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+
+                    {{-- Mobile: Green card --}}
+                    <div class="d-md-none mobile-slide0-card">
+                        <div>
+                            <h3>{{ $banners[0]['title'] }}</h3>
+                            <a href="{{ $banners[0]['link'] }}" class="mobile-slide0-btn">
+                                Mua ngay <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
                     </div>
-                @endforeach
+                </div>
+
+                {{-- SLIDE 1: Sản phẩm mới nhất – form POST buy-now --}}
+                @if(isset($banners[1]))
+                <div class="carousel-item">
+                    @if($newestProduct)
+                        <!-- Desktop Layout -->
+                        <div class="d-none d-md-block w-100 position-relative"
+                             style="height:380px;background:linear-gradient(90deg,#047857 0%,#059669 35%,#ecfdf5 70%,#f3f4f6 100%);">
+                            <img src="{{ $newestProduct->image_url }}"
+                                 class="position-absolute"
+                                 style="right:5%;top:50%;transform:translateY(-50%);max-height:80%;max-width:40%;object-fit:contain;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12);background:white;padding:1rem;"
+                                 alt="{{ $newestProduct->name }}">
+                        </div>
+                        <div class="d-none d-md-flex carousel-caption text-start"
+                             style="left:0;right:auto;bottom:0;top:0;background:linear-gradient(90deg,rgba(4,120,87,.95) 0%,rgba(4,120,87,.5) 55%,transparent 100%);padding:2rem 2.5rem;border-radius:0;flex-direction:column;justify-content:center;max-width:55%;z-index:5;pointer-events:none;">
+                            <span class="badge mb-2" style="background:#fbbf24;color:#1a1a1a;font-size:.7rem;letter-spacing:.05em;width:fit-content;">Mới nhất</span>
+                            <h2 class="fw-black text-white mb-1"
+                                style="font-size:clamp(1rem,2.5vw,1.5rem);text-shadow:0 2px 8px rgba(0,0,0,.3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                                {{ $newestProduct->name }}
+                            </h2>
+                            <p class="text-white mb-3" style="font-size:1.1rem;font-weight:700;opacity:.9;">
+                                {{ number_format($newestProduct->price, 0, ',', '.') }}đ
+                                @if($newestProduct->original_price && $newestProduct->original_price > $newestProduct->price)
+                                    <del class="ms-2" style="font-size:.85rem;opacity:.65;">{{ number_format($newestProduct->original_price, 0, ',', '.') }}đ</del>
+                                @endif
+                            </p>
+
+                            {{-- Nút MUA NGAY: POST đến cart.buy-now để thêm vào giỏ và chuyển thẳng checkout --}}
+                            <form method="POST" action="{{ route('cart.buy-now', $newestProduct) }}"
+                                  style="align-self:flex-start;pointer-events:auto;">
+                                @csrf
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="hero-btn-primary"
+                                        style="font-size:.85rem;padding:.55rem 1.25rem;border:none;cursor:pointer;">
+                                    Mua ngay <i class="bi bi-arrow-right ms-1"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Mobile Layout (green card with product thumbnail) -->
+                        <div class="d-md-none mobile-slide-flex">
+                            <div class="mobile-slide-left">
+                                <h4>Mới nhất: {{ $newestProduct->name }}</h4>
+                                <form method="POST" action="{{ route('cart.buy-now', $newestProduct) }}" class="m-0">
+                                    @csrf
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="mobile-slide0-btn">
+                                        Mua ngay <i class="bi bi-arrow-right"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="mobile-slide-right">
+                                <img src="{{ $newestProduct->image_url }}" alt="{{ $newestProduct->name }}">
+                            </div>
+                        </div>
+                    @else
+                        {{-- Fallback khi không có sản phẩm --}}
+                        <div class="d-block w-100" style="height:380px;background:linear-gradient(90deg,#047857,#059669);"></div>
+                        <div class="d-flex carousel-caption text-start"
+                             style="left:0;right:auto;bottom:0;top:0;background:rgba(4,120,87,.85);padding:2rem 2.5rem;display:flex;flex-direction:column;justify-content:center;max-width:55%;z-index:5;pointer-events:none;">
+                            <h2 class="fw-black text-white mb-3">{{ $banners[1]['title'] }}</h2>
+                            <a href="{{ $banners[1]['link'] }}" class="hero-btn-primary"
+                               style="font-size:.85rem;padding:.55rem 1.25rem;align-self:flex-start;pointer-events:auto;">
+                                Khám phá ngay <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    @endif
+                </div>
+                @endif
+
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#homeBanner" data-bs-slide="prev"></button>
             <button class="carousel-control-next" type="button" data-bs-target="#homeBanner" data-bs-slide="next"></button>
@@ -591,19 +855,21 @@
                                     <i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
                                     <span class="star-count">({{ rand(5, 80) }})</span>
                                 </div>
-                                <div class="product-price-row">
-                                    <div class="product-price">{{ number_format((float)$product->price, 0, ',', '.') }}đ</div>
-                                    @if($product->original_price)
-                                        <div class="product-original">{{ number_format((float)$product->original_price, 0, ',', '.') }}đ</div>
-                                    @endif
+                                <div class="product-price-row d-flex justify-content-between align-items-center mt-auto mb-3">
+                                    <div>
+                                        <div class="product-price">{{ number_format((float)$product->price, 0, ',', '.') }}đ</div>
+                                        @if($product->original_price)
+                                            <div class="product-original">{{ number_format((float)$product->original_price, 0, ',', '.') }}đ</div>
+                                        @endif
+                                    </div>
                                 </div>
+                                <form method="post" action="{{ route('cart.add', $product) }}" class="w-100 mb-0">
+                                    @csrf
+                                    <button type="submit" class="btn-add-cart" @disabled($product->stock <= 0)>
+                                        Thêm vào giỏ
+                                    </button>
+                                </form>
                             </div>
-                            <form method="post" action="{{ route('cart.add', $product) }}" class="w-100 mt-auto">
-                                @csrf
-                                <button type="submit" class="btn-add-cart" @disabled($product->stock <= 0)>
-                                    Thêm vào giỏ
-                                </button>
-                            </form>
                         </div>
                     </div>
                 @endforeach
@@ -624,23 +890,40 @@
         </div>
         <div class="row g-4">
             @foreach($categories as $category)
+                @php
+                    $catMap = [
+                        'Thuc pham'  => ['icon' => 'fa-apple-whole',        'bg' => '#fef3c7', 'color' => '#d97706'],
+                        'Thực phẩm'  => ['icon' => 'fa-apple-whole',        'bg' => '#fef3c7', 'color' => '#d97706'],
+                        'Do uong'    => ['icon' => 'fa-mug-hot',             'bg' => '#e0e7ff', 'color' => '#4f46e5'],
+                        'Đồ uống'    => ['icon' => 'fa-mug-hot',             'bg' => '#e0e7ff', 'color' => '#4f46e5'],
+                        'My pham'    => ['icon' => 'fa-wand-magic-sparkles', 'bg' => '#fce8e6', 'color' => '#d0021b'],
+                        'Mỹ phẩm'   => ['icon' => 'fa-wand-magic-sparkles', 'bg' => '#fce8e6', 'color' => '#d0021b'],
+                        'Gia dung'   => ['icon' => 'fa-house',               'bg' => '#d1fae5', 'color' => '#059669'],
+                        'Gia dụng'   => ['icon' => 'fa-house',               'bg' => '#d1fae5', 'color' => '#059669'],
+                    ];
+                    $cat = $catMap[$category->name] ?? ['icon' => 'fa-box', 'bg' => '#f1f5f9', 'color' => '#64748b'];
+                @endphp
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden group-card">
-                        <div class="card-header bg-white border-0 pt-3 px-4 d-flex align-items-center">
-                            <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3 text-primary">
-                                <i class="fa-solid {{ $category->icon ?? 'fa-box' }} fs-5"></i>
+                    <div class="group-card card h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="d-flex align-items-center justify-content-center flex-shrink-0"
+                                     style="width:46px;height:46px;border-radius:10px;background:{{ $cat['bg'] }};color:{{ $cat['color'] }};">
+                                    <i class="fa-solid {{ $cat['icon'] }}" style="font-size:1.2rem;"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-0" style="font-size:0.97rem;">{{ $category->name }}</h6>
+                                    <small class="text-muted">{{ $category->products_count }} sản phẩm</small>
+                                </div>
                             </div>
-                            <div>
-                                <h6 class="fw-bold mb-0 text-dark">{{ $category->name }}</h6>
-                                <small class="text-muted">{{ $category->products_count }} sản phẩm</small>
-                            </div>
-                        </div>
-                        <div class="card-body px-4 pb-4">
                             @if($category->description)
-                                <p class="small text-secondary mb-3">{{ $category->description }}</p>
+                                <p class="small text-secondary mb-3" style="line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5rem;">
+                                    {{ $category->description }}
+                                </p>
                             @endif
-                            <a href="{{ route('products.index', ['category' => $category->slug]) }}" class="btn btn-outline-primary btn-sm w-100 rounded-pill">
-                                Xem tất cả <i class="bi bi-arrow-right ms-1"></i>
+                            <a href="{{ route('products.index', ['category' => $category->slug]) }}"
+                               class="text-decoration-none fw-semibold small" style="color:var(--primary);">
+                                Xem tất cả →
                             </a>
                         </div>
                     </div>
@@ -649,44 +932,45 @@
         </div>
     </div>
 @endif
+
 {{-- ===== 7. TRUST STRIP ===== --}}
-    <div class="trust-strip mb-4 mt-2">
-        <div class="trust-item">
-            <div class="trust-icon" style="background:#e0e7ff">
-                <i class="bi bi-truck" style="color:var(--primary)"></i>
-            </div>
-            <div>
-                <div class="trust-text">Giao hàng 2 giờ</div>
-                <div class="trust-sub">Nội thành TP.HCM & Hà Nội</div>
-            </div>
+<div class="trust-strip mb-4 mt-2">
+    <div class="trust-item">
+        <div class="trust-icon" style="background:#fff3e0;">
+            <i class="fa-solid fa-truck-fast" style="color:#f57c00;"></i>
         </div>
-        <div class="trust-item">
-            <div class="trust-icon" style="background:#d1fae5">
-                <i class="bi bi-shield-check" style="color:#10b981"></i>
-            </div>
-            <div>
-                <div class="trust-text">Bảo hành chính hãng</div>
-                <div class="trust-sub">Đổi trả trong 30 ngày</div>
-            </div>
+        <div>
+            <div class="trust-text">Giao hàng 2 giờ</div>
+            <div class="trust-sub">Nội thành TP.HCM & Hà Nội</div>
         </div>
-        <div class="trust-item">
-            <div class="trust-icon" style="background:#fef3c7">
-                <i class="bi bi-percent" style="color:#f59e0b"></i>
-            </div>
-            <div>
-                <div class="trust-text">Giá tốt nhất</div>
-                <div class="trust-sub">Cam kết hoàn tiền chênh lệch</div>
-            </div>
+    </div>
+    <div class="trust-item">
+        <div class="trust-icon" style="background:#e8f0fe;">
+            <i class="fa-solid fa-shield-halved" style="color:#1a73e8;"></i>
         </div>
-        <div class="trust-item">
-            <div class="trust-icon" style="background:#fce7f3">
-                <i class="bi bi-headset" style="color:#ec4899"></i>
-            </div>
-            <div>
-                <div class="trust-text">Hỗ trợ 24/7</div>
-                <div class="trust-sub">Tư vấn miễn phí mọi lúc</div>
-            </div>
+        <div>
+            <div class="trust-text">Bảo hành chính hãng</div>
+            <div class="trust-sub">Đổi trả trong 30 ngày</div>
         </div>
+    </div>
+    <div class="trust-item">
+        <div class="trust-icon" style="background:#fef3c7;">
+            <i class="fa-solid fa-tag" style="color:#d97706;"></i>
+        </div>
+        <div>
+            <div class="trust-text">Giá tốt nhất</div>
+            <div class="trust-sub">Cam kết hoàn tiền chênh lệch</div>
+        </div>
+    </div>
+    <div class="trust-item">
+        <div class="trust-icon" style="background:#f3f4f6;">
+            <i class="fa-solid fa-headset" style="color:#374151;"></i>
+        </div>
+        <div>
+            <div class="trust-text">Hỗ trợ 24/7</div>
+            <div class="trust-sub">Tư vấn miễn phí mọi lúc</div>
+        </div>
+    </div>
     </div>
 
 </div>
@@ -694,19 +978,46 @@
 
 @push('scripts')
 <script>
-    // Flash sale timer
-    function updateTimer() {
-        const endTime = new Date("{{ $flash_sale_end }}").getTime();
-        const now = new Date().getTime();
-        const diff = endTime - now;
-        if (diff > 0) {
-            document.getElementById('timer-h').innerText = Math.floor(diff / (1000*60*60)).toString().padStart(2,'0');
-            document.getElementById('timer-m').innerText = Math.floor((diff % (1000*60*60)) / (1000*60)).toString().padStart(2,'0');
-            document.getElementById('timer-s').innerText = Math.floor((diff % (1000*60)) / 1000).toString().padStart(2,'0');
+    // ===== FLASH SALE TIMER (2h45m, tự reset sau mỗi chu kỳ) =====
+    (function () {
+        const DURATION = 2 * 60 * 60 + 45 * 60; // 9900 giây
+        const KEY = 'flashSaleEnd';
+
+        function getOrInitEnd() {
+            let stored = localStorage.getItem(KEY);
+            const now = Date.now();
+            // Nếu chưa có hoặc đã hết hạn ⇒ khởi tạo chu kỳ mới
+            if (!stored || parseInt(stored, 10) <= now) {
+                stored = (now + DURATION * 1000).toString();
+                localStorage.setItem(KEY, stored);
+            }
+            return parseInt(stored, 10);
         }
-    }
-    setInterval(updateTimer, 1000);
-    updateTimer();
+
+        function tick() {
+            const endTs = getOrInitEnd();
+            const diff = Math.max(0, Math.floor((endTs - Date.now()) / 1000));
+
+            const hEl = document.getElementById('timer-h');
+            const mEl = document.getElementById('timer-m');
+            const sEl = document.getElementById('timer-s');
+            if (!hEl) return;
+
+            const h = Math.floor(diff / 3600);
+            const m = Math.floor((diff % 3600) / 60);
+            const s = diff % 60;
+
+            hEl.textContent = h.toString().padStart(2, '0');
+            mEl.textContent = m.toString().padStart(2, '0');
+            sEl.textContent = s.toString().padStart(2, '0');
+
+            // Khi về 0 ⇒ xóa key để lần tick tiếp theo tự reset
+            if (diff === 0) localStorage.removeItem(KEY);
+        }
+
+        tick();
+        setInterval(tick, 1000);
+    })();
 
     // Wishlist toggle (UI only)
     function toggleWishlist(btn) {

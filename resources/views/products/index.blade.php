@@ -292,7 +292,7 @@
 
 <div class="row g-4">
     {{-- ===== SIDEBAR ===== --}}
-    <div class="col-lg-3">
+    <div class="col-lg-3 d-none d-lg-block">
 
         {{-- Danh mục --}}
         <div class="filter-card">
@@ -321,6 +321,23 @@
     {{-- ===== PRODUCT AREA ===== --}}
     <div class="col-lg-9">
 
+        {{-- Category Horizontal Scroll on Mobile --}}
+        <div class="d-lg-none mb-3" style="overflow-x: auto; white-space: nowrap; padding-bottom: 8px; -webkit-overflow-scrolling: touch;">
+            <div class="d-inline-flex gap-2">
+                <a href="{{ route('products.index') }}"
+                   class="btn btn-sm rounded-pill px-3 {{ !$categorySlug ? 'btn-success fw-bold' : 'btn-outline-secondary' }}" style="font-size: 0.82rem;">
+                    Tất cả
+                </a>
+                @foreach($categories as $cat)
+                    <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
+                       class="btn btn-sm rounded-pill px-3 {{ $categorySlug === $cat->slug ? 'btn-success fw-bold' : 'btn-outline-secondary' }}" style="font-size: 0.82rem;">
+                        <i class="fa-solid {{ $cat->icon ?? 'fa-box' }} me-1 opacity-70 small"></i>
+                        {{ $cat->name }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+
         {{-- Toolbar --}}
         <div class="products-toolbar">
             <div>
@@ -335,10 +352,10 @@
             <div class="d-flex align-items-center gap-2">
                 <span class="small text-muted d-none d-sm-inline">Hiển thị:</span>
                 <div class="view-toggle">
-                    <button class="view-btn active" id="btn-grid" onclick="setView('grid')" title="Lưới">
+                    <button class="view-btn" id="btn-grid" onclick="setView('grid')" title="Lưới">
                         <i class="bi bi-grid-3x3-gap"></i>
                     </button>
-                    <button class="view-btn" id="btn-list" onclick="setView('list')" title="Danh sách">
+                    <button class="view-btn active" id="btn-list" onclick="setView('list')" title="Danh sách">
                         <i class="bi bi-list-ul"></i>
                     </button>
                 </div>
@@ -362,7 +379,7 @@
         </div>
         @else
         {{-- Grid View --}}
-        <div id="grid-view">
+        <div id="grid-view" class="d-none">
             <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
                 @foreach ($products as $product)
                 <div class="col">
@@ -418,7 +435,7 @@
         </div>
 
         {{-- List View --}}
-        <div id="list-view" class="d-none">
+        <div id="list-view">
             @foreach ($products as $product)
             <div class="product-list-card">
                 <div class="list-img-wrap">
@@ -487,8 +504,8 @@
     }
 
     // Restore view preference
-    const savedView = localStorage.getItem('productView') || 'grid';
-    if (savedView === 'list') setView('list');
+    const savedView = localStorage.getItem('productView') || 'list';
+    setView(savedView);
 
     function toggleWishlist(btn) {
         btn.classList.toggle('active');

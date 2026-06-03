@@ -397,8 +397,90 @@
             transition: var(--transition);
             opacity: 0; visibility: hidden;
             z-index: 999;
+        }
         #scroll-top.visible { opacity: 1; visibility: visible; }
         #scroll-top:hover { background: var(--primary-dark); transform: translateY(-3px); }
+
+        /* Mobile sidebar items custom styles */
+        .mobile-sidebar-item {
+            padding: 0.85rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border: none !important;
+            text-decoration: none !important;
+            transition: background 0.2s;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+        }
+        .mobile-sidebar-item:hover,
+        .mobile-sidebar-item:active {
+            background: var(--primary-light);
+            color: var(--primary) !important;
+        }
+
+        /* Custom Mobile Navbar & Search Bar */
+        .mobile-search-bar {
+            background: #f1f1f1 !important;
+            border: none !important;
+            border-radius: 50px !important;
+            padding: 0.45rem 1rem !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .mobile-search-bar .bi-search {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .mobile-search-bar input {
+            border: none !important;
+            background: transparent !important;
+            outline: none !important;
+            font-size: 0.85rem;
+            color: #0f172a;
+            width: 100%;
+            padding: 0;
+        }
+        .mobile-search-bar input::placeholder {
+            color: #64748b;
+        }
+
+        .mobile-cart-badge {
+            position: absolute;
+            top: -2px;
+            right: -6px;
+            background: var(--accent) !important;
+            color: #000 !important;
+            font-size: 0.65rem !important;
+            font-weight: 800 !important;
+            width: 17px;
+            height: 17px;
+            border-radius: 50% !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 !important;
+            line-height: 1;
+            border: 1px solid #fff;
+        }
+
+        /* Offcanvas backdrop – lighter so it doesn't feel "dark" */
+        .offcanvas-backdrop.show {
+            opacity: 0.3 !important;
+        }
+
+        /* Make sure offcanvas content is above everything */
+        #mobileSidebar {
+            z-index: 1060 !important;
+        }
+        #mobileSidebar .offcanvas-body {
+            overflow-y: auto;
+        }
     </style>
     @stack('styles')
 </head>
@@ -409,8 +491,8 @@
         <div class="loader-logo">NEOMART</div>
     </div>
 
-    <!-- ===== TOP NAVBAR ===== -->
-    <nav class="top-nav">
+    <!-- ===== DESKTOP TOP NAVBAR ===== -->
+    <nav class="top-nav d-none d-lg-block">
         <div class="container-fluid px-4" style="max-width:1600px;margin-left:auto;margin-right:auto;">
             <div class="nav-inner d-flex align-items-center gap-3">
                 <!-- Brand -->
@@ -426,190 +508,170 @@
                     <a class="nav-link-item {{ request()->routeIs('products.*') ? 'active' : '' }}" href="{{ route('products.index') }}">
                         <i class="bi bi-grid me-1"></i>Sản phẩm
                     </a>
-
-            </div>
-
-            <!-- Search bar BHX style -->
-            <form class="nav-search-form d-none d-md-flex mx-auto" method="GET" action="{{ route('products.index') }}">
-                <div class="nav-search-wrap w-100">
-                    <input
-                        type="text"
-                        name="search"
-                        class="nav-search-input"
-                        placeholder="Bạn tìm gì..."
-                        value="{{ request('search') }}"
-                        autocomplete="off"
-                    >
-                    <button class="nav-search-btn" type="submit">
-                        <i class="bi bi-search"></i>
-                    </button>
                 </div>
-            </form>
 
-            <!-- Right actions -->
-            <div class="d-flex align-items-center gap-2 ms-auto flex-shrink-0 h-100">
-
-                <!-- Cart -->
-                <a href="{{ route('cart.index') }}" class="cart-btn me-2" title="Giỏ hàng">
-                    <i class="bi bi-bag"></i>
-                    @auth
-                        @php $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'quantity')) : 0; @endphp
-                        @if($cartCount > 0)
-                            <span class="cart-badge">{{ $cartCount > 9 ? '9+' : $cartCount }}</span>
-                        @endif
-
-                    @endauth
-                </a>
-
-                <!-- Auth -->
-                @auth
-                    <div class="dropdown">
-                        <button class="user-btn dropdown-toggle p-0" type="button"
-                                data-bs-toggle="dropdown" aria-expanded="false"
-                                style="display:flex;align-items:center;gap:0.5rem;background:transparent !important;border:none !important;border-radius:0;padding:0.35rem 0.75rem 0.35rem 0.35rem !important;">
-                            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
-                            <span class="d-none d-lg-inline small fw-semibold text-white" style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                                {{ auth()->user()->name }}
-                            </span>
+                <!-- Search bar BHX style -->
+                <form class="nav-search-form d-none d-md-flex mx-auto" method="GET" action="{{ route('products.index') }}">
+                    <div class="nav-search-wrap w-100">
+                        <input
+                            type="text"
+                            name="search"
+                            class="nav-search-input"
+                            placeholder="Bạn tìm gì..."
+                            value="{{ request('search') }}"
+                            autocomplete="off"
+                        >
+                        <button class="nav-search-btn" type="submit">
+                            <i class="bi bi-search"></i>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end rounded-0 border-dark">
-                            <li class="px-3 py-2">
-                                <div class="fw-bold text-dark small">{{ auth()->user()->name }}</div>
-                                <div class="text-muted" style="font-size:0.75rem;">{{ auth()->user()->email }}</div>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('profile.index') }}">
-                                    Hồ sơ cá nhân
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                    Quản trị
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="post" action="{{ route('logout') }}" class="m-0">
-                                    @csrf
-                                    <button class="dropdown-item text-danger" type="submit">
-                                        Đăng xuất
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
                     </div>
-                @else
-                    <a class="nav-link-item px-2 border-0" href="{{ route('login') }}" style="font-size:0.8rem;text-transform:none;">
-                        Đăng nhập
-                    </a>
-                    <a class="btn btn-sm px-3 fw-semibold" href="{{ route('register') }}"
-                       style="background: var(--accent); color: var(--text-primary); border-radius: 6px;">
-                        Đăng ký
-                    </a>
-                @endauth
+                </form>
 
-                <!-- Mobile hamburger -->
-                <button class="btn btn-sm d-lg-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mobileNav">
-                    <i class="bi bi-list fs-5"></i>
-                </button>
-            </div>
-        </div>
+                <!-- Right actions -->
+                <div class="d-flex align-items-center gap-2 ms-auto flex-shrink-0 h-100">
+                    <!-- Cart -->
+                    <a href="{{ route('cart.index') }}" class="cart-btn me-2" title="Giỏ hàng">
+                        <i class="bi bi-bag"></i>
+                        @auth
+                            @php $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'quantity')) : 0; @endphp
+                            @if($cartCount > 0)
+                                <span class="cart-badge">{{ $cartCount > 9 ? '9+' : $cartCount }}</span>
+                            @endif
+                        @endauth
+                    </a>
 
-        <!-- Mobile nav -->
-        <div class="collapse d-lg-none" id="mobileNav">
-            <div class="py-2 border-top" style="border-color:var(--border)!important;">
-                <div class="d-flex flex-column gap-1">
-                    <a class="nav-link-item {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
-                        <i class="bi bi-house-door me-2"></i>Trang chủ
-                    </a>
-                    <a class="nav-link-item {{ request()->routeIs('products.*') ? 'active' : '' }}" href="{{ route('products.index') }}">
-                        <i class="bi bi-grid me-2"></i>Sản phẩm
-                    </a>
-                    <a class="nav-link-item" href="{{ route('cart.index') }}">
-                        <i class="bi bi-bag me-2"></i>Giỏ hàng
-                    </a>
+                    <!-- Auth -->
+                    @auth
+                        <div class="dropdown">
+                            <button class="user-btn dropdown-toggle p-0" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false"
+                                    style="display:flex;align-items:center;gap:0.5rem;background:transparent !important;border:none !important;border-radius:0;padding:0.35rem 0.75rem 0.35rem 0.35rem !important;">
+                                <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+                                <span class="d-none d-lg-inline small fw-semibold text-white" style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                    {{ auth()->user()->name }}
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end rounded-0 border-dark">
+                                <li class="px-3 py-2">
+                                    <div class="fw-bold text-dark small">{{ auth()->user()->name }}</div>
+                                    <div class="text-muted" style="font-size:0.75rem;">{{ auth()->user()->email }}</div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('profile.index') }}">
+                                        Hồ sơ cá nhân
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                        Quản trị
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="{{ route('logout') }}" class="m-0">
+                                        @csrf
+                                        <button class="dropdown-item text-danger" type="submit">
+                                            Đăng xuất
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    @else
+                        <a class="nav-link-item px-2 border-0" href="{{ route('login') }}" style="font-size:0.8rem;text-transform:none;">
+                            Đăng nhập
+                        </a>
+                        <a class="btn btn-sm px-3 fw-semibold" href="{{ route('register') }}"
+                           style="background: var(--accent); color: var(--text-primary); border-radius: 6px;">
+                            Đăng ký
+                        </a>
+                    @endauth
                 </div>
-                <div class="dropdown">
-    @auth
-        @php
-            $user = auth()->user();
-            $initial = strtoupper(substr($user->name, 0, 1));
-        @endphp
-
-        <!-- AVATAR BUTTON -->
-        <button class="btn d-flex align-items-center gap-2 dropdown-toggle border-0 bg-transparent"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false">
-
-            <!-- avatar circle -->
-            <div style="
-                width: 38px;
-                height: 38px;
-                border-radius: 50%;
-                background: #0d6efd;
-                color: white;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: 700;
-                font-size: 14px;
-            ">
-                {{ $initial }}
-            </div>
-
-            <!-- text -->
-            <div class="text-start d-none d-lg-block">
-                <div class="small text-muted">Xin chào</div>
-                <div class="fw-semibold">{{ $user->name }}</div>
-            </div>
-
-        </button>
-
-        <!-- DROPDOWN -->
-		<ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3">
-
-			@php
-				$user = auth()->user();
-				$isAdmin = $user->role_id == 5;
-			@endphp
-
-			<li>
-				@if($isAdmin)
-					<a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-						<i class="bi bi-gear me-2"></i>Quản trị
-					</a>
-				@else
-					<a class="dropdown-item" href="{{ route('profile') }}">
-						<i class="bi bi-person me-2"></i>Hồ sơ
-					</a>
-				@endif
-			</li>
-
-			<li><hr class="dropdown-divider"></li>
-
-			<li>
-				<form method="POST" action="{{ route('logout') }}">
-					@csrf
-					<button class="dropdown-item text-danger">
-						<i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
-					</button>
-				</form>
-			</li>
-
-		</ul>
-    @endauth
-
-    @guest
-        <a class="btn btn-outline-dark btn-sm rounded-pill px-3" href="{{ route('login') }}">
-            <i class="bi bi-box-arrow-in-right me-1"></i>Đăng nhập
-        </a>
-    @endguest
-</div>
             </div>
         </div>
     </nav>
+
+    <!-- ===== MOBILE TOP NAVBAR (Second Screenshot) ===== -->
+    <div class="mobile-nav-container d-lg-none bg-white border-bottom py-2 px-3 sticky-top" style="z-index: 1020;">
+        <div class="d-flex align-items-center justify-content-between mb-2 position-relative" style="min-height: 40px;">
+            <!-- Left: Hamburger button -->
+            <button class="btn p-0 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
+                <i class="bi bi-list fs-2" style="color: var(--text-primary); line-height: 1;"></i>
+            </button>
+            
+            <!-- Center: Logo (Centered absolutely) -->
+            <a href="{{ route('home') }}" class="brand-logo position-absolute py-0" style="font-size: 1.45rem; font-weight: 900; text-decoration: none; line-height: 1; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                <span class="neo" style="color: var(--primary);">Neo</span><span class="mart" style="color: var(--accent);">Mart</span>
+            </a>
+            
+            <!-- Right: Cart button -->
+            <a href="{{ route('cart.index') }}" class="position-relative p-0" title="Giỏ hàng" style="color: var(--text-primary); text-decoration: none; line-height: 1;">
+                <i class="bi bi-bag fs-3"></i>
+                @php $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'quantity')) : 0; @endphp
+                @if($cartCount > 0)
+                    <span class="mobile-cart-badge">
+                        {{ $cartCount }}
+                    </span>
+                @endif
+            </a>
+        </div>
+        
+        <!-- Search bar -->
+        <form method="GET" action="{{ route('products.index') }}" class="m-0">
+            <div class="mobile-search-bar">
+                <i class="bi bi-search"></i>
+                <input type="text" name="search" placeholder="Bạn tìm gì hôm nay..." value="{{ request('search') }}" autocomplete="off">
+            </div>
+        </form>
+    </div>
+
+    <!-- ===== MOBILE DRAWER SIDEBAR ===== -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel" style="width: 280px; border-right: none;">
+        <div class="offcanvas-header border-bottom py-3">
+            <a class="brand-logo me-auto" href="{{ route('home') }}" style="font-size: 1.4rem; text-decoration: none; font-weight: 900; line-height: 1;">
+                <span class="neo" style="color: var(--primary);">Neo</span><span class="mart" style="color: var(--accent);">Mart</span>
+            </a>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            <nav class="d-flex flex-column">
+                <a href="{{ route('home') }}" class="mobile-sidebar-item">
+                    <span>🏠</span> Trang chủ
+                </a>
+                <a href="{{ route('products.index') }}" class="mobile-sidebar-item">
+                    <span>📦</span> Danh sách sản phẩm
+                </a>
+                <a href="{{ route('cart.index') }}" class="mobile-sidebar-item">
+                    <span>🛒</span> Xem giỏ hàng
+                </a>
+                <a href="{{ route('checkout.index') }}" class="mobile-sidebar-item">
+                    <span>💳</span> Tiến hành thanh toán
+                </a>
+                
+                <div style="height: 1px; background: var(--border); margin: 0.75rem 1.5rem;"></div>
+                
+                @auth
+                    <a href="{{ route('profile') }}" class="mobile-sidebar-item">
+                        <span>👤</span> Hồ sơ cá nhân
+                    </a>
+                    <form method="post" action="{{ route('logout') }}" class="m-0">
+                        @csrf
+                        <button type="submit" class="mobile-sidebar-item w-100 text-start bg-transparent" style="color: var(--danger) !important;">
+                            <span>🚪</span> Đăng xuất
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="mobile-sidebar-item">
+                        <span>🔑</span> Đăng nhập
+                    </a>
+                    <a href="{{ route('register') }}" class="mobile-sidebar-item">
+                        <span>📝</span> Đăng ký
+                    </a>
+                @endauth
+            </nav>
+        </div>
+    </div>
     @endif
 
 <!-- ===== MAIN CONTENT ===== -->
