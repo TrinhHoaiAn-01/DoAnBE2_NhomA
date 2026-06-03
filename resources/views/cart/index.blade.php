@@ -1,300 +1,4 @@
-@extends('layouts.app', ['title' => 'Giỏ hàng – NeoMart'])
-
-@push('styles')
-<style>
-/* ===== CART PAGE STYLES ===== */
-/* Custom checkbox styles */
-.form-check-input:checked {
-    background-color: var(--primary) !important;
-    border-color: var(--primary) !important;
-}
-.form-check-input {
-    border-radius: 4px;
-    border: 2px solid var(--border);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-.form-check-input:focus {
-    box-shadow: 0 0 0 3px rgba(0, 136, 72, 0.15);
-    border-color: var(--primary);
-}
-.cart-header-title {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--text-primary);
-}
-.btn-continue-shopping {
-    border-radius: var(--radius-md, 10px);
-    font-weight: 600;
-    transition: var(--transition);
-}
-.cart-card {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg, 16px);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-}
-.cart-table {
-    margin-bottom: 0;
-}
-.cart-table th {
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-muted);
-    border-bottom: 2px solid var(--surface-3);
-    padding: 1.25rem 1rem;
-    background-color: #fafbfc;
-}
-.cart-table td {
-    padding: 1.5rem 1rem;
-    vertical-align: middle;
-    border-bottom: 1px solid var(--border);
-}
-.cart-table tr:last-child td {
-    border-bottom: none;
-}
-.cart-product-img {
-    width: 68px;
-    height: 68px;
-    object-fit: contain;
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md, 10px);
-    padding: 4px;
-}
-.cart-product-name {
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--text-primary);
-    text-decoration: none;
-    line-height: 1.4;
-    display: block;
-    margin-bottom: 0.2rem;
-    transition: color 0.2s;
-}
-.cart-product-name:hover {
-    color: var(--primary);
-}
-.cart-product-cat {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-}
-.cart-unit-price {
-    font-weight: 600;
-    color: var(--text-primary);
-    font-size: 0.95rem;
-}
-.cart-subtotal-price {
-    font-weight: 700;
-    color: var(--danger);
-    font-size: 1.05rem;
-}
-
-/* Quantity controls in table */
-.cart-qty-control {
-    display: flex;
-    align-items: center;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    width: fit-content;
-    background: #fff;
-}
-.cart-qty-btn {
-    width: 32px;
-    height: 32px;
-    background: var(--surface-2);
-    border: none;
-    color: var(--text-primary);
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--transition);
-}
-.cart-qty-btn:hover {
-    background: var(--primary-light);
-    color: var(--primary);
-}
-.cart-qty-input {
-    width: 40px;
-    height: 32px;
-    border: none;
-    border-left: 1px solid var(--border);
-    border-right: 1px solid var(--border);
-    text-align: center;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-    outline: none;
-    background: #fff;
-}
-.cart-qty-input::-webkit-outer-spin-button,
-.cart-qty-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-}
-
-/* Sidebar Order Info */
-.summary-card {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg, 16px);
-    padding: 1.75rem;
-    position: sticky;
-    top: 90px;
-    box-shadow: var(--shadow-sm);
-}
-.summary-title {
-    font-weight: 800;
-    font-size: 1.25rem;
-    color: var(--text-primary);
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid var(--surface-3);
-    padding-bottom: 0.75rem;
-}
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
-}
-.summary-row.total-row {
-    border-top: 1px solid var(--surface-3);
-    margin-top: 1.25rem;
-    padding-top: 1.25rem;
-    margin-bottom: 0.25rem;
-}
-.summary-label {
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-.summary-value {
-    color: var(--text-primary);
-    font-weight: 700;
-}
-.summary-total-label {
-    font-weight: 800;
-    font-size: 1.1rem;
-    color: var(--text-primary);
-}
-.summary-total-value {
-    font-weight: 950;
-    font-size: 1.45rem;
-    color: var(--danger);
-}
-.btn-checkout-confirm {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-md, 10px);
-    padding: 0.85rem 1.5rem;
-    font-weight: 700;
-    font-size: 1.05rem;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    width: 100%;
-    text-decoration: none;
-}
-.btn-checkout-confirm:hover {
-    background: var(--primary-dark);
-    box-shadow: 0 8px 20px rgba(0, 136, 72, 0.25);
-    transform: translateY(-2px);
-    color: #fff;
-}
-
-/* Mobile card list (below md screen) */
-.mobile-cart-list {
-    display: none;
-}
-.mobile-cart-item {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md, 10px);
-    padding: 1.25rem 1rem;
-    margin-bottom: 1rem;
-    display: flex;
-    gap: 1rem;
-    position: relative;
-    box-shadow: var(--shadow-sm);
-}
-.mobile-cart-img {
-    width: 76px;
-    height: 76px;
-    object-fit: contain;
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md, 10px);
-    flex-shrink: 0;
-    padding: 4px;
-}
-.mobile-cart-details {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-.mobile-cart-name {
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-    text-decoration: none;
-    line-height: 1.35;
-    margin-bottom: 0.25rem;
-    padding-right: 1.5rem;
-}
-.mobile-cart-cat {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    margin-bottom: 0.4rem;
-}
-.mobile-cart-price {
-    font-weight: 700;
-    color: var(--danger);
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-}
-.mobile-cart-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 0.25rem;
-}
-.mobile-cart-delete {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    color: var(--text-muted);
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    transition: var(--transition);
-}
-.mobile-cart-delete:hover {
-    color: var(--danger);
-}
-
-@media (max-width: 767.98px) {
-    .desktop-cart-table {
-        display: none;
-    }
-    .mobile-cart-list {
-        display: block;
-    }
-}
-</style>
-@endpush
+@extends('layouts.app', ['title' => 'NeoMart - Gio hang'])
 
 @section('content')
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 mt-2">
@@ -317,29 +21,33 @@
                     <table class="table cart-table align-middle">
                         <thead>
                             <tr>
-                                <th style="width: 50px; text-align: center;">
-                                    <input type="checkbox" id="select-all" class="form-check-input select-all-checkbox" checked>
-                                </th>
-                                <th>SẢN PHẨM</th>
-                                <th>ĐƠN GIÁ</th>
-                                <th>SỐ LƯỢNG</th>
-                                <th>TẠM TÍNH</th>
-                                <th>THAO TÁC</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($items as $item)
-                                <tr>
-                                    <td style="text-align: center; width: 50px;">
-                                        <input type="checkbox" class="form-check-input item-checkbox" value="{{ $item['product']->id }}" data-price="{{ $item['product']->price }}" data-quantity="{{ $item['quantity'] }}" checked>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <img class="cart-product-img" src="{{ $item['product']->image_url ?: 'https://placehold.co/100?text='.urlencode($item['product']->name) }}" alt="{{ $item['product']->name }}">
-                                            <div>
-                                                <a href="{{ route('products.show', $item['product']) }}" class="cart-product-name">{{ $item['product']->name }}</a>
-                                                <span class="cart-product-cat">{{ $item['product']->category?->name }}</span>
-                                            </div>
+    <div class="surface rounded-3 p-3 p-lg-4">
+        @if (count($items) > 0)
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>San pham</th>
+                            <th>Don gia</th>
+                            <th>So luong</th>
+                            <th>Tam tinh</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($items as $item)
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <img class="rounded border" src="{{ $item['product']->image_url }}" alt="{{ $item['product']->name }}" width="64" height="64" style="object-fit: cover">
+                                        <div>
+                                            <div class="fw-semibold">{{ $item['product']->name }}</div>
+                                            <div class="small text-secondary">{{ $item['product']->category?->name }}</div>
+                                            @if($item['product']->stock <= 3)
+                                                <div class="text-warning small mt-1 fw-bold">
+                                                    ⚠️ Chỉ còn {{ $item['product']->stock }} sản phẩm trong kho!
+                                                </div>
+                                            @endif
                                         </div>
                                     </td>
                                     <td>

@@ -450,6 +450,26 @@
                 </span>
             @endif
 
+            {{-- Alert module - Low Stock urgency flashing banner --}}
+            @if($product->stock > 0 && $product->stock <= 3)
+                <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center gap-3 p-3 mb-4 mt-3" style="border-radius:12px; background: #fffbeb; border: 1px solid #fef3c7 !important;">
+                    <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px; height:40px; border-radius:50%; background:#fef3c7; color:#d97706; animation: pulse-warning-detail 1.5s infinite;">
+                        <i class="bi bi-exclamation-triangle-fill" style="font-size:1.2rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1" style="color:#92400e; font-size:0.9rem; margin-bottom: 2px;">Sản phẩm sắp hết hàng!</h6>
+                        <p class="mb-0 text-secondary" style="font-size:0.8rem; line-height:1.4;">Chỉ còn <strong>{{ $product->stock }}</strong> sản phẩm cuối cùng trong kho. Hãy đặt hàng ngay để không bỏ lỡ.</p>
+                    </div>
+                </div>
+                <style>
+                @keyframes pulse-warning-detail {
+                    0% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.4); }
+                    70% { box-shadow: 0 0 0 8px rgba(217, 119, 6, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
+                }
+                </style>
+            @endif
+
             {{-- Description --}}
             @if($product->description)
                 <p class="product-desc">{{ $product->description }}</p>
@@ -467,21 +487,26 @@
 
             {{-- Actions --}}
             <div class="action-row">
-                <form method="post" action="{{ route('cart.add', $product) }}" id="addCartForm">
-                    @csrf
-                    <input type="hidden" name="quantity" id="cartQty" value="1">
-                    <button type="submit" class="btn-add-to-cart" @disabled($product->stock <= 0)>
-                        <i class="bi bi-cart-plus"></i>
-                        {{ $product->stock > 0 ? 'Thêm vào giỏ' : 'Hết hàng' }}
+                @if($product->stock > 0)
+                    <form method="post" action="{{ route('cart.add', $product) }}" id="addCartForm" class="d-flex flex-grow-1">
+                        @csrf
+                        <input type="hidden" name="quantity" id="cartQty" value="1">
+                        <button type="submit" class="btn-add-to-cart w-100">
+                            <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                        </button>
+                    </form>
+                    <form method="post" action="{{ route('cart.buy-now', $product) }}" id="buyNowForm" class="d-flex flex-grow-1">
+                        @csrf
+                        <input type="hidden" name="quantity" id="buyQty" value="1">
+                        <button type="submit" class="btn-buy-now w-100">
+                            <i class="bi bi-lightning-fill"></i> Mua ngay
+                        </button>
+                    </form>
+                @else
+                    <button class="btn btn-outline-danger flex-grow-1" style="border-radius:14px; padding:0.85rem 1.5rem; font-weight:700;" data-bs-toggle="modal" data-bs-target="#stockAlertModal">
+                        <i class="bi bi-bell-fill"></i> Nhận thông báo khi có hàng
                     </button>
-                </form>
-                <form method="post" action="{{ route('cart.buy-now', $product) }}" id="buyNowForm">
-                    @csrf
-                    <input type="hidden" name="quantity" id="buyQty" value="1">
-                    <button type="submit" class="btn-buy-now" @disabled($product->stock <= 0)>
-                        <i class="bi bi-lightning-fill"></i> Mua ngay
-                    </button>
-                </form>
+                @endif
                 <button class="btn-wishlist-lg" onclick="toggleWishlistLg(this)" title="Yêu thích">
                     <i class="bi bi-heart"></i>
                 </button>
@@ -808,6 +833,39 @@
             <i class="bi bi-lightning-fill"></i> Mua ngay
         </button>
     </form>
+</div>
+
+{{-- Modal nhận thông báo khi có hàng --}}
+<div class="modal fade" id="stockAlertModal" tabindex="-1" aria-labelledby="stockAlertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:16px; border:none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+            <div class="modal-header bg-danger text-white" style="border-top-left-radius:16px; border-top-right-radius:16px; border-bottom:none;">
+                <h5 class="modal-title fw-bold" id="stockAlertModalLabel"><i class="bi bi-bell-fill"></i> Đăng ký nhận thông báo</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ route('products.stock-alert', $product) }}">
+                @csrf
+                <div class="modal-body p-4">
+                    <p class="text-secondary small mb-3">NeoMart sẽ gửi thông báo qua Email hoặc Số điện thoại của bạn ngay khi sản phẩm <strong>{{ $product->name }}</strong> có hàng trở lại.</p>
+                    
+                    <div class="mb-3">
+                        <label for="alert_email" class="form-label small fw-bold text-secondary">Địa chỉ Email</label>
+                        <input type="email" name="email" id="alert_email" class="form-control" placeholder="example@email.com" value="{{ auth()->user()?->email }}">
+                    </div>
+                    
+                    <div class="mb-2">
+                        <label for="alert_phone" class="form-label small fw-bold text-secondary">Số điện thoại</label>
+                        <input type="tel" name="phone" id="alert_phone" class="form-control" placeholder="Nhập số điện thoại...">
+                    </div>
+                    <div class="text-muted" style="font-size:0.75rem;">* Quý khách vui lòng điền ít nhất một trong hai thông tin trên.</div>
+                </div>
+                <div class="modal-footer p-3 border-top-0">
+                    <button type="button" class="btn btn-light fw-bold" style="border-radius:8px;" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-danger fw-bold" style="border-radius:8px;">Đăng ký ngay</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 {{-- Bottom padding on mobile for sticky bar --}}

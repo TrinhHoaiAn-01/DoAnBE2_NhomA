@@ -407,7 +407,8 @@
                             </button>
                             <a href="{{ route('products.show', $product) }}">
                                 <img src="{{ $product->image_url ?: 'https://placehold.co/400x300?text='.urlencode($product->name) }}"
-                                     alt="{{ $product->name }}" loading="lazy">
+                                     alt="{{ $product->name }}" loading="lazy"
+                                     style="{{ $product->stock <= 0 ? 'filter: grayscale(1); opacity: 0.65;' : '' }}">
                             </a>
                         </div>
                         <div class="grid-body">
@@ -425,15 +426,15 @@
                                         <div class="grid-original">{{ number_format((float) $product->original_price, 0, ',', '.') }}đ</div>
                                     @endif
                                 </div>
-                                <span class="grid-stock {{ $product->stock > 0 ? 'bg-success bg-opacity-10 text-success' : 'bg-secondary bg-opacity-10 text-secondary' }}">
-                                    {{ $product->stock > 0 ? 'Còn hàng' : 'Hết hàng' }}
+                                <span class="grid-stock {{ $product->stock <= 0 ? 'bg-danger bg-opacity-10 text-danger' : ($product->stock <= 3 ? 'bg-warning bg-opacity-10 text-warning' : 'bg-success bg-opacity-10 text-success') }}" style="{{ $product->stock <= 3 && $product->stock > 0 ? 'color: #d97706 !important;' : '' }}">
+                                    {{ $product->stock <= 0 ? 'Hết hàng' : ($product->stock <= 3 ? 'Sắp hết hàng' : 'Còn hàng') }}
                                 </span>
                             </div>
                             <div class="grid-actions">
                                 <form method="post" action="{{ route('cart.add', $product) }}" class="w-100">
                                     @csrf
-                                    <button class="btn-cart-grid" type="submit" @disabled($product->stock <= 0) title="Thêm vào giỏ">
-                                        CHỌN MUA
+                                    <button class="btn-cart-grid {{ $product->stock <= 0 ? 'bg-secondary text-white' : '' }}" type="submit" @disabled($product->stock <= 0) title="Thêm vào giỏ">
+                                        {{ $product->stock > 0 ? 'CHỌN MUA' : 'HẾT HÀNG' }}
                                     </button>
                                 </form>
                             </div>
@@ -451,7 +452,8 @@
                 <div class="list-img-wrap">
                     <a href="{{ route('products.show', $product) }}">
                         <img src="{{ $product->image_url ?: 'https://placehold.co/300x200?text='.urlencode($product->name) }}"
-                             alt="{{ $product->name }}" loading="lazy">
+                             alt="{{ $product->name }}" loading="lazy"
+                             style="{{ $product->stock <= 0 ? 'filter: grayscale(1); opacity: 0.65;' : '' }}">
                     </a>
                 </div>
                 <div class="list-body">
@@ -469,16 +471,16 @@
                                 <div class="list-original">{{ number_format((float) $product->original_price, 0, ',', '.') }}đ</div>
                             @endif
                         </div>
-                        <span class="grid-stock {{ $product->stock > 0 ? 'bg-success bg-opacity-10 text-success' : 'bg-secondary bg-opacity-10 text-secondary' }}">
-                            {{ $product->stock > 0 ? 'Còn hàng' : 'Hết hàng' }}
+                        <span class="grid-stock {{ $product->stock <= 0 ? 'bg-danger bg-opacity-10 text-danger' : ($product->stock <= 3 ? 'bg-warning bg-opacity-10 text-warning' : 'bg-success bg-opacity-10 text-success') }}" style="{{ $product->stock <= 3 && $product->stock > 0 ? 'color: #d97706 !important;' : '' }}">
+                            {{ $product->stock <= 0 ? 'Hết hàng' : ($product->stock <= 3 ? 'Sắp hết hàng' : 'Còn hàng') }}
                         </span>
                         <a class="btn btn-outline-primary btn-sm rounded-1 px-3" href="{{ route('products.show', $product) }}">
                             <i class="bi bi-eye me-1"></i>Chi tiết
                         </a>
                         <form method="post" action="{{ route('cart.add', $product) }}">
                             @csrf
-                            <button class="btn btn-primary btn-sm rounded-1 px-3" style="background:#008848;color:#fff;border:none;font-weight:bold;" type="submit" @disabled($product->stock <= 0)>
-                                CHỌN MUA
+                            <button class="btn btn-primary btn-sm rounded-1 px-3 {{ $product->stock <= 0 ? 'bg-secondary text-white' : '' }}" style="{{ $product->stock > 0 ? 'background:#008848;color:#fff;' : '' }} border:none;font-weight:bold;" type="submit" @disabled($product->stock <= 0)>
+                                {{ $product->stock > 0 ? 'CHỌN MUA' : 'HẾT HÀNG' }}
                             </button>
                         </form>
                     </div>

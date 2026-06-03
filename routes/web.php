@@ -49,6 +49,9 @@ Route::get('/san-pham/{product:slug}', [ShopProductController::class, 'show'])
 Route::post('/san-pham/{product:slug}/danh-gia', [ShopProductController::class, 'storeReview'])
     ->name('products.reviews.store'); // Gửi đánh giá cho sản phẩm
 
+Route::post('/san-pham/{product:slug}/stock-alert', [ShopProductController::class, 'storeStockAlert'])
+    ->name('products.stock-alert'); // Nhận thông báo khi có hàng
+
 // GIỎ HÀNG (CART)
 Route::get('/gio-hang', [CartController::class, 'index'])
     ->name('cart.index'); // Trang chi tiết giỏ hàng hiện tại

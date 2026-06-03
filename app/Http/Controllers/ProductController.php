@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductReview;
+use App\Models\StockAlert;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -175,6 +176,39 @@ class ProductController extends Controller
             : 'Đánh giá đã được gửi và đang chờ quản trị viên phê duyệt.';
 
         return to_route('products.show', $product)->with('status', $message);
+    }
+
+    /**
+     * Đăng ký nhận thông báo khi sản phẩm có hàng trở lại.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Product $product
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function storeStockAlert(Request $request, Product $product): RedirectResponse
+    {
+        // 1. Kiểm tra xem sản phẩm có thực sự hết hàng hay không
+        if ($product->stock > 0) {
+            return back()->with('error', 'Sản phẩm này hiện đang còn hàng, quý khách có thể mua ngay.');
+        }
+
+        // 2. Xác thực thông tin: email hoặc số điện thoại là bắt buộc
+        $data = $request->validate([
+            'email' => ['required_without:phone', 'nullable', 'email', 'max:255'],
+            'phone' => ['required_without:email', 'nullable', 'string', 'max:20'],
+        ], [
+            'email.required_without' => 'Vui lòng cung cấp Email hoặc Số điện thoại để nhận thông báo.',
+            'phone.required_without' => 'Vui lòng cung cấp Email hoặc Số điện thoại để nhận thông báo.',
+            'email.email' => 'Địa chỉ email không đúng định dạng.',
+        ]);
+
+        // 3. Lưu đăng ký vào Database
+        StockAlert::query()->create($data + [
+            'product_id' => $product->id,
+            'status' => 'pending',
+        ]);
+
+        return back()->with('status', 'NeoMart đã ghi nhận đăng ký! Chúng tôi sẽ gửi thông báo ngay khi sản phẩm có hàng trở lại.');
     }
 }
 

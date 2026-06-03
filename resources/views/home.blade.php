@@ -107,49 +107,6 @@
     width: 100%;
 }
 
-/* Mobile adjustments for Hero and Buttons */
-@media (max-width: 991.98px) {
-    .hero-section {
-        padding: 2.5rem 1.5rem !important;
-        background: #047857 !important; /* solid deep green bg from screenshot */
-    }
-    .hero-section::before, .hero-section::after {
-        display: none !important;
-    }
-    .hero-cta-group {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.75rem;
-    }
-    .hero-btn-primary, .hero-btn-outline {
-        justify-content: center;
-        width: 100%;
-        font-size: 0.9rem !important;
-        padding: 0.85rem 1.5rem !important;
-    }
-    .hero-btn-primary {
-        background-color: #fbbf24 !important; /* Yellow/orange button */
-        color: #000 !important;
-    }
-    .hero-stats {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem 1rem !important;
-        text-align: left;
-        margin-top: 2rem !important;
-    }
-    .hero-stat-item {
-        text-align: left !important;
-    }
-    .hero-stat-num {
-        font-size: 1.6rem !important;
-    }
-    .hero-stat-label {
-        font-size: 0.75rem !important;
-        color: rgba(255, 255, 255, 0.7) !important;
-    }
-}
-
 /* ===== TRUST STRIP ===== */
 .trust-strip {
     display: grid;
@@ -570,6 +527,12 @@
 .product-price-row { display: flex; align-items: baseline; justify-content: space-between; margin-top: auto; gap: 0.5rem; flex-wrap: wrap; }
 .product-price { font-size: 1.15rem; font-weight: 900; color: var(--danger); }
 .product-original { font-size: 0.78rem; color: #999; text-decoration: line-through; }
+.badge-stock {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    font-weight: 600;
+}
 .btn-add-cart {
     width: 100%; height: 40px;
     border-radius: 8px;
@@ -584,21 +547,8 @@
     letter-spacing: 0.5px;
     transition: var(--transition);
 }
-.btn-add-cart:hover { background: #e09b0f; color: #0f172a; }
-.btn-add-cart:disabled { opacity: 0.4; cursor: not-allowed; }
-
-/* ===== CATEGORY CARDS ===== */
-.group-card {
-    transition: all 0.3s ease;
-    border: 1px solid var(--border) !important;
-    border-radius: 12px !important;
-    background: #fff;
-}
-.group-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 136, 72, 0.08) !important;
-    border-color: var(--primary) !important;
-}
+.btn-add-cart:hover { background: #ffc107; color: #000; }
+.btn-add-cart:disabled { opacity: 0.75; cursor: not-allowed; }
 </style>
 @endpush
 
@@ -842,11 +792,22 @@
                                     <i class="bi bi-heart"></i>
                                 </button>
                                 <a href="{{ route('products.show', $product) }}">
-                                    <img src="{{ $product->image_url ?: 'https://placehold.co/400x300?text='.urlencode($product->name) }}" alt="{{ $product->name }}" loading="lazy">
+                                    <img src="{{ $product->image_url ?: 'https://placehold.co/400x300?text='.urlencode($product->name) }}" alt="{{ $product->name }}" loading="lazy" style="{{ $product->stock <= 0 ? 'filter: grayscale(1); opacity: 0.65;' : '' }}">
                                 </a>
                             </div>
                             <div class="product-body">
-                                <div class="product-cat">{{ $product->category?->name }}</div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div class="product-cat">{{ $product->category?->name }}</div>
+                                    <div>
+                                        @if($product->stock <= 0)
+                                            <span class="badge-stock bg-danger bg-opacity-10 text-danger">Hết hàng</span>
+                                        @elseif($product->stock <= 3)
+                                            <span class="badge-stock bg-warning bg-opacity-10 text-warning" style="color: #d97706 !important;">Sắp hết hàng</span>
+                                        @else
+                                            <span class="badge-stock bg-success bg-opacity-10 text-success">Còn hàng</span>
+                                        @endif
+                                    </div>
+                                </div>
                                 <a href="{{ route('products.show', $product) }}" class="product-name" title="{{ $product->name }}">
                                     {{ $product->name }}
                                 </a>
@@ -870,6 +831,15 @@
                                     </button>
                                 </form>
                             </div>
+                                    @endif
+                                </div>
+                            </div>
+                            <form method="post" action="{{ route('cart.add', $product) }}" class="w-100 mt-auto">
+                                @csrf
+                                <button type="submit" class="btn-add-cart {{ $product->stock <= 0 ? 'bg-secondary text-white border-0' : '' }}" @disabled($product->stock <= 0)>
+                                    {{ $product->stock > 0 ? 'THÊM VÀO GIỎ' : 'HẾT HÀNG' }}
+                                </button>
+                            </form>
                         </div>
                     </div>
                 @endforeach
