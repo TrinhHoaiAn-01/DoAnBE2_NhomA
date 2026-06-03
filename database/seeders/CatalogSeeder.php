@@ -21,14 +21,10 @@ class CatalogSeeder extends Seeder
      */
     public function run(): void
     {
-<<<<<<< HEAD
         // Danh sách các danh mục mẫu của hệ thống cửa hàng tiện lợi
-=======
         // Xóa các sản phẩm đã tồn tại nhưng không còn trong 
         // danh sách seeder
         \App\Models\Product::query()->whereIn('sku', ['NM-GAO-THO', 'NM-NR-CHEN'])->delete();
-
->>>>>>> NGOC_AI/Trang_chu_moi
         $categories = [
             [
                 'name' => 'Thuc pham',
