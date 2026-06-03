@@ -88,6 +88,7 @@ class HomeController extends Controller
             'flash_sale_end' => $flash_sale_end,
             'suggested_products' => $suggested_products,
             'banners' => $banners,
+            'newestProduct' => $newestProduct,
         ]);
     }
 }
