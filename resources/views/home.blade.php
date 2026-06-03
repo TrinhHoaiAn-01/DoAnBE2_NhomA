@@ -824,22 +824,13 @@
                                         @endif
                                     </div>
                                 </div>
-                                <form method="post" action="{{ route('cart.add', $product) }}" class="w-100 mb-0">
+                                <form method="post" action="{{ route('cart.add', $product) }}" class="w-100 mt-auto">
                                     @csrf
-                                    <button type="submit" class="btn-add-cart" @disabled($product->stock <= 0)>
-                                        Thêm vào giỏ
+                                    <button type="submit" class="btn-add-cart {{ $product->stock <= 0 ? 'bg-secondary text-white border-0' : '' }}" @disabled($product->stock <= 0)>
+                                        {{ $product->stock > 0 ? 'THÊM VÀO GIỎ' : 'HẾT HÀNG' }}
                                     </button>
                                 </form>
                             </div>
-                                    @endif
-                                </div>
-                            </div>
-                            <form method="post" action="{{ route('cart.add', $product) }}" class="w-100 mt-auto">
-                                @csrf
-                                <button type="submit" class="btn-add-cart {{ $product->stock <= 0 ? 'bg-secondary text-white border-0' : '' }}" @disabled($product->stock <= 0)>
-                                    {{ $product->stock > 0 ? 'THÊM VÀO GIỎ' : 'HẾT HÀNG' }}
-                                </button>
-                            </form>
                         </div>
                     </div>
                 @endforeach
