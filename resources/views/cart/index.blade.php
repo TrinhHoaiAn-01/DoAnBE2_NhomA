@@ -32,6 +32,11 @@
                                         <div>
                                             <div class="fw-semibold">{{ $item['product']->name }}</div>
                                             <div class="small text-secondary">{{ $item['product']->category?->name }}</div>
+                                            @if($item['product']->stock <= 3)
+                                                <div class="text-warning small mt-1 fw-bold">
+                                                    ⚠️ Chỉ còn {{ $item['product']->stock }} sản phẩm trong kho!
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>

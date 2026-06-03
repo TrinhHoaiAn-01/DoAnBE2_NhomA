@@ -403,6 +403,12 @@
 .product-price-row { display: flex; flex-direction: column; margin-top: auto; gap: 0.5rem; }
 .product-price { font-size: 1.15rem; font-weight: 900; color: var(--danger); }
 .product-original { font-size: 0.78rem; color: #999; text-decoration: line-through; }
+.badge-stock {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    font-weight: 600;
+}
 .btn-add-cart {
     width: 100%; height: 36px;
     border-radius: 0 0 8px 8px;
@@ -417,7 +423,7 @@
     transition: var(--transition);
 }
 .btn-add-cart:hover { background: #ffc107; color: #000; }
-.btn-add-cart:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-add-cart:disabled { opacity: 0.75; cursor: not-allowed; }
 </style>
 @endpush
 
@@ -578,11 +584,22 @@
                                     <i class="bi bi-heart"></i>
                                 </button>
                                 <a href="{{ route('products.show', $product) }}">
-                                    <img src="{{ $product->image_url ?: 'https://placehold.co/400x300?text='.urlencode($product->name) }}" alt="{{ $product->name }}" loading="lazy">
+                                    <img src="{{ $product->image_url ?: 'https://placehold.co/400x300?text='.urlencode($product->name) }}" alt="{{ $product->name }}" loading="lazy" style="{{ $product->stock <= 0 ? 'filter: grayscale(1); opacity: 0.65;' : '' }}">
                                 </a>
                             </div>
                             <div class="product-body">
-                                <div class="product-cat">{{ $product->category?->name }}</div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div class="product-cat">{{ $product->category?->name }}</div>
+                                    <div>
+                                        @if($product->stock <= 0)
+                                            <span class="badge-stock bg-danger bg-opacity-10 text-danger">Hết hàng</span>
+                                        @elseif($product->stock <= 3)
+                                            <span class="badge-stock bg-warning bg-opacity-10 text-warning" style="color: #d97706 !important;">Sắp hết hàng</span>
+                                        @else
+                                            <span class="badge-stock bg-success bg-opacity-10 text-success">Còn hàng</span>
+                                        @endif
+                                    </div>
+                                </div>
                                 <a href="{{ route('products.show', $product) }}" class="product-name" title="{{ $product->name }}">
                                     {{ $product->name }}
                                 </a>
@@ -600,8 +617,8 @@
                             </div>
                             <form method="post" action="{{ route('cart.add', $product) }}" class="w-100 mt-auto">
                                 @csrf
-                                <button type="submit" class="btn-add-cart" @disabled($product->stock <= 0)>
-                                    Thêm vào giỏ
+                                <button type="submit" class="btn-add-cart {{ $product->stock <= 0 ? 'bg-secondary text-white border-0' : '' }}" @disabled($product->stock <= 0)>
+                                    {{ $product->stock > 0 ? 'THÊM VÀO GIỎ' : 'HẾT HÀNG' }}
                                 </button>
                             </form>
                         </div>
