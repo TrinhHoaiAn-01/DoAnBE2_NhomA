@@ -86,3 +86,9 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    localStorage.removeItem('selected_cart_ids');
+</script>
+@endpush

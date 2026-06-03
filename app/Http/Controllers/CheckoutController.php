@@ -146,8 +146,13 @@ class CheckoutController extends Controller
             return $order;
         });
 
-        // 6. Xóa giỏ hàng hiện tại trong Session sau khi tạo đơn hàng thành công
-        $request->session()->forget('cart');
+        // 6. Xóa các sản phẩm đã thanh toán khỏi giỏ hàng
+        $cart = $request->session()->get('cart', []);
+        foreach ($items as $item) {
+            unset($cart[$item['product']->id]);
+        }
+        $request->session()->put('cart', $cart);
+        $request->session()->forget('selected_ids');
 
         // 7. Chuyển hướng theo phương thức thanh toán
         if ($order->payment_method !== 'cod') {
@@ -232,6 +237,20 @@ class CheckoutController extends Controller
     private function cartItems(Request $request): array
     {
         $cart = $request->session()->get('cart', []);
+        
+        $selectedIds = $request->input('selected_ids');
+        if ($selectedIds !== null) {
+            if (is_string($selectedIds)) {
+                $selectedIds = explode(',', $selectedIds);
+            }
+            $request->session()->put('selected_ids', $selectedIds);
+        } else {
+            if ($request->isMethod('get') && !$request->has('selected_ids')) {
+                $request->session()->forget('selected_ids');
+            }
+            $selectedIds = $request->session()->get('selected_ids');
+        }
+
         $products = Product::query()
             ->with('category')
             ->whereIn('id', array_keys($cart))
@@ -244,6 +263,10 @@ class CheckoutController extends Controller
             $product = $products->get((int) $productId);
 
             if (! $product) {
+                continue;
+            }
+
+            if ($selectedIds !== null && !in_array((int)$productId, array_map('intval', $selectedIds))) {
                 continue;
             }
 

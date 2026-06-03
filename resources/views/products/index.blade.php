@@ -2,7 +2,17 @@
 
 @push('styles')
 <style>
-
+/* Responsive View Toggle Defaults */
+@media (max-width: 991.98px) {
+    #grid-view.default-responsive { display: none !important; }
+    #list-view.default-responsive { display: block !important; }
+    .view-btn.default-active-mobile { background: #008848 !important; color: #fff !important; border-color: #008848 !important; }
+}
+@media (min-width: 992px) {
+    #grid-view.default-responsive { display: block !important; }
+    #list-view.default-responsive { display: none !important; }
+    .view-btn.default-active-desktop { background: #008848 !important; color: #fff !important; border-color: #008848 !important; }
+}
 
 /* ===== TOP SEARCH-SORT BAR ===== */
 .top-filter-bar {
@@ -292,7 +302,7 @@
 
 <div class="row g-4">
     {{-- ===== SIDEBAR ===== --}}
-    <div class="col-lg-3">
+    <div class="col-lg-3 d-none d-lg-block">
 
         {{-- Danh mục --}}
         <div class="filter-card">
@@ -321,6 +331,23 @@
     {{-- ===== PRODUCT AREA ===== --}}
     <div class="col-lg-9">
 
+        {{-- Category Horizontal Scroll on Mobile --}}
+        <div class="d-lg-none mb-3" style="overflow-x: auto; white-space: nowrap; padding-bottom: 8px; -webkit-overflow-scrolling: touch;">
+            <div class="d-inline-flex gap-2">
+                <a href="{{ route('products.index') }}"
+                   class="btn btn-sm rounded-pill px-3 {{ !$categorySlug ? 'btn-success fw-bold' : 'btn-outline-secondary' }}" style="font-size: 0.82rem;">
+                    Tất cả
+                </a>
+                @foreach($categories as $cat)
+                    <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
+                       class="btn btn-sm rounded-pill px-3 {{ $categorySlug === $cat->slug ? 'btn-success fw-bold' : 'btn-outline-secondary' }}" style="font-size: 0.82rem;">
+                        <i class="fa-solid {{ $cat->icon ?? 'fa-box' }} me-1 opacity-70 small"></i>
+                        {{ $cat->name }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+
         {{-- Toolbar --}}
         <div class="products-toolbar">
             <div>
@@ -335,10 +362,10 @@
             <div class="d-flex align-items-center gap-2">
                 <span class="small text-muted d-none d-sm-inline">Hiển thị:</span>
                 <div class="view-toggle">
-                    <button class="view-btn active" id="btn-grid" onclick="setView('grid')" title="Lưới">
+                    <button class="view-btn default-active-desktop" id="btn-grid" onclick="setView('grid')" title="Lưới">
                         <i class="bi bi-grid-3x3-gap"></i>
                     </button>
-                    <button class="view-btn" id="btn-list" onclick="setView('list')" title="Danh sách">
+                    <button class="view-btn default-active-mobile" id="btn-list" onclick="setView('list')" title="Danh sách">
                         <i class="bi bi-list-ul"></i>
                     </button>
                 </div>
@@ -362,7 +389,7 @@
         </div>
         @else
         {{-- Grid View --}}
-        <div id="grid-view">
+        <div id="grid-view" class="default-responsive">
             <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
                 @foreach ($products as $product)
                 <div class="col">
@@ -418,7 +445,7 @@
         </div>
 
         {{-- List View --}}
-        <div id="list-view" class="d-none">
+        <div id="list-view" class="default-responsive">
             @foreach ($products as $product)
             <div class="product-list-card">
                 <div class="list-img-wrap">
@@ -471,6 +498,13 @@
         const listView = document.getElementById('list-view');
         const btnGrid  = document.getElementById('btn-grid');
         const btnList  = document.getElementById('btn-list');
+
+        // Xóa bỏ các class mặc định responsive của CSS để JS toàn quyền điều khiển
+        gridView?.classList.remove('default-responsive');
+        listView?.classList.remove('default-responsive');
+        btnGrid?.classList.remove('default-active-desktop');
+        btnList?.classList.remove('default-active-mobile');
+
         if (mode === 'grid') {
             gridView?.classList.remove('d-none');
             listView?.classList.add('d-none');
@@ -486,9 +520,12 @@
         }
     }
 
-    // Restore view preference
-    const savedView = localStorage.getItem('productView') || 'grid';
-    if (savedView === 'list') setView('list');
+    // Khôi phục tùy chọn hoặc tự động chọn dựa theo kích thước màn hình
+    let savedView = localStorage.getItem('productView');
+    if (!savedView) {
+        savedView = (window.innerWidth < 992) ? 'list' : 'grid';
+    }
+    setView(savedView);
 
     function toggleWishlist(btn) {
         btn.classList.toggle('active');
