@@ -39,6 +39,9 @@ use App\Models\User;
 // TRANG CHỦ
 Route::get('/', HomeController::class)->name('home');
 
+// Gửi ý kiến liên hệ từ trang chủ
+Route::post('/lien-he', [\App\Http\Controllers\ContactSubmitController::class, 'store'])->name('contact.store');
+
 // KHÁCH HÀNG: KHÁM PHÁ SẢN PHẨM (PRODUCT DISCOVERY)
 Route::get('/san-pham', [ShopProductController::class, 'index'])
     ->name('products.index'); // Danh sách sản phẩm kèm bộ lọc tìm kiếm

@@ -944,12 +944,19 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <h6>NeoMart bán hàng chính hãng không?</h6>
-                <p class="mb-3">Chắc chắn rồi! <strong>100%</strong> sản phẩm tại NeoMart đều là hàng chính hãng, có nguồn gốc xuất xứ rõ ràng.</p>
-                <h6>Làm sao để tôi theo dõi đơn hàng?</h6>
-                <p class="mb-3">Bạn có thể theo dõi tiến trình giao hàng bằng cách đăng nhập vào tài khoản và truy cập phần <strong>"Quản lý đơn hàng"</strong>.</p>
-                <h6>Có xuất hóa đơn VAT không?</h6>
-                <p>NeoMart cung cấp đầy đủ hóa đơn VAT điện tử cho tất cả các đơn hàng khi quý khách có yêu cầu.</p>
+                @if(isset($global_faqs) && $global_faqs->isNotEmpty())
+                    @foreach($global_faqs as $faq)
+                        <h6 class="fw-bold text-dark"><i class="bi bi-question-circle-fill text-success"></i> {{ $faq->question }}</h6>
+                        <p class="mb-3 text-secondary" style="font-size: 0.9rem;">{{ $faq->answer }}</p>
+                    @endforeach
+                @else
+                    <h6>NeoMart bán hàng chính hãng không?</h6>
+                    <p class="mb-3">Chắc chắn rồi! <strong>100%</strong> sản phẩm tại NeoMart đều là hàng chính hãng, có nguồn gốc xuất xứ rõ ràng.</p>
+                    <h6>Làm sao để tôi theo dõi đơn hàng?</h6>
+                    <p class="mb-3">Bạn có thể theo dõi tiến trình giao hàng bằng cách đăng nhập vào tài khoản và truy cập phần <strong>"Quản lý đơn hàng"</strong>.</p>
+                    <h6>Có xuất hóa đơn VAT không?</h6>
+                    <p>NeoMart cung cấp đầy đủ hóa đơn VAT điện tử cho tất cả các đơn hàng khi quý khách có yêu cầu.</p>
+                @endif
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đã hiểu</button>
@@ -966,33 +973,53 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded-3">
-                    <i class="bi bi-geo-alt-fill fs-3 text-danger"></i>
+                <div class="d-flex align-items-center gap-3 mb-2 p-2 bg-light rounded-3">
+                    <i class="bi bi-geo-alt-fill fs-4 text-danger"></i>
                     <div>
-                        <div class="fw-bold text-dark">Địa chỉ trực tiếp</div>
+                        <div class="fw-bold text-dark" style="font-size:0.9rem;">Địa chỉ trực tiếp</div>
                         <div class="text-muted small">123 Đường Công Nghệ, Quận 1, TP. Hồ Chí Minh</div>
                     </div>
                 </div>
-                <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded-3">
-                    <i class="bi bi-telephone-fill fs-3 text-success"></i>
+                <div class="d-flex align-items-center gap-3 mb-3 p-2 bg-light rounded-3">
+                    <i class="bi bi-telephone-fill fs-4 text-success"></i>
                     <div>
-                        <div class="fw-bold text-dark">Hotline hỗ trợ 24/7</div>
+                        <div class="fw-bold text-dark" style="font-size:0.9rem;">Hotline hỗ trợ 24/7</div>
                         <div class="text-muted small">(+84) 123 456 789</div>
                     </div>
                 </div>
-                <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded-3">
-                    <i class="bi bi-envelope-fill fs-3 text-primary"></i>
-                    <div>
-                        <div class="fw-bold text-dark">Email liên hệ</div>
-                        <div class="text-muted small">support@neomart.vn</div>
+
+                <hr class="my-3">
+
+                <!-- Contact Form -->
+                <h6 class="mb-3 text-dark"><i class="bi bi-pencil-square text-success"></i> Gửi ý kiến đóng góp / Liên hệ hỗ trợ</h6>
+                <form id="contact-form" action="{{ route('contact.store') }}" method="POST">
+                    @csrf
+                    <div class="mb-2">
+                        <label for="contact-name" class="form-label small fw-bold">Họ tên *</label>
+                        <input type="text" class="form-control form-control-sm" id="contact-name" name="name" required placeholder="Nhập họ tên của bạn">
                     </div>
-                </div>
-                <p class="text-center mt-4 fw-semibold text-success">
-                    Chúng tôi luôn sẵn lòng lắng nghe và hỗ trợ quý khách mọi lúc, mọi nơi!
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <div class="row g-2 mb-2">
+                        <div class="col-md-6">
+                            <label for="contact-email" class="form-label small fw-bold">Email *</label>
+                            <input type="email" class="form-control form-control-sm" id="contact-email" name="email" required placeholder="example@gmail.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="contact-phone" class="form-label small fw-bold">Số điện thoại</label>
+                            <input type="text" class="form-control form-control-sm" id="contact-phone" name="phone" placeholder="Nhập số điện thoại">
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="contact-subject" class="form-label small fw-bold">Chủ đề *</label>
+                        <input type="text" class="form-control form-control-sm" id="contact-subject" name="subject" required placeholder="Góp ý sản phẩm, báo lỗi...">
+                    </div>
+                    <div class="mb-3">
+                        <label for="contact-message" class="form-label small fw-bold">Lời nhắn *</label>
+                        <textarea class="form-control form-control-sm" id="contact-message" name="message" rows="3" required placeholder="Nhập ý kiến đóng góp của bạn..."></textarea>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-sm fw-bold">Gửi tin nhắn</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
