@@ -788,8 +788,11 @@
                                 @elseif($product->created_at->gt(now()->subDays(7)))
                                     <span class="badge-corner bg-success text-white">Mới</span>
                                 @endif
-                                <button class="wishlist-btn" onclick="toggleWishlist(this)" title="Yêu thích">
-                                    <i class="bi bi-heart"></i>
+                                @php
+                                    $inWishlist = auth()->check() && auth()->user()->wishlists()->where('product_id', $product->id)->exists();
+                                @endphp
+                                <button class="wishlist-btn {{ $inWishlist ? 'active' : '' }}" onclick="toggleWishlist(this, '{{ $product->id }}')" title="Yêu thích">
+                                    <i class="bi {{ $inWishlist ? 'bi-heart-fill' : 'bi-heart' }}"></i>
                                 </button>
                                 <a href="{{ route('products.show', $product) }}">
                                     <img src="{{ $product->image_url ?: 'https://placehold.co/400x300?text='.urlencode($product->name) }}" alt="{{ $product->name }}" loading="lazy" style="{{ $product->stock <= 0 ? 'filter: grayscale(1); opacity: 0.65;' : '' }}">
@@ -980,12 +983,49 @@
         setInterval(tick, 1000);
     })();
 
-    // Wishlist toggle (UI only)
-    function toggleWishlist(btn) {
-        btn.classList.toggle('active');
-        const icon = btn.querySelector('i');
-        icon.classList.toggle('bi-heart');
-        icon.classList.toggle('bi-heart-fill');
+    // Wishlist toggle (AJAX backend integration)
+    function toggleWishlist(btn, productId) {
+        const isAuthenticated = @json(auth()->check());
+        if (!isAuthenticated) {
+            alert('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích.');
+            window.location.href = "{{ route('login') }}";
+            return;
+        }
+
+        const isActive = btn.classList.contains('active');
+        const url = isActive ? `/wishlist/${productId}` : '/wishlist';
+        const method = isActive ? 'DELETE' : 'POST';
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: method === 'POST' ? JSON.stringify({ product_id: productId }) : null
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                btn.classList.toggle('active');
+                const icon = btn.querySelector('i');
+                if (data.in_wishlist) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                } else {
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                }
+            } else {
+                alert(data.message || 'Có lỗi xảy ra.');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Không thể kết nối đến máy chủ.');
+        });
     }
 </script>
 @endpush

@@ -913,18 +913,25 @@
         const method = isActive ? 'DELETE' : 'POST';
 
         fetch(url, {
-            method: 'POST',
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({
-                product_id: productId,
-                _method: method
-            })
+            body: method === 'POST' ? JSON.stringify({ product_id: productId }) : null
         })
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                return res.json().then(err => {
+                    throw new Error(err.message || `Lỗi từ hệ thống (Status ${res.status})`);
+                }).catch(() => {
+                    throw new Error(`Lỗi từ hệ thống (Status ${res.status})`);
+                });
+            }
+            return res.json();
+        })
         .then(data => {
             if (data.success) {
                 btn.classList.toggle('active');
@@ -942,7 +949,7 @@
         })
         .catch(err => {
             console.error(err);
-            alert('Không thể kết nối đến máy chủ.');
+            alert(err.message || 'Không thể kết nối đến máy chủ.');
         });
     }
 

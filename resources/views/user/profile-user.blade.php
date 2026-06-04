@@ -334,13 +334,7 @@
                             Đổi mật khẩu
                         </a>
 
-                        @if(Route::has('wishlist.index'))
-                        <a href="{{ route('wishlist.index') }}"
-                           class="nav-item">
-                            <i class="fa fa-heart"></i>
-                            Sản phẩm yêu thích
-                        </a>
-                        @endif
+
 
                         @if(Route::has('orders.index'))
                         <a href="{{ route('orders.index') }}"
