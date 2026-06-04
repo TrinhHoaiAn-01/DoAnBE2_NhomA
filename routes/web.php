@@ -242,14 +242,16 @@ Route::get('/profile-admin', function () {
 | TRANG TIỆN ÍCH HỒ SƠ KHÁCH HÀNG (CUSTOMER PROFILE VIEW)
 |--------------------------------------------------------------------------
 */
-Route::get('/profile-user', function () {
-    return view('user.profile-user');
-})->name('profile.user');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile-user', function () {
+        return view('user.profile-user');
+    })->name('profile.user');
 
-// Cài đặt hệ thống
-Route::get('/settings', function () {
-    return view('settings.setting');
-})->name('settings');
+    // Cài đặt hệ thống
+    Route::get('/settings', function () {
+        return view('settings.setting');
+    })->name('settings');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -275,7 +277,11 @@ Route::middleware('auth')->group(function (): void {
 */
 
 Route::get('/home', function () {
-    return view('admin.dashboard');
+    // Admin vào trang quản trị, user thường về trang chủ
+    if (auth()->user() && auth()->user()->role_id == 5) {
+        return redirect()->route('admin.dashboard');
+    }
+    return redirect()->route('home');
 })->middleware('auth')->name('user.home');
 
 /*

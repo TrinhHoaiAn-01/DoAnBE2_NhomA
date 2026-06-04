@@ -35,8 +35,8 @@ class AppServiceProvider extends ServiceProvider
         // để hỗ trợ các phiên bản hệ quản trị CSDL cũ (như MySQL cũ) tránh lỗi tạo chỉ mục (index key length)
         Schema::defaultStringLength(191);
 
-        // Chia sẻ danh sách FAQ và Banners đang hoạt động tới tất cả các view
-        \Illuminate\Support\Facades\View::composer('*', function ($view) {
+        // Chia sẻ danh sách FAQ và Banners đang hoạt động tới layout chính
+        \Illuminate\Support\Facades\View::composer(['layouts.app', 'home'], function ($view) {
             if (Schema::hasTable('faqs')) {
                 $view->with('global_faqs', \App\Models\Faq::where('is_active', true)->orderBy('sort_order', 'asc')->get());
             }

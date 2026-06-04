@@ -62,11 +62,15 @@ Mô tả lỗi:
 {$validated['description']}
         ");
 
-        Mail::raw($content, function ($mail) use ($adminEmail, $validated, $issueLabel) {
-            $mail->to($adminEmail)
-                ->replyTo($validated['email'])
-                ->subject("Yêu cầu hỗ trợ: {$issueLabel}");
-        });
+        try {
+            Mail::raw($content, function ($mail) use ($adminEmail, $validated, $issueLabel) {
+                $mail->to($adminEmail)
+                    ->replyTo($validated['email'])
+                    ->subject("Yêu cầu hỗ trợ: {$issueLabel}");
+            });
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Không thể gửi email. Vui lòng thử lại sau.');
+        }
 
         return back()->with('success', 'Gửi thành công');
     }

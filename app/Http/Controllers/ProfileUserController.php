@@ -267,6 +267,24 @@ class ProfileUserController extends Controller
 	}
 
     /**
+     * Xử lý yêu cầu xóa tài khoản người dùng.
+     */
+    public function deleteAccount(Request $request)
+    {
+        $user = Auth::user();
+
+        // Đăng xuất trước khi xóa
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Xóa tài khoản
+        $user->delete();
+
+        return redirect()->route('home')->with('success', 'Tài khoản đã được xóa thành công.');
+    }
+
+    /**
      * Đồng bộ các bản ghi đang tham chiếu tới user khi cho phép đổi ID tài khoản.
      */
     private function syncUserReferences(int $oldUserId, int $newUserId): void

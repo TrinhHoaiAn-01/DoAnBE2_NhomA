@@ -617,8 +617,10 @@
                 ];
             }
         } else {
-            // Fallback to static mock banners
-            $carouselBanners = $banners;
+            // Fallback: banner mặc định khi chưa có banner nào trong DB
+            $carouselBanners = [
+                ['image' => 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=1200', 'title' => 'Chào mừng đến NeoMart', 'link' => route('products.index')],
+            ];
         }
     @endphp
 

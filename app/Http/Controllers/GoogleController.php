@@ -4,20 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
 {
+    // Chuyển hướng người dùng tới trang đăng nhập Google
     public function redirect()
     {
-        // Xóa session cũ
-        Auth::logout();
-
-        Session::flush();
-
-        Session::invalidate();
-
         return Socialite::driver('google')
             ->with([
                 'prompt' => 'select_account'
@@ -26,6 +19,7 @@ class GoogleController extends Controller
             ->redirect();
     }
 
+    // Xử lý callback sau khi đăng nhập Google thành công
     public function callback()
     {
         try {
@@ -60,7 +54,6 @@ class GoogleController extends Controller
                     'username' => $username,
                     'email' => $email,
                     'google_id' => $googleUser->getId(),
-                    'avatar' => $googleUser->getAvatar(),
                     'avatar_url' => $googleUser->getAvatar(),
                     'password' => bcrypt(uniqid()),
                     'role_id' => 2,
@@ -68,12 +61,7 @@ class GoogleController extends Controller
                 ]);
             }
 
-            Auth::logout();
-
-            request()->session()->invalidate();
-
-            request()->session()->regenerateToken();
-
+            // Đăng nhập user
             Auth::login($user, true);
 
             request()->session()->regenerate();

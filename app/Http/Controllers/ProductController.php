@@ -237,7 +237,25 @@ class ProductController extends Controller
             'email.email' => 'Địa chỉ email không đúng định dạng.',
         ]);
 
-        // 3. Lưu đăng ký vào Database
+        // 3. Kiểm tra trùng lặp đăng ký
+        $exists = StockAlert::query()
+            ->where('product_id', $product->id)
+            ->where('status', 'pending')
+            ->where(function ($q) use ($data) {
+                if (!empty($data['email'])) {
+                    $q->orWhere('email', $data['email']);
+                }
+                if (!empty($data['phone'])) {
+                    $q->orWhere('phone', $data['phone']);
+                }
+            })
+            ->exists();
+
+        if ($exists) {
+            return back()->with('status', 'Bạn đã đăng ký nhận thông báo cho sản phẩm này rồi.');
+        }
+
+        // 4. Lưu đăng ký vào Database
         StockAlert::query()->create($data + [
             'product_id' => $product->id,
             'status' => 'pending',
