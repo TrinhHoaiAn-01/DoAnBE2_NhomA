@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\AccountActivityLog;
 use App\Models\User;
 use App\Models\SystemLog;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 /**
@@ -37,11 +40,15 @@ class AuthController extends Controller
      */
     public function login(Request $request): RedirectResponse
     {
+        $this->verifyRecaptcha($request);
+
         // 1. Kiểm tra tính hợp lệ của dữ liệu đầu vào (Validation)
-        $credentials = $request->validate([
+        $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
+
+        $credentials = $request->only('email', 'password');
 
         // 2. Lấy tùy chọn "Ghi nhớ đăng nhập" (Remember me)
         $remember = $request->boolean('remember');
@@ -117,6 +124,8 @@ class AuthController extends Controller
      */
     public function register(Request $request): RedirectResponse
     {
+        $this->verifyRecaptcha($request);
+
         // 1. Kiểm tra tính hợp lệ của dữ liệu đăng ký
         $data = $request->validate([
             'name' => ['nullable', 'string', 'max:255'],
@@ -193,6 +202,8 @@ class AuthController extends Controller
      */
     public function forgetPassword(Request $request): RedirectResponse
     {
+        $this->verifyRecaptcha($request);
+
         // 1. Validate thông tin nhập vào (email và mật khẩu mới kèm xác nhận)
         $request->validate([
             'email' => ['required', 'email'],
@@ -217,5 +228,44 @@ class AuthController extends Controller
         return redirect()
             ->route('login')
             ->with('success', 'Đổi mật khẩu thành công!');
+    }
+
+    private function verifyRecaptcha(Request $request): void
+    {
+        $request->validate([
+            'g-recaptcha-response' => ['required', 'string'],
+        ], [
+            'g-recaptcha-response.required' => 'Vui lòng xác minh CAPTCHA.',
+        ], [
+            'g-recaptcha-response' => 'CAPTCHA',
+        ]);
+
+        $secretKey = config('services.recaptcha.secret_key');
+
+        if (blank($secretKey)) {
+            throw ValidationException::withMessages([
+                'g-recaptcha-response' => 'Chưa cấu hình secret key cho Google reCAPTCHA.',
+            ]);
+        }
+
+        try {
+            $response = Http::asForm()
+                ->timeout(5)
+                ->post('https://www.google.com/recaptcha/api/siteverify', [
+                    'secret' => $secretKey,
+                    'response' => $request->input('g-recaptcha-response'),
+                    'remoteip' => $request->ip(),
+                ]);
+        } catch (ConnectionException) {
+            throw ValidationException::withMessages([
+                'g-recaptcha-response' => 'Không thể kết nối Google reCAPTCHA. Vui lòng thử lại.',
+            ]);
+        }
+
+        if (!$response->ok() || !$response->json('success')) {
+            throw ValidationException::withMessages([
+                'g-recaptcha-response' => 'Xác minh CAPTCHA thất bại. Vui lòng thử lại.',
+            ]);
+        }
     }
 }

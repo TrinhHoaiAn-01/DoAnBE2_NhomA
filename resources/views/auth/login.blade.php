@@ -17,7 +17,8 @@
 
         min-height:100vh;
 
-        overflow:hidden;
+        overflow-x:hidden;
+        overflow-y:auto;
 
         font-family:'Segoe UI',sans-serif;
 
@@ -305,6 +306,30 @@
     }
 
     /* =========================
+        CAPTCHA
+    ========================== */
+
+    .recaptcha-wrapper{
+
+        display:flex;
+
+        justify-content:center;
+
+        min-height:78px;
+
+        overflow:hidden;
+    }
+
+    .invalid-feedback{
+
+        color:#fca5a5;
+
+        font-size:13px;
+
+        margin-top:8px;
+    }
+
+    /* =========================
         BUTTON
     ========================== */
 
@@ -479,6 +504,18 @@
         color:white;
     }
 
+    @media(max-width:380px){
+
+        .login-card{
+            padding:32px 20px;
+        }
+
+        .recaptcha-wrapper .g-recaptcha{
+            transform:scale(0.86);
+            transform-origin:center top;
+        }
+    }
+
 </style>
 
 <!-- BACKGROUND -->
@@ -518,6 +555,7 @@
                 <input
                     type="email"
                     name="email"
+                    value="{{ old('email') }}"
                     class="form-control"
                     placeholder="Nhập email..."
                     autocomplete="off"
@@ -563,6 +601,26 @@
                 <a href="{{ route('password.request') }}">
                     Quên mật khẩu?
                 </a>
+
+            </div>
+
+            <!-- CAPTCHA -->
+            <div class="form-group">
+
+                <div class="recaptcha-wrapper">
+
+                    <div
+                        class="g-recaptcha"
+                        data-sitekey="{{ config('services.recaptcha.site_key') }}"
+                    ></div>
+
+                </div>
+
+                @error('g-recaptcha-response')
+                    <div class="invalid-feedback d-block text-center">
+                        {{ $message }}
+                    </div>
+                @enderror
 
             </div>
 
@@ -638,5 +696,9 @@
     </div>
 
 </div>
+
+@push('scripts')
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+@endpush
 
 @endsection

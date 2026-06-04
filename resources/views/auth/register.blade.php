@@ -17,7 +17,8 @@
 
         min-height:100vh;
 
-        overflow:hidden;
+        overflow-x:hidden;
+        overflow-y:auto;
 
         font-family:'Segoe UI',sans-serif;
 
@@ -242,32 +243,15 @@
         CAPTCHA
     ========================== */
 
-    .captcha-wrapper{
-
-        width:100%;
-
-        min-height:78px;
-
-        border-radius:18px;
-
-        border:
-            1px dashed rgba(255,255,255,0.12);
-
-        background:
-            rgba(255,255,255,0.04);
+    .recaptcha-wrapper{
 
         display:flex;
 
-        align-items:center;
         justify-content:center;
 
-        padding:20px;
+        min-height:78px;
 
-        color:#94a3b8;
-
-        font-size:14px;
-
-        text-align:center;
+        overflow:hidden;
     }
 
     /* =========================
@@ -374,6 +358,14 @@
 
         .main-title{
             font-size:28px;
+        }
+    }
+
+    @media(max-width:380px){
+
+        .recaptcha-wrapper .g-recaptcha{
+            transform:scale(0.86);
+            transform-origin:center top;
         }
     }
 
@@ -500,25 +492,20 @@
             <!-- CAPTCHA -->
             <div class="form-group">
 
-                <label class="form-label">
-                    CAPTCHA
-                </label>
+                <div class="recaptcha-wrapper">
 
-                <div class="captcha-wrapper">
-
-                    Khu vực tích hợp Google reCAPTCHA
-                    <br>
-                    hoặc Cloudflare Turnstile
+                    <div
+                        class="g-recaptcha"
+                        data-sitekey="{{ config('services.recaptcha.site_key') }}"
+                    ></div>
 
                 </div>
 
-                <!-- Ví dụ API -->
-                <!--
-                <div
-                    class="g-recaptcha"
-                    data-sitekey="YOUR_SITE_KEY">
-                </div>
-                -->
+                @error('g-recaptcha-response')
+                    <div class="invalid-feedback d-block text-center">
+                        {{ $message }}
+                    </div>
+                @enderror
 
             </div>
 
@@ -546,5 +533,9 @@
     </div>
 
 </div>
+
+@push('scripts')
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+@endpush
 
 @endsection
