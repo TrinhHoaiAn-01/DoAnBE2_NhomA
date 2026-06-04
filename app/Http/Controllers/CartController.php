@@ -90,9 +90,9 @@ class CartController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\Product $product
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, Product $product): RedirectResponse
+    public function update(Request $request, Product $product)
     {
         // 1. Bắt buộc phải có số lượng hợp lệ từ request
         $data = $request->validate([
@@ -108,6 +108,29 @@ class CartController extends Controller
         // 4. Lưu lại vào Session
         $request->session()->put('cart', $cart);
 
+        if ($request->wantsJson() || $request->ajax()) {
+            $items = $this->cartItems($request);
+            $total = $this->cartTotal($request);
+            
+            $subtotal = 0;
+            foreach ($items as $item) {
+                if ($item['product']->id === $product->id) {
+                    $subtotal = $item['subtotal'];
+                    break;
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã cập nhật giỏ hàng.',
+                'cartCount' => array_sum($cart),
+                'itemSubtotal' => number_format($subtotal, 0, ',', '.') . 'đ',
+                'cartTotal' => number_format($total, 0, ',', '.') . 'đ',
+                'totalRaw' => $total,
+                'quantity' => $cart[$product->id]
+            ]);
+        }
+
         return to_route('cart.index')->with('status', 'Đã cập nhật giỏ hàng.');
     }
 
@@ -116,9 +139,9 @@ class CartController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\Product $product
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function remove(Request $request, Product $product): RedirectResponse
+    public function remove(Request $request, Product $product)
     {
         // 1. Lấy giỏ hàng từ Session
         $cart = $request->session()->get('cart', []);
@@ -128,6 +151,18 @@ class CartController extends Controller
 
         // 3. Lưu lại giỏ hàng đã cập nhật vào Session
         $request->session()->put('cart', $cart);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            $total = $this->cartTotal($request);
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã xóa sản phẩm khỏi giỏ hàng.',
+                'cartCount' => array_sum($cart),
+                'cartTotal' => number_format($total, 0, ',', '.') . 'đ',
+                'totalRaw' => $total,
+                'cartEmpty' => empty($cart)
+            ]);
+        }
 
         return to_route('cart.index')->with('status', 'Đã xóa sản phẩm khỏi giỏ hàng.');
     }
