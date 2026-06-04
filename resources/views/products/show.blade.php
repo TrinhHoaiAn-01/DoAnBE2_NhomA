@@ -507,8 +507,11 @@
                         <i class="bi bi-bell-fill"></i> Nhận thông báo khi có hàng
                     </button>
                 @endif
-                <button class="btn-wishlist-lg" onclick="toggleWishlistLg(this)" title="Yêu thích">
-                    <i class="bi bi-heart"></i>
+                @php
+                    $inWishlist = auth()->check() && auth()->user()->wishlists()->where('product_id', $product->id)->exists();
+                @endphp
+                <button class="btn-wishlist-lg {{ $inWishlist ? 'active' : '' }}" onclick="toggleWishlistLg(this, '{{ $product->id }}')" title="Yêu thích">
+                    <i class="bi {{ $inWishlist ? 'bi-heart-fill' : 'bi-heart' }}"></i>
                 </button>
             </div>
 
@@ -897,11 +900,50 @@
     });
 
     // Wishlist
-    function toggleWishlistLg(btn) {
-        btn.classList.toggle('active');
-        const icon = btn.querySelector('i');
-        icon.classList.toggle('bi-heart');
-        icon.classList.toggle('bi-heart-fill');
+    function toggleWishlistLg(btn, productId) {
+        const isAuthenticated = @json(auth()->check());
+        if (!isAuthenticated) {
+            alert('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích.');
+            window.location.href = "{{ route('login') }}";
+            return;
+        }
+
+        const isActive = btn.classList.contains('active');
+        const url = isActive ? `/wishlist/${productId}` : '/wishlist';
+        const method = isActive ? 'DELETE' : 'POST';
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                _method: method
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                btn.classList.toggle('active');
+                const icon = btn.querySelector('i');
+                if (data.in_wishlist) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                } else {
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                }
+            } else {
+                alert(data.message || 'Có lỗi xảy ra.');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Không thể kết nối đến máy chủ.');
+        });
     }
 
     // Tab switch
