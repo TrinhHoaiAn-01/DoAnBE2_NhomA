@@ -227,10 +227,19 @@
             min-width: 200px;
         }
         .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
             border-radius: var(--radius-sm);
             font-size: 0.875rem;
             padding: 0.5rem 0.75rem;
             transition: var(--transition);
+        }
+        .dropdown-item .menu-icon,
+        .mobile-sidebar-item .menu-icon {
+            width: 1.1rem;
+            text-align: center;
+            flex-shrink: 0;
         }
         .dropdown-item:hover { background: var(--primary-light); color: var(--primary); }
         .dropdown-divider { margin: 0.35rem 0; border-color: var(--border); }
@@ -584,40 +593,46 @@
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item" href="{{ $profileUrl }}">
+                                        <i class="fa-solid fa-user menu-icon"></i>
                                         Hồ sơ người dùng
                                     </a>
                                 </li>
+                                @if(Route::has('recently-viewed.index'))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('recently-viewed.index') }}">
+                                        <i class="fa-solid fa-clock-rotate-left menu-icon"></i>
+                                        Sản phẩm đã xem
+                                    </a>
+                                </li>
+                                @endif
                                 @if(Route::has('orders.index'))
                                 <li>
                                     <a class="dropdown-item" href="{{ route('orders.index') }}">
+                                        <i class="fa-solid fa-receipt menu-icon"></i>
                                         Lịch sử đơn hàng
                                     </a>
                                 </li>
                                 @endif
-                                @if(Route::has('recently-viewed.index'))
+                                @if(Route::has('wishlist.index'))
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('recently-viewed.index') }}">
-                                        Sản phẩm đã xem
+                                    <a class="dropdown-item" href="{{ route('wishlist.index') }}">
+                                        <i class="fa-solid fa-heart menu-icon"></i>
+                                        Danh sách yêu thích
                                     </a>
                                 </li>
                                 @endif
                                 <li>
                                     <a class="dropdown-item" href="{{ route('settings') }}">
-                                        <i class="bi bi-gear me-2"></i>Cài đặt
+                                        <i class="fa-solid fa-gear menu-icon"></i>
+                                        Cài đặt
                                     </a>
                                 </li>
-                                @if(Route::has('wishlist.index'))
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('wishlist.index') }}">
-                                        Danh sách yêu thích
-                                    </a>
-                                </li>
-                                @endif
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="post" action="{{ route('logout') }}" class="m-0">
                                         @csrf
                                         <button class="dropdown-item text-danger" type="submit">
+                                            <i class="fa-solid fa-right-from-bracket menu-icon"></i>
                                             Đăng xuất
                                         </button>
                                     </form>
@@ -681,21 +696,16 @@
         <div class="offcanvas-body p-0">
             <nav class="d-flex flex-column">
                 <a href="{{ route('home') }}" class="mobile-sidebar-item">
-                    <span>🏠</span> Trang chủ
+                    <i class="fa-solid fa-house menu-icon"></i> Trang chủ
                 </a>
                 <a href="{{ route('products.index') }}" class="mobile-sidebar-item">
-                    <span>📦</span> Danh sách sản phẩm
+                    <i class="fa-solid fa-box-open menu-icon"></i> Danh sách sản phẩm
                 </a>
                 <a href="{{ route('cart.index') }}" class="mobile-sidebar-item">
-                    <span>🛒</span> Xem giỏ hàng
+                    <i class="fa-solid fa-cart-shopping menu-icon"></i> Xem giỏ hàng
                 </a>
-                @if(Route::has('recently-viewed.index'))
-                <a href="{{ route('recently-viewed.index') }}" class="mobile-sidebar-item">
-                    <span>🕐</span> Sản phẩm đã xem
-                </a>
-                @endif
                 <a href="{{ route('checkout.index') }}" class="mobile-sidebar-item">
-                    <span>💳</span> Tiến hành thanh toán
+                    <i class="fa-solid fa-credit-card menu-icon"></i> Tiến hành thanh toán
                 </a>
                 
                 <div style="height: 1px; background: var(--border); margin: 0.75rem 1.5rem;"></div>
@@ -708,25 +718,30 @@
                     @endphp
 
                     <a href="{{ $profileUrl }}" class="mobile-sidebar-item">
-                        <span>👤</span> Hồ sơ người dùng
+                        <i class="fa-solid fa-user menu-icon"></i> Hồ sơ người dùng
                     </a>
-                    <a href="{{ route('settings') }}" class="mobile-sidebar-item">
-                        <span><i class="bi bi-gear"></i></span> Cài đặt
+                    @if(Route::has('recently-viewed.index'))
+                    <a href="{{ route('recently-viewed.index') }}" class="mobile-sidebar-item">
+                        <i class="fa-solid fa-clock-rotate-left menu-icon"></i> Sản phẩm đã xem
                     </a>
+                    @endif
                     @if(Route::has('orders.index'))
                     <a href="{{ route('orders.index') }}" class="mobile-sidebar-item">
-                        <span>📋</span> Lịch sử đơn hàng
+                        <i class="fa-solid fa-receipt menu-icon"></i> Lịch sử đơn hàng
                     </a>
                     @endif
                     @if(Route::has('wishlist.index'))
                     <a href="{{ route('wishlist.index') }}" class="mobile-sidebar-item">
-                        <span>❤️</span> Danh sách yêu thích
+                        <i class="fa-solid fa-heart menu-icon"></i> Danh sách yêu thích
                     </a>
                     @endif
+                    <a href="{{ route('settings') }}" class="mobile-sidebar-item">
+                        <i class="fa-solid fa-gear menu-icon"></i> Cài đặt
+                    </a>
                     <form method="post" action="{{ route('logout') }}" class="m-0">
                         @csrf
                         <button type="submit" class="mobile-sidebar-item w-100 text-start bg-transparent" style="color: var(--danger) !important;">
-                            <span>🚪</span> Đăng xuất
+                            <i class="fa-solid fa-right-from-bracket menu-icon"></i> Đăng xuất
                         </button>
                     </form>
                 @else
