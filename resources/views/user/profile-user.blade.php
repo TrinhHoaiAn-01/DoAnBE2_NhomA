@@ -332,7 +332,7 @@
                             </a>
 
                             <!-- LOG ACTIVITY -->
-                            <a href="#" class="nav-item">
+                            <a href="{{ route('account.activity.logs') }}" class="nav-item">
 
                                 <i class="fa fa-clock-rotate-left"></i>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountActivityLog;
 use App\Models\User;
 use App\Models\SystemLog;
 use Illuminate\Http\RedirectResponse;
@@ -84,6 +85,15 @@ class AuthController extends Controller
                 'user_agent' => $request->userAgent(),
             ],
         ]);
+
+        AccountActivityLog::recordFor(
+            $user,
+            'login',
+            'Đăng nhập tài khoản',
+            'Đăng nhập thành công vào hệ thống.',
+            ['remember' => $remember],
+            $request
+        );
 
         // 7. Chuyển hướng người dùng về trang chủ hoặc route mà họ định truy cập trước đó (intended)
         return redirect()->intended(route('home'));

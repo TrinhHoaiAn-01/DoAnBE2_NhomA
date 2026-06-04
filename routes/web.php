@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProductReviewController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\AccountActivityLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -169,6 +170,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/update',
         [ProfileUserController::class, 'update']
     )->name('profile.update');
+
+    // Nhật ký hoạt động tài khoản
+    Route::get('/nhat-ky-hoat-dong',
+        [AccountActivityLogController::class, 'index']
+    )->name('account.activity.logs');
 
     // Trang đổi mật khẩu
     Route::get('/changepassword',
