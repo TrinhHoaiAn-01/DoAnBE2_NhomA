@@ -488,15 +488,14 @@
         });
 
         fetch(actionUrl, {
-            method: 'POST',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-TOKEN': token
             },
             body: JSON.stringify({
-                quantity: val,
-                _method: 'PATCH'
+                quantity: val
             })
         })
         .then(res => res.json())
@@ -533,15 +532,12 @@
         const actionUrl = form.action;
 
         fetch(actionUrl, {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-TOKEN': token
-            },
-            body: JSON.stringify({
-                _method: 'DELETE'
-            })
+            }
         })
         .then(res => res.json())
         .then(data => {
@@ -651,6 +647,7 @@
 
         updateTotalsAndCheckoutUrl();
         updateSelectAllState();
+        window.updateTotalsAndCheckoutUrl = updateTotalsAndCheckoutUrl;
 
         // Event listener for checkboxes
         document.querySelectorAll('.item-checkbox, .item-checkbox-mobile').forEach(cb => {

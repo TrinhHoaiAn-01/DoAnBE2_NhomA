@@ -1,395 +1,289 @@
-<!DOCTYPE html>
-<html lang="vi">
+@extends('layouts.app', ['title' => 'Sản phẩm đã xem – NeoMart'])
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sản phẩm đã xem</title>
+@push('styles')
+<style>
+/* ===== RECENTLY VIEWED STYLES ===== */
+.cart-header-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+.btn-continue-shopping {
+    border-radius: var(--radius-md, 10px);
+    font-weight: 600;
+    transition: var(--transition);
+}
+.cart-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg, 16px);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+.cart-table {
+    margin-bottom: 0;
+}
+.cart-table th {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--surface-3);
+    padding: 1.25rem 1rem;
+    background-color: #fafbfc;
+}
+.cart-table td {
+    padding: 1.5rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border);
+}
+.cart-table tr:last-child td {
+    border-bottom: none;
+}
+.cart-product-img {
+    width: 68px;
+    height: 68px;
+    object-fit: contain;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md, 10px);
+    padding: 4px;
+}
+.cart-product-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    line-height: 1.4;
+    display: block;
+    margin-bottom: 0.2rem;
+    transition: color 0.2s;
+}
+.cart-product-name:hover {
+    color: var(--primary);
+}
+.cart-product-cat {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.cart-unit-price {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
 
-    <!-- BOOTSTRAP -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FONT AWESOME -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-    <!-- FONT -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+/* Mobile card list (below md screen) */
+.mobile-cart-list {
+    display: none;
+}
+.mobile-cart-item {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md, 10px);
+    padding: 1.25rem 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 1rem;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+}
+.mobile-cart-img {
+    width: 76px;
+    height: 76px;
+    object-fit: contain;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md, 10px);
+    flex-shrink: 0;
+    padding: 4px;
+}
+.mobile-cart-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.mobile-cart-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    line-height: 1.35;
+    margin-bottom: 0.25rem;
+    padding-right: 1.5rem;
+}
+.mobile-cart-cat {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+}
+.mobile-cart-price {
+    font-weight: 700;
+    color: var(--danger);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+.mobile-cart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.25rem;
+}
+.mobile-cart-delete {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: var(--text-muted);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.mobile-cart-delete:hover {
+    color: var(--danger);
+}
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+@media (max-width: 767.98px) {
+    .desktop-cart-table {
+        display: none;
+    }
+    .mobile-cart-list {
+        display: block;
+    }
+}
+</style>
+@endpush
 
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0f172a, #1e293b, #111827);
-            color: white;
-            overflow-x: hidden;
-        }
+@section('content')
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 mt-2">
+        <div>
+            <p class="text-uppercase text-primary small fw-extrabold mb-1" style="letter-spacing: 1px;">LỊCH SỬ XEM</p>
+            <h1 class="cart-header-title mb-0">Sản phẩm đã xem</h1>
+            <p class="text-secondary small mb-0">Danh sách các sản phẩm bạn đã xem gần đây.</p>
+        </div>
+        <div class="d-flex gap-2">
+            @if($products->count() > 0)
+                <button type="button" class="btn btn-outline-danger btn-continue-shopping px-4" onclick="clearAllHistory()">
+                    <i class="bi bi-trash3 me-2"></i> Xóa tất cả lịch sử
+                </button>
+            @endif
+            <a class="btn btn-outline-success btn-continue-shopping px-4" href="{{ route('products.index') }}">
+                <i class="bi bi-arrow-left me-2"></i> Tiếp tục mua hàng
+            </a>
+        </div>
+    </div>
 
-        .bg {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.4;
-        }
-
-        .bg1 {
-            background: #2563eb;
-            top: -80px;
-            left: -80px;
-        }
-
-        .bg2 {
-            background: #7c3aed;
-            bottom: -80px;
-            right: -80px;
-        }
-
-        .wrapper {
-            position: relative;
-            z-index: 10;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-        }
-
-        .card-profile {
-            width: 100%;
-            max-width: 1200px;
-            border-radius: 30px;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(18px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        }
-
-        /* LEFT */
-        .left {
-            background: linear-gradient(180deg, #2563eb, #1d4ed8);
-            padding: 40px 25px;
-            color: white;
-            height: 100%;
-        }
-
-        .avatar img {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .name {
-            font-size: 22px;
-            font-weight: 700;
-            margin-top: 10px;
-        }
-
-        .role {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .nav-menu {
-            margin-top: 30px;
-        }
-
-        .nav-item {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            padding: 14px 16px;
-            border-radius: 14px;
-            color: white;
-            text-decoration: none;
-            background: rgba(255, 255, 255, 0.1);
-            margin-bottom: 12px;
-            transition: 0.3s;
-            border: none;
-            width: 100%;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            transform: translateX(6px);
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        .danger {
-            background: rgba(255, 0, 0, 0.2);
-        }
-
-        .danger:hover {
-            background: #dc2626;
-        }
-
-        /* RIGHT */
-        .right {
-            padding: 50px;
-        }
-
-        .title {
-            font-size: 30px;
-            font-weight: 700;
-            margin-bottom: 25px;
-        }
-
-        /* History items list */
-        .history-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 18px;
-            padding: 15px;
-            margin-bottom: 20px;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .history-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .history-img {
-            width: 90px;
-            height: 90px;
-            object-fit: contain;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 5px;
-        }
-
-        .product-info {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .product-name {
-            font-size: 17px;
-            font-weight: 600;
-            color: white;
-            text-decoration: none;
-            margin-bottom: 5px;
-            transition: color 0.2s;
-        }
-
-        .product-name:hover {
-            color: #60a5fa;
-        }
-
-        .product-cat {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-bottom: 5px;
-        }
-
-        .product-price {
-            font-size: 18px;
-            font-weight: 700;
-            color: #ef4444;
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: flex-end;
-        }
-
-        .btn-add-cart {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: transform 0.2s;
-        }
-
-        .btn-add-cart:hover {
-            transform: translateY(-2px);
-            color: white;
-        }
-
-        .btn-remove-history {
-            padding: 10px 15px;
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 12px;
-            transition: all 0.2s;
-        }
-
-        .btn-remove-history:hover {
-            background: #ef4444;
-            color: white;
-        }
-
-        .btn-clear-all {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 12px;
-            padding: 10px 20px;
-            font-weight: 600;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .btn-clear-all:hover {
-            background: #ef4444;
-            color: white;
-        }
-
-        .empty-history {
-            text-align: center;
-            padding: 40px;
-        }
-
-        .empty-history i {
-            font-size: 60px;
-            color: #64748b;
-            margin-bottom: 15px;
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="bg bg1"></div>
-<div class="bg bg2"></div>
-
-<div class="wrapper">
-    <div class="card-profile">
-        <div class="row g-0">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-lg-4">
-                <div class="left text-center">
-                    <div class="avatar mb-3">
-                        <img src="{{ Auth::user()->avatar_url
-                            ? asset(Auth::user()->avatar_url)
-                            : 'https://i.pinimg.com/736x/4d/5e/7c/4d5e7c77bb9bcbcd1b4d6e8c6e0bff6d.jpg' }}">
-                    </div>
-
-                    <h2 class="name">{{ Auth::user()->username }} #{{ Auth::user()->id }}</h2>
-                    <div class="role">{{ Auth::user()->role_id == 1 ? 'Quản trị viên' : 'Người dùng' }}</div>
-                    <div class="role mt-1">Trạng thái: {{ Auth::user()->status ? 'Đang hoạt động' : 'Bị khoá' }}</div>
-
-                    <div class="nav-menu">
-                        <a href="/" class="nav-item">
-                            <i class="fa fa-home"></i> Trang chủ
-                        </a>
-                        <a href="{{ route('profile') }}" class="nav-item">
-                            <i class="fa fa-user"></i> Hồ sơ cá nhân
-                        </a>
-                        <a href="{{ route('change.password') }}" class="nav-item">
-                            <i class="fa fa-key"></i> Đổi mật khẩu
-                        </a>
-                        @if(Route::has('wishlist.index'))
-                        <a href="{{ route('wishlist.index') }}" class="nav-item">
-                            <i class="fa fa-heart"></i> Sản phẩm yêu thích
-                        </a>
-                        @endif
-                        @if(Route::has('orders.index'))
-                        <a href="{{ route('orders.index') }}" class="nav-item">
-                            <i class="fa fa-receipt"></i> Lịch sử đặt hàng
-                        </a>
-                        @endif
-                        @if(Route::has('recently-viewed.index'))
-                        <a href="{{ route('recently-viewed.index') }}" class="nav-item active">
-                            <i class="fa fa-history"></i> Sản phẩm đã xem
-                        </a>
-                        @endif
-                        <a href="#" class="nav-item">
-                            <i class="fa fa-clock-rotate-left"></i> Nhật ký hoạt động
-                        </a>
-                        <a href="#" class="nav-item">
-                            <i class="fa fa-headset"></i> Hỗ trợ người dùng
-                        </a>
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button class="nav-item w-100 text-start">
-                                <i class="fa fa-right-from-bracket"></i> Đăng xuất
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- RIGHT CONTENT -->
-            <div class="col-lg-8">
-                <div class="right">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h1 class="title mb-0">Sản phẩm đã xem</h1>
-                        @if($products->count() > 0)
-                            <button type="button" class="btn-clear-all" onclick="clearAllHistory()">
-                                <i class="fa fa-trash-can"></i> Xoá lịch sử
-                            </button>
-                        @endif
-                    </div>
-
-                    @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 12px; background: rgba(16, 185, 129, 0.2); color: #10b981; border: none;">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" style="filter: invert(1);"></button>
-                        </div>
-                    @endif
-
-                    @if($products->count() > 0)
-                        <div class="row" id="history-container">
-                            @foreach($products as $product)
-                                <div class="col-12" id="history-item-{{ $product->id }}">
-                                    <div class="history-item d-flex flex-wrap align-items-center">
-                                        <div class="col-md-2 text-center text-md-start mb-3 mb-md-0">
-                                            <img src="{{ $product->image_url ?: 'https://placehold.co/100?text='.urlencode($product->name) }}" class="history-img" alt="{{ $product->name }}">
+    @if($products->count() > 0)
+        <div class="row g-4">
+            <div class="col-lg-12">
+                {{-- Desktop Table View --}}
+                <div class="cart-card desktop-cart-table">
+                    <table class="table cart-table align-middle">
+                        <thead>
+                            <tr>
+                                <th>SẢN PHẨM</th>
+                                <th>ĐƠN GIÁ</th>
+                                <th>TRẠNG THÁI</th>
+                                <th style="width: 250px; text-align: right;">THAO TÁC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($products as $product)
+                                <tr id="history-item-{{ $product->id }}">
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img class="cart-product-img" src="{{ $product->image_url ?: 'https://placehold.co/100?text='.urlencode($product->name) }}" alt="{{ $product->name }}">
+                                            <div>
+                                                <a href="{{ route('products.show', $product) }}" class="cart-product-name">{{ $product->name }}</a>
+                                                <span class="cart-product-cat">{{ $product->category?->name }}</span>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6 product-info mb-3 mb-md-0 ps-md-3">
-                                            <a href="{{ route('products.show', $product) }}" class="product-name">{{ $product->name }}</a>
-                                            <span class="product-cat">{{ $product->category?->name }}</span>
-                                            <span class="product-price">{{ number_format($product->price, 0, ',', '.') }}đ</span>
-                                        </div>
-                                        <div class="col-md-4 action-btns">
+                                    </td>
+                                    <td>
+                                        <span class="cart-unit-price text-danger fw-bold">{{ number_format((float) $product->price, 0, ',', '.') }}đ</span>
+                                    </td>
+                                    <td>
+                                        @if($product->stock > 0)
+                                            <span class="badge bg-success-subtle text-success px-2 py-1" style="font-size: 0.8rem; border-radius: 4px;">Còn hàng ({{ $product->stock }})</span>
+                                        @else
+                                            <span class="badge bg-danger-subtle text-danger px-2 py-1" style="font-size: 0.8rem; border-radius: 4px;">Hết hàng</span>
+                                        @endif
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <div class="d-flex gap-2 justify-content-end align-items-center">
+                                            @if($product->stock > 0)
                                             <form action="{{ route('cart.add', $product) }}" method="POST" class="m-0">
                                                 @csrf
-                                                <button type="submit" class="btn-add-cart">
-                                                    <i class="fa fa-shopping-cart"></i> Mua ngay
+                                                <button type="submit" class="btn btn-success btn-sm px-3 fw-bold" style="border-radius: 8px;">
+                                                    <i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ
                                                 </button>
                                             </form>
-
-                                            <button type="button" class="btn-remove-history" onclick="removeHistoryItem('{{ $product->id }}')">
-                                                <i class="fa fa-trash"></i>
+                                            @endif
+                                            <button class="btn btn-outline-danger btn-sm px-2" onclick="removeHistoryItem('{{ $product->id }}')" title="Xóa khỏi lịch sử">
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
-                                    </div>
-                                </div>
+                                    </td>
+                                </tr>
                             @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- Mobile Card List View --}}
+                <div class="mobile-cart-list">
+                    @foreach ($products as $product)
+                        <div class="mobile-cart-item d-flex align-items-center" id="mob-history-item-{{ $product->id }}">
+                            <img class="mobile-cart-img" src="{{ $product->image_url ?: 'https://placehold.co/100?text='.urlencode($product->name) }}" alt="{{ $product->name }}">
+                            <div class="mobile-cart-details">
+                                <a href="{{ route('products.show', $product) }}" class="mobile-cart-name">{{ $product->name }}</a>
+                                <span class="mobile-cart-cat">{{ $product->category?->name }}</span>
+                                <span class="mobile-cart-price">{{ number_format($product->price, 0, ',', '.') }}đ</span>
+                                
+                                <div class="mobile-cart-footer mt-2">
+                                    @if($product->stock > 0)
+                                    <form action="{{ route('cart.add', $product) }}" method="POST" class="m-0">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-sm px-2 py-1 fw-bold" style="border-radius: 6px; font-size: 0.8rem;">
+                                            <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                                        </button>
+                                    </form>
+                                    @else
+                                        <span class="badge bg-danger-subtle text-danger px-2 py-1" style="font-size: 0.75rem; border-radius: 4px;">Hết hàng</span>
+                                    @endif
+                                </div>
+                            </div>
+                            
+                            {{-- Delete action --}}
+                            <button type="button" class="mobile-cart-delete" onclick="removeHistoryItem('{{ $product->id }}')" title="Xóa">
+                                <i class="bi bi-trash fs-5"></i>
+                            </button>
                         </div>
-                    @else
-                        <div class="empty-history">
-                            <i class="fa fa-history"></i>
-                            <h4>Lịch sử xem trống</h4>
-                            <p class="text-muted">Bạn chưa xem sản phẩm nào gần đây.</p>
-                            <a href="{{ route('products.index') }}" class="btn btn-primary mt-3 px-4 py-2" style="border-radius: 12px; background: linear-gradient(135deg, #3b82f6, #2563eb); border: none;">
-                                Khám phá ngay
-                            </a>
-                        </div>
-                    @endif
+                    @endforeach
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    @else
+        <div class="cart-card p-5 text-center">
+            <div class="py-4">
+                <div class="mb-3 text-muted">
+                    <i class="bi bi-clock-history" style="font-size: 4rem;"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Lịch sử xem trống</h5>
+                <p class="text-muted small mb-4">Bạn chưa xem sản phẩm nào gần đây.</p>
+                <a class="btn btn-success px-4 fw-bold" href="{{ route('products.index') }}" style="border-radius: 10px;">
+                    Khám phá sản phẩm
+                </a>
+            </div>
+        </div>
+    @endif
+@endsection
 
-<!-- BOOTSTRAP -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+@push('scripts')
 <script>
     function removeHistoryItem(productId) {
         if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi lịch sử đã xem?')) {
@@ -399,15 +293,13 @@
         const url = `/recently-viewed/${productId}`;
 
         fetch(url, {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                _method: 'DELETE'
-            })
+            }
         })
         .then(res => res.json())
         .then(data => {
@@ -416,8 +308,13 @@
                 if (element) {
                     element.remove();
                 }
+                const mobElement = document.getElementById(`mob-history-item-${productId}`);
+                if (mobElement) {
+                    mobElement.remove();
+                }
 
-                if (document.querySelectorAll('.history-item').length === 0) {
+                // Check if empty
+                if (document.querySelectorAll('.mobile-cart-item').length === 0 && document.querySelectorAll('tbody tr').length === 0) {
                     window.location.reload();
                 }
             } else {
@@ -441,6 +338,7 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             }
@@ -459,6 +357,4 @@
         });
     }
 </script>
-</body>
-
-</html>
+@endpush
