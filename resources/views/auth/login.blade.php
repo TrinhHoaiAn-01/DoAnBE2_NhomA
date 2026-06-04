@@ -442,7 +442,7 @@
         height:22px;
     }
 
-    .social-github img{
+    .social-facebook img{
 
         background:white;
 
@@ -588,7 +588,7 @@
 
                 <!-- GOOGLE -->
                 <a
-                    href="#"
+                    href="{{ route('google.login') }}"
                     class="social-btn"
                 >
 
@@ -603,19 +603,19 @@
 
                 </a>
 
-                <!-- GITHUB -->
+                <!-- FACEBOOK -->
                 <a
-                    href="#"
-                    class="social-btn social-github"
+                    href="{{ route('facebook.login') }}"
+                    class="social-btn social-facebook"
                 >
 
                     <img
-                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
-                        alt="Github"
+                        src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png"
+                        alt="Facebook"
                     >
 
                     <span>
-                        Đăng nhập với Github
+                        Đăng nhập với Facebook
                     </span>
 
                 </a>
