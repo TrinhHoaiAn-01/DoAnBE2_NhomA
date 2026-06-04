@@ -408,14 +408,20 @@
             {{-- Rating --}}
             <div class="product-rating">
                 <div class="stars">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-half"></i>
+                    @if($approvedReviews->count() > 0)
+                        @for($i=1;$i<=5;$i++)
+                            <i class="bi bi-star{{ $i <= round($averageRating) ? '-fill' : ($i - 0.5 <= $averageRating ? '-half' : '') }}"></i>
+                        @endfor
+                    @else
+                        @for($i=1;$i<=5;$i++)
+                            <i class="bi bi-star"></i>
+                        @endfor
+                    @endif
                 </div>
-                <span class="rating-score">4.8</span>
-                <span class="rating-count">42 đánh giá</span>
+                <span class="rating-score">{{ $approvedReviews->count() > 0 ? number_format($averageRating, 1) : '0.0' }}</span>
+                <span class="rating-count">{{ $approvedReviews->count() }} đánh giá</span>
                 <span class="rating-divider">|</span>
-                <span class="sold-count"><i class="bi bi-bag-check me-1"></i>Đã bán 128</span>
+                <span class="sold-count"><i class="bi bi-bag-check me-1"></i>Đã bán {{ $soldCount }}</span>
             </div>
 
             {{-- Price --}}
@@ -522,14 +528,6 @@
                 <div class="perk-item"><i class="bi bi-arrow-return-left perk-icon"></i> Đổi trả trong 30 ngày</div>
                 <div class="perk-item"><i class="bi bi-headset perk-icon"></i> Hỗ trợ 24/7 mọi lúc</div>
             </div>
-
-            {{-- Share --}}
-            <div class="share-row">
-                <span class="share-label">Chia sẻ:</span>
-                <button class="share-btn"><i class="bi bi-facebook"></i></button>
-                <button class="share-btn"><i class="bi bi-twitter-x"></i></button>
-                <button class="share-btn"><i class="bi bi-link-45deg"></i></button>
-            </div>
         </div>
     </div>
 </div>
@@ -605,7 +603,10 @@
                 <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.25rem;">{{ $approvedReviews->count() }} đánh giá</div>
             </div>
             <div style="flex:1;">
-                @foreach([5=>80, 4=>12, 3=>5, 2=>2, 1=>1] as $star => $pct)
+                @foreach([5, 4, 3, 2, 1] as $star)
+                @php
+                    $pct = $ratingPercentages[$star] ?? 0;
+                @endphp
                 <div class="review-bar-row">
                     <span>{{ $star }}★</span>
                     <div class="review-bar"><div class="review-bar-fill" style="width:{{ $pct }}%"></div></div>
@@ -640,34 +641,11 @@
             </div>
             @endforeach
         @else
-            {{-- Demo reviews --}}
-            @php
-                $demoReviews = [
-                    ['name'=>'Nguyễn Văn A','stars'=>5,'text'=>'Sản phẩm rất tốt, đúng như mô tả. Giao hàng nhanh, đóng gói cẩn thận. Sẽ ủng hộ NeoMart lần sau!','ago'=>'2 ngày trước'],
-                    ['name'=>'Trần Thị B','stars'=>5,'text'=>'Chất lượng vượt kỳ vọng, giá hợp lý. Shop tư vấn nhiệt tình. Highly recommended!','ago'=>'5 ngày trước'],
-                    ['name'=>'Lê Minh C','stars'=>4,'text'=>'Sản phẩm ổn, giao hàng đúng hẹn. Bao bì hơi đơn giản nhưng hàng không trầy xước. 4 sao vì vẫn còn điểm cần cải thiện.','ago'=>'1 tuần trước'],
-                ];
-            @endphp
-            @foreach($demoReviews as $review)
-            <div class="review-card">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <div class="reviewer-avatar">{{ strtoupper(substr($review['name'], 0, 1)) }}</div>
-                    <div>
-                        <div style="font-weight:700;font-size:0.875rem;">{{ $review['name'] }}</div>
-                        <div style="color:#fbbf24;font-size:0.75rem;">
-                            @for($i=1;$i<=5;$i++)
-                                <i class="bi bi-star{{ $i <= $review['stars'] ? '-fill' : '' }}"></i>
-                            @endfor
-                        </div>
-                    </div>
-                    <div class="ms-auto" style="font-size:0.75rem;color:var(--text-muted);">{{ $review['ago'] }}</div>
-                </div>
-                <p class="review-text mb-0">{{ $review['text'] }}</p>
+            <div class="review-empty text-center py-4">
+                <i class="bi bi-chat-left-text" style="font-size:2.5rem;color:var(--text-muted);display:block;margin-bottom:0.5rem;"></i>
+                <div style="font-weight:600;color:var(--text-secondary);font-size:0.95rem;">Chưa có đánh giá nào</div>
+                <p class="text-muted small mb-0 mt-1">Hãy là người đầu tiên chia sẻ cảm nhận của bạn về sản phẩm này!</p>
             </div>
-            @endforeach
-            <p class="text-center text-muted small mt-2">
-                <i class="bi bi-info-circle me-1"></i>Đánh giá demo – Dữ liệu thực sẽ hiển thị khi có đánh giá từ khách hàng.
-            </p>
         @endif
 
         {{-- Form viết đánh giá --}}
@@ -736,9 +714,21 @@
                 <div class="related-body">
                     <a href="{{ route('products.show', $rel) }}" class="related-name">{{ $rel->name }}</a>
                     <div style="color:#fbbf24;font-size:0.72rem;margin-bottom:0.5rem;">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-half"></i>
+                        @php
+                            $relAvg = (float) $rel->average_rating;
+                            $relCount = (int) $rel->approved_reviews_count;
+                        @endphp
+                        @if($relCount > 0)
+                            @for($i=1;$i<=5;$i++)
+                                <i class="bi bi-star{{ $i <= round($relAvg) ? '-fill' : ($i - 0.5 <= $relAvg ? '-half' : '') }}"></i>
+                            @endfor
+                            <span class="text-muted small">({{ $relCount }})</span>
+                        @else
+                            @for($i=1;$i<=5;$i++)
+                                <i class="bi bi-star"></i>
+                            @endfor
+                            <span class="text-muted small">(0)</span>
+                        @endif
                     </div>
                     <div class="related-footer">
                         <div>
@@ -794,9 +784,21 @@
                 <div class="related-body">
                     <a href="{{ route('products.show', $recentProduct) }}" class="related-name">{{ $recentProduct->name }}</a>
                     <div style="color:#fbbf24;font-size:0.72rem;margin-bottom:0.5rem;">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-half"></i>
+                        @php
+                            $recentAvg = (float) $recentProduct->average_rating;
+                            $recentCount = (int) $recentProduct->approved_reviews_count;
+                        @endphp
+                        @if($recentCount > 0)
+                            @for($i=1;$i<=5;$i++)
+                                <i class="bi bi-star{{ $i <= round($recentAvg) ? '-fill' : ($i - 0.5 <= $recentAvg ? '-half' : '') }}"></i>
+                            @endfor
+                            <span class="text-muted small">({{ $recentCount }})</span>
+                        @else
+                            @for($i=1;$i<=5;$i++)
+                                <i class="bi bi-star"></i>
+                            @endfor
+                            <span class="text-muted small">(0)</span>
+                        @endif
                     </div>
                     <div class="related-footer">
                         <div>
