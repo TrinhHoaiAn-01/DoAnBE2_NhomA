@@ -362,10 +362,10 @@
                                         </form>
                                     </td>
                                     <td>
-                                        <span class="cart-subtotal-price">{{ number_format($item['subtotal'], 0, ',', '.') }}đ</span>
+                                        <span class="cart-subtotal-price" id="subtotal-{{ $item['product']->id }}">{{ number_format($item['subtotal'], 0, ',', '.') }}đ</span>
                                     </td>
                                     <td>
-                                        <form method="post" action="{{ route('cart.remove', $item['product']) }}">
+                                        <form method="post" action="{{ route('cart.remove', $item['product']) }}" onsubmit="ajaxRemove(event, '{{ $item['product']->id }}', this)">
                                             @csrf
                                             @method('delete')
                                             <button class="btn btn-link text-muted p-1" type="submit" title="Xóa khỏi giỏ hàng">
@@ -402,10 +402,10 @@
                                     </div>
                                 @endif
                                 
-                                <span class="mobile-cart-price">{{ number_format($item['subtotal'], 0, ',', '.') }}đ</span>
+                                <span class="mobile-cart-price" id="mob-subtotal-{{ $item['product']->id }}">{{ number_format($item['subtotal'], 0, ',', '.') }}đ</span>
                                 
                                 <div class="mobile-cart-footer">
-                                    <form id="mob-update-form-{{ $item['product']->id }}" method="post" action="{{ route('cart.update', $item['product']) }}">
+                                    <form id="mob-update-form-{{ $item['product']->id }}" method="post" action="{{ route('cart.update', $item['product']) }}" onsubmit="return false;">
                                         @csrf
                                         @method('patch')
                                         <div class="cart-qty-control">
@@ -418,7 +418,7 @@
                             </div>
                             
                             {{-- Delete action --}}
-                            <form method="post" action="{{ route('cart.remove', $item['product']) }}" class="m-0">
+                            <form method="post" action="{{ route('cart.remove', $item['product']) }}" class="m-0" onsubmit="ajaxRemove(event, '{{ $item['product']->id }}', this)">
                                 @csrf
                                 @method('delete')
                                 <button type="submit" class="mobile-cart-delete" title="Xóa">
@@ -474,6 +474,129 @@
 
 @push('scripts')
 <script>
+    // AJAX Update function
+    function ajaxUpdate(productId, val, actionUrl, token) {
+        // Sync inputs
+        const qtyInput = document.getElementById('qty-' + productId);
+        const mobQtyInput = document.getElementById('mob-qty-' + productId);
+        if (qtyInput) qtyInput.value = val;
+        if (mobQtyInput) mobQtyInput.value = val;
+
+        // Sync checkboxes data-quantity
+        document.querySelectorAll(`.item-checkbox[value="${productId}"], .item-checkbox-mobile[value="${productId}"]`).forEach(cb => {
+            cb.dataset.quantity = val;
+        });
+
+        fetch(actionUrl, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': token
+            },
+            body: JSON.stringify({
+                quantity: val
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Update subtotal display
+                const subtotalEl = document.getElementById('subtotal-' + productId);
+                const mobSubtotalEl = document.getElementById('mob-subtotal-' + productId);
+                if (subtotalEl) subtotalEl.textContent = data.itemSubtotal;
+                if (mobSubtotalEl) mobSubtotalEl.textContent = data.itemSubtotal;
+
+                // Update cart badges
+                updateCartBadges(data.cartCount);
+
+                // Recalculate totals
+                updateTotalsAndCheckoutUrl();
+            } else {
+                alert(data.message || 'Có lỗi xảy ra.');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Không thể kết nối đến máy chủ.');
+        });
+    }
+
+    // AJAX Remove function
+    function ajaxRemove(event, productId, form) {
+        event.preventDefault();
+        if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+            return;
+        }
+        const token = form.querySelector('input[name="_token"]').value;
+        const actionUrl = form.action;
+
+        fetch(actionUrl, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': token
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Remove DOM elements
+                const row = form.closest('tr');
+                if (row) row.remove();
+
+                let mobItem = form.closest('.mobile-cart-item');
+                if (!mobItem) {
+                    const cb = document.querySelector(`.item-checkbox-mobile[value="${productId}"]`);
+                    if (cb) mobItem = cb.closest('.mobile-cart-item');
+                }
+                if (mobItem) mobItem.remove();
+
+                // Update cart badges
+                updateCartBadges(data.cartCount);
+
+                // Recalculate totals
+                updateTotalsAndCheckoutUrl();
+
+                if (data.cartEmpty) {
+                    window.location.reload();
+                }
+            } else {
+                alert(data.message || 'Có lỗi xảy ra.');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Không thể kết nối đến máy chủ.');
+        });
+    }
+
+    // Update cart count badges helper
+    function updateCartBadges(count) {
+        // Desktop badge
+        const badge = document.querySelector('.cart-btn .cart-badge');
+        if (badge) {
+            if (count > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = count > 9 ? '9+' : count;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+        
+        // Mobile badge
+        const mobBadge = document.querySelector('.mobile-cart-badge');
+        if (mobBadge) {
+            if (count > 0) {
+                mobBadge.style.display = 'flex';
+                mobBadge.textContent = count;
+            } else {
+                mobBadge.style.display = 'none';
+            }
+        }
+    }
+
     // Update quantity for desktop table
     function updateQty(productId, change) {
         const input = document.getElementById('qty-' + productId);
@@ -483,7 +606,7 @@
         let val = parseInt(input.value) + change;
         if (val >= min && val <= max) {
             input.value = val;
-            form.submit();
+            ajaxUpdate(productId, val, form.action, form.querySelector('input[name="_token"]').value);
         }
     }
 
@@ -496,7 +619,7 @@
         let val = parseInt(input.value) + change;
         if (val >= min && val <= max) {
             input.value = val;
-            form.submit();
+            ajaxUpdate(productId, val, form.action, form.querySelector('input[name="_token"]').value);
         }
     }
 
@@ -524,6 +647,7 @@
 
         updateTotalsAndCheckoutUrl();
         updateSelectAllState();
+        window.updateTotalsAndCheckoutUrl = updateTotalsAndCheckoutUrl;
 
         // Event listener for checkboxes
         document.querySelectorAll('.item-checkbox, .item-checkbox-mobile').forEach(cb => {

@@ -136,6 +136,22 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
 
+    // SẢN PHẨM YÊU THÍCH (WISHLIST)
+    Route::get('/wishlist', [\App\Http\Controllers\WishlistController::class, 'index'])
+        ->name('wishlist.index');
+    Route::post('/wishlist', [\App\Http\Controllers\WishlistController::class, 'store'])
+        ->name('wishlist.store');
+    Route::delete('/wishlist/{id}', [\App\Http\Controllers\WishlistController::class, 'destroy'])
+        ->name('wishlist.destroy');
+
+    // SẢN PHẨM ĐÃ XEM (RECENTLY VIEWED)
+    Route::get('/recently-viewed', [\App\Http\Controllers\RecentlyViewedController::class, 'index'])
+        ->name('recently-viewed.index');
+    Route::delete('/recently-viewed/{id}', [\App\Http\Controllers\RecentlyViewedController::class, 'destroy'])
+        ->name('recently-viewed.destroy');
+    Route::post('/recently-viewed/clear', [\App\Http\Controllers\RecentlyViewedController::class, 'clear'])
+        ->name('recently-viewed.clear');
+
     // LỊCH SỬ ĐƠN ĐẶT HÀNG (ORDER HISTORY)
     Route::get('/don-hang', [OrderHistoryController::class, 'index'])
         ->name('orders.index'); // Danh sách đơn hàng đã mua

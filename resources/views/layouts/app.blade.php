@@ -529,15 +529,18 @@
 
                 <!-- Right actions -->
                 <div class="d-flex align-items-center gap-2 ms-auto flex-shrink-0 h-100">
+                    <!-- Recently Viewed -->
+                    @if(Route::has('recently-viewed.index'))
+                    <a href="{{ route('recently-viewed.index') }}" class="cart-btn" title="Sản phẩm đã xem">
+                        <i class="bi bi-clock-history"></i>
+                    </a>
+                    @endif
+
                     <!-- Cart -->
                     <a href="{{ route('cart.index') }}" class="cart-btn me-2" title="Giỏ hàng">
                         <i class="bi bi-bag"></i>
-                        @auth
-                            @php $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'quantity')) : 0; @endphp
-                            @if($cartCount > 0)
-                                <span class="cart-badge">{{ $cartCount > 9 ? '9+' : $cartCount }}</span>
-                            @endif
-                        @endauth
+                        @php $cartCount = session('cart') ? array_sum(session('cart')) : 0; @endphp
+                        <span class="cart-badge" style="display: {{ $cartCount > 0 ? 'flex' : 'none' }};">{{ $cartCount > 9 ? '9+' : $cartCount }}</span>
                     </a>
 
                     <!-- Auth -->
@@ -562,11 +565,32 @@
                                         Hồ sơ cá nhân
                                     </a>
                                 </li>
+                                @if(Route::has('orders.index'))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('orders.index') }}">
+                                        Lịch sử đơn hàng
+                                    </a>
+                                </li>
+                                @endif
+                                @if(Route::has('recently-viewed.index'))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('recently-viewed.index') }}">
+                                        Sản phẩm đã xem
+                                    </a>
+                                </li>
+                                @endif
                                 <li>
                                     <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
                                         Quản trị
                                     </a>
                                 </li>
+                                @if(Route::has('wishlist.index'))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('wishlist.index') }}">
+                                        Danh sách yêu thích
+                                    </a>
+                                </li>
+                                @endif
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="post" action="{{ route('logout') }}" class="m-0">
@@ -608,12 +632,10 @@
             <!-- Right: Cart button -->
             <a href="{{ route('cart.index') }}" class="position-relative p-0" title="Giỏ hàng" style="color: var(--text-primary); text-decoration: none; line-height: 1;">
                 <i class="bi bi-bag fs-3"></i>
-                @php $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'quantity')) : 0; @endphp
-                @if($cartCount > 0)
-                    <span class="mobile-cart-badge">
-                        {{ $cartCount }}
-                    </span>
-                @endif
+                @php $cartCount = session('cart') ? array_sum(session('cart')) : 0; @endphp
+                <span class="mobile-cart-badge" style="display: {{ $cartCount > 0 ? 'flex' : 'none' }};">
+                    {{ $cartCount }}
+                </span>
             </a>
         </div>
         
@@ -645,6 +667,11 @@
                 <a href="{{ route('cart.index') }}" class="mobile-sidebar-item">
                     <span>🛒</span> Xem giỏ hàng
                 </a>
+                @if(Route::has('recently-viewed.index'))
+                <a href="{{ route('recently-viewed.index') }}" class="mobile-sidebar-item">
+                    <span>🕐</span> Sản phẩm đã xem
+                </a>
+                @endif
                 <a href="{{ route('checkout.index') }}" class="mobile-sidebar-item">
                     <span>💳</span> Tiến hành thanh toán
                 </a>
@@ -655,6 +682,16 @@
                     <a href="{{ route('profile') }}" class="mobile-sidebar-item">
                         <span>👤</span> Hồ sơ cá nhân
                     </a>
+                    @if(Route::has('orders.index'))
+                    <a href="{{ route('orders.index') }}" class="mobile-sidebar-item">
+                        <span>📋</span> Lịch sử đơn hàng
+                    </a>
+                    @endif
+                    @if(Route::has('wishlist.index'))
+                    <a href="{{ route('wishlist.index') }}" class="mobile-sidebar-item">
+                        <span>❤️</span> Danh sách yêu thích
+                    </a>
+                    @endif
                     <form method="post" action="{{ route('logout') }}" class="m-0">
                         @csrf
                         <button type="submit" class="mobile-sidebar-item w-100 text-start bg-transparent" style="color: var(--danger) !important;">
