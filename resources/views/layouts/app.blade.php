@@ -565,6 +565,13 @@
                                         Hồ sơ cá nhân
                                     </a>
                                 </li>
+                                @if(Route::has('orders.index'))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('orders.index') }}">
+                                        Lịch sử đơn hàng
+                                    </a>
+                                </li>
+                                @endif
                                 @if(Route::has('recently-viewed.index'))
                                 <li>
                                     <a class="dropdown-item" href="{{ route('recently-viewed.index') }}">
@@ -675,6 +682,11 @@
                     <a href="{{ route('profile') }}" class="mobile-sidebar-item">
                         <span>👤</span> Hồ sơ cá nhân
                     </a>
+                    @if(Route::has('orders.index'))
+                    <a href="{{ route('orders.index') }}" class="mobile-sidebar-item">
+                        <span>📋</span> Lịch sử đơn hàng
+                    </a>
+                    @endif
                     @if(Route::has('wishlist.index'))
                     <a href="{{ route('wishlist.index') }}" class="mobile-sidebar-item">
                         <span>❤️</span> Danh sách yêu thích
