@@ -78,4 +78,12 @@ class User extends Authenticatable
             'date_of_birth' => 'date',
         ];
     }
+
+    /**
+     * Relationship to Wishlist.
+     */
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
 }

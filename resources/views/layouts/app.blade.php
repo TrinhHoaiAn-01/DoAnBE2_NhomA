@@ -563,6 +563,13 @@
                                         Quản trị
                                     </a>
                                 </li>
+                                @if(Route::has('wishlist.index'))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('wishlist.index') }}">
+                                        Danh sách yêu thích
+                                    </a>
+                                </li>
+                                @endif
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="post" action="{{ route('logout') }}" class="m-0">
@@ -649,6 +656,11 @@
                     <a href="{{ route('profile') }}" class="mobile-sidebar-item">
                         <span>👤</span> Hồ sơ cá nhân
                     </a>
+                    @if(Route::has('wishlist.index'))
+                    <a href="{{ route('wishlist.index') }}" class="mobile-sidebar-item">
+                        <span>❤️</span> Danh sách yêu thích
+                    </a>
+                    @endif
                     <form method="post" action="{{ route('logout') }}" class="m-0">
                         @csrf
                         <button type="submit" class="mobile-sidebar-item w-100 text-start bg-transparent" style="color: var(--danger) !important;">
