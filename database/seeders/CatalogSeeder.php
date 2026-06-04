@@ -173,7 +173,7 @@ class CatalogSeeder extends Seeder
                 continue;
             }
 
-            Product::query()->updateOrCreate(
+            $product = Product::query()->updateOrCreate(
                 ['sku' => $item['sku']],
                 [
                     'category_id' => $category->id,
@@ -188,6 +188,86 @@ class CatalogSeeder extends Seeder
                     'is_active' => true,
                 ]
             );
+
+            // Seed reviews for testing
+            $reviewsData = [];
+            if ($item['sku'] === 'NM-SUA-001') {
+                $reviewsData = [
+                    [
+                        'customer_name' => 'Nguyễn Văn A',
+                        'rating' => 5,
+                        'title' => 'Sản phẩm rất tốt',
+                        'content' => 'Sản phẩm rất tốt, đúng như mô tả. Giao hàng nhanh, đóng gói cẩn thận. Sẽ ủng hộ NeoMart lần sau!',
+                        'is_approved' => true,
+                    ],
+                    [
+                        'customer_name' => 'Trần Thị B',
+                        'rating' => 5,
+                        'title' => 'Chất lượng vượt kỳ vọng',
+                        'content' => 'Chất lượng vượt kỳ vọng, sữa tươi béo ngậy rất ngon. Shop tư vấn nhiệt tình.',
+                        'is_approved' => true,
+                    ],
+                    [
+                        'customer_name' => 'Lê Minh C',
+                        'rating' => 4,
+                        'title' => 'Sản phẩm ổn định',
+                        'content' => 'Sữa uống ngon, bao bì chắc chắn, giao hàng đúng giờ.',
+                        'is_approved' => true,
+                    ],
+                    [
+                        'customer_name' => 'Phạm Hoàng D',
+                        'rating' => 3,
+                        'title' => 'HSD hơi ngắn',
+                        'content' => 'Sữa ngon nhưng hạn sử dụng hơi ngắn một chút so với kỳ vọng.',
+                        'is_approved' => false,
+                    ],
+                    [
+                        'customer_name' => 'Nguyễn Thị E',
+                        'rating' => 1,
+                        'title' => 'Giao sai sản phẩm',
+                        'content' => 'Giao nhầm hàng, tôi đặt sữa tươi nhưng lại giao nước rửa chén. Mong shop phản hồi sớm.',
+                        'is_approved' => false,
+                    ],
+                ];
+            } elseif ($item['sku'] === 'NM-GAO-005') {
+                $reviewsData = [
+                    [
+                        'customer_name' => 'Hoàng Văn F',
+                        'rating' => 5,
+                        'title' => 'Rất dẻo và thơm',
+                        'content' => 'Gạo thơm dẻo, ngọt cơm, cả nhà tôi đều thích.',
+                        'is_approved' => true,
+                    ],
+                    [
+                        'customer_name' => 'Bùi Thị G',
+                        'rating' => 4,
+                        'title' => 'Gạo ngon sạch',
+                        'content' => 'Gạo ngon, sạch, không bị lẫn tạp chất. Giao hàng nhanh.',
+                        'is_approved' => true,
+                    ],
+                ];
+            } elseif ($item['sku'] === 'NM-CHEN-003') {
+                $reviewsData = [
+                    [
+                        'customer_name' => 'Vũ Minh H',
+                        'rating' => 5,
+                        'title' => 'Sạch dầu mỡ',
+                        'content' => 'Rửa sạch dầu mỡ, thơm mùi chanh tự nhiên, không bị khô da tay.',
+                        'is_approved' => true,
+                    ],
+                ];
+            }
+
+            foreach ($reviewsData as $rev) {
+                \App\Models\ProductReview::query()->updateOrCreate(
+                    [
+                        'product_id' => $product->id,
+                        'customer_name' => $rev['customer_name'],
+                        'content' => $rev['content']
+                    ],
+                    $rev
+                );
+            }
         }
     }
 }

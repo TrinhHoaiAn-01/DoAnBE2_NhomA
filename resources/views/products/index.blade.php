@@ -418,9 +418,21 @@
                             <div class="grid-cat">{{ $product->category?->name }}</div>
                             <a href="{{ route('products.show', $product) }}" class="grid-name">{{ $product->name }}</a>
                             <div class="grid-stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
-                                <span>({{ rand(5, 80) }})</span>
+                                @php
+                                    $pAvg = (float) $product->average_rating;
+                                    $pCount = (int) $product->approved_reviews_count;
+                                @endphp
+                                @if($pCount > 0)
+                                    @for($i=1;$i<=5;$i++)
+                                        <i class="bi bi-star{{ $i <= round($pAvg) ? '-fill' : ($i - 0.5 <= $pAvg ? '-half' : '') }}"></i>
+                                    @endfor
+                                    <span>({{ $pCount }})</span>
+                                @else
+                                    @for($i=1;$i<=5;$i++)
+                                        <i class="bi bi-star"></i>
+                                    @endfor
+                                    <span>(0)</span>
+                                @endif
                             </div>
                             <div class="grid-footer">
                                 <div>
@@ -463,9 +475,21 @@
                     <div class="list-cat">{{ $product->category?->name }}</div>
                     <a href="{{ route('products.show', $product) }}" class="list-name">{{ $product->name }}</a>
                     <div class="grid-stars mb-2">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
-                        <span style="color:var(--text-muted);font-size:0.72rem;">({{ rand(5,80) }})</span>
+                        @php
+                            $pAvg = (float) $product->average_rating;
+                            $pCount = (int) $product->approved_reviews_count;
+                        @endphp
+                        @if($pCount > 0)
+                            @for($i=1;$i<=5;$i++)
+                                <i class="bi bi-star{{ $i <= round($pAvg) ? '-fill' : ($i - 0.5 <= $pAvg ? '-half' : '') }}"></i>
+                            @endfor
+                            <span style="color:var(--text-muted);font-size:0.72rem;">({{ $pCount }})</span>
+                        @else
+                            @for($i=1;$i<=5;$i++)
+                                <i class="bi bi-star"></i>
+                            @endfor
+                            <span style="color:var(--text-muted);font-size:0.72rem;">(0)</span>
+                        @endif
                     </div>
                     <div class="list-actions">
                         <div>

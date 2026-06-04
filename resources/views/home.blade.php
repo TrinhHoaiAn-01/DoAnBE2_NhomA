@@ -762,9 +762,21 @@
                                     {{ $product->name }}
                                 </a>
                                 <div class="star-rating">
-                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
-                                    <span class="star-count">({{ rand(5, 80) }})</span>
+                                    @php
+                                        $pAvg = (float) $product->average_rating;
+                                        $pCount = (int) $product->approved_reviews_count;
+                                    @endphp
+                                    @if($pCount > 0)
+                                        @for($i=1;$i<=5;$i++)
+                                            <i class="bi bi-star{{ $i <= round($pAvg) ? '-fill' : ($i - 0.5 <= $pAvg ? '-half' : '') }}"></i>
+                                        @endfor
+                                        <span class="star-count">({{ $pCount }})</span>
+                                    @else
+                                        @for($i=1;$i<=5;$i++)
+                                            <i class="bi bi-star"></i>
+                                        @endfor
+                                        <span class="star-count">(0)</span>
+                                    @endif
                                 </div>
                                 <div class="product-price-row d-flex justify-content-between align-items-center mt-auto mb-3">
                                     <div>
