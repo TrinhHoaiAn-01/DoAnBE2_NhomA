@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProductReviewController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\AccountActivityLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -16,13 +17,13 @@ use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController as ShopProductController;
 use App\Http\Controllers\ProfileUserController;
-
+use App\Http\Controllers\GoogleController;
 use App\Http\Middleware\CheckRole;
-
+use App\Http\Controllers\SupportUserController;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-
 use App\Models\User;
 
 /*
@@ -38,6 +39,9 @@ use App\Models\User;
 
 // TRANG CHỦ
 Route::get('/', HomeController::class)->name('home');
+
+// Gửi ý kiến liên hệ từ trang chủ
+Route::post('/lien-he', [\App\Http\Controllers\ContactSubmitController::class, 'store'])->name('contact.store');
 
 // KHÁCH HÀNG: KHÁM PHÁ SẢN PHẨM (PRODUCT DISCOVERY)
 Route::get('/san-pham', [ShopProductController::class, 'index'])
@@ -112,6 +116,12 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/register', [AuthController::class, 'register'])
         ->name('register.submit'); // Xử lý gửi thông tin đăng ký mới
 
+    Route::post('/register/resend-otp', [AuthController::class, 'resendRegistrationOtp'])
+        ->name('register.otp.resend');
+
+    Route::post('/register/cancel-otp', [AuthController::class, 'cancelRegistrationOtp'])
+        ->name('register.otp.cancel');
+
     // QUÊN MẬT KHẨU (FORGOT PASSWORD)
     Route::get('/forgetpassword', [AuthController::class, 'showForgetPassword'])
         ->name('password.request'); // Trang nhập email để khôi phục mật khẩu
@@ -176,27 +186,37 @@ Route::middleware('auth')->group(function (): void {
 Route::middleware('auth')->group(function () {
 
     // Xem thông tin cá nhân
-    Route::get('/profile',
+    Route::get(
+        '/profile',
         [ProfileUserController::class, 'index']
     )->name('profile');
 
     // Cập nhật thông tin cá nhân (Họ tên, SĐT, Địa chỉ, Ảnh đại diện)
-    Route::post('/profile/update',
+    Route::post(
+        '/profile/update',
         [ProfileUserController::class, 'update']
     )->name('profile.update');
 
+    // Nhật ký hoạt động tài khoản
+    Route::get('/nhat-ky-hoat-dong',
+        [AccountActivityLogController::class, 'index']
+    )->name('account.activity.logs');
+
     // Trang đổi mật khẩu
-    Route::get('/changepassword',
+    Route::get(
+        '/changepassword',
         [ProfileUserController::class, 'showChangePassword']
     )->name('change.password');
 
     // Xử lý cập nhật mật khẩu mới
-    Route::post('/changepassword',
+    Route::post(
+        '/changepassword',
         [ProfileUserController::class, 'changePassword']
     )->name('password.update');
-	
-	// Xóa tài khoản người dùng
-	Route::delete('/deleteaccount',
+
+    // Xóa tài khoản người dùng
+    Route::delete(
+        '/deleteaccount',
         [ProfileUserController::class, 'deleteAccount']
     )->name('profile.delete');
 
@@ -209,6 +229,10 @@ Route::middleware('auth')->group(function () {
 */
 
 Route::get('/profile-admin', function () {
+    if (auth()->user()->role_id != 5) {
+        return redirect()->route('profile');
+    }
+
     return view('admin.profile-admin');
 })->middleware('auth')->name('profile.admin');
 
@@ -218,16 +242,33 @@ Route::get('/profile-admin', function () {
 | TRANG TIỆN ÍCH HỒ SƠ KHÁCH HÀNG (CUSTOMER PROFILE VIEW)
 |--------------------------------------------------------------------------
 */
-Route::get('/profile-user', function () {
-    return view('user.profile-user');
-})->name('profile.user');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile-user', function () {
+        return view('user.profile-user');
+    })->name('profile.user');
 
-// Cài đặt hệ thống
-Route::get('/settings', function () {
-    return view('settings.setting');
-})->name('settings');
+    // Cài đặt hệ thống
+    Route::get('/settings', function () {
+        return view('settings.setting');
+    })->name('settings');
+});
 
+/*
+|--------------------------------------------------------------------------
+| SUPPORT USER
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->group(function (): void {
+    Route::get(
+        '/support-user',
+        [SupportUserController::class, 'index']
+    )->name('support.user');
 
+    Route::post(
+        '/support-send',
+        [SupportUserController::class, 'send']
+    )->name('support.send');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -236,7 +277,11 @@ Route::get('/settings', function () {
 */
 
 Route::get('/home', function () {
-    return view('admin.dashboard');
+    // Admin vào trang quản trị, user thường về trang chủ
+    if (auth()->user() && auth()->user()->role_id == 5) {
+        return redirect()->route('admin.dashboard');
+    }
+    return redirect()->route('home');
 })->middleware('auth')->name('user.home');
 
 /*
@@ -276,16 +321,16 @@ Route::prefix('admin')
         // QUẢN LÝ NHÀ CUNG CẤP (SUPPLIERS)
         Route::get('/suppliers', [SupplierController::class, 'index'])
             ->name('suppliers.index'); // Danh sách nhà cung cấp
-
+    
         Route::post('/suppliers', [SupplierController::class, 'store'])
             ->name('suppliers.store'); // Thêm mới nhà cung cấp
-
+    
         Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])
             ->name('suppliers.destroy'); // Xóa nhà cung cấp
-
+    
         Route::put('/suppliers/{id}', [SupplierController::class, 'update'])
             ->name('suppliers.update'); // Cập nhật nhà cung cấp
-
+    
         // QUẢN LÝ DANH MỤC SẢN PHẨM (CATEGORIES CRUD)
         Route::resource('categories', CategoryController::class)
             ->except(['show', 'create', 'edit']);
@@ -305,50 +350,50 @@ Route::prefix('admin')
         // QUẢN LÝ ĐƠN HÀNG (ORDERS SYSTEM)
         Route::get('/orders', [OrderController::class, 'index'])
             ->name('orders.index'); // Xem danh sách đơn hàng toàn hệ thống
-
+    
         Route::get('/orders/{order}', [OrderController::class, 'show'])
             ->name('orders.show'); // Chi tiết thông tin và tiến trình đơn hàng
-
+    
         Route::patch('/orders/{order}', [OrderController::class, 'update'])
             ->name('orders.update'); // Cập nhật trạng thái đơn hàng (đang giao, đã hoàn thành...)
-
+    
         // QUẢN LÝ THÀNH VIÊN (USERS SYSTEM)
         Route::get('/users', [UserController::class, 'index'])
             ->name('users.index'); // Xem danh sách tài khoản thành viên
-
+    
         Route::patch('/users/{user}', [UserController::class, 'update'])
             ->name('users.update'); // Cập nhật trạng thái tài khoản (khóa/mở khóa)
-
+    
         // THIẾT LẬP PHÂN QUYỀN VAI TRÒ (ROLE PERMISSIONS)
         Route::get('/permissions', [AdminController::class, 'permissions'])
             ->name('permissions'); // Bảng phân quyền chi tiết
-
+    
         Route::post('/permissions', [AdminController::class, 'updatePermissions'])
             ->name('permissions.update'); // Cập nhật thay đổi phân quyền hệ thống
-
+    
         // NHẬT KÝ HOẠT ĐỘNG HỆ THỐNG (SYSTEM LOGS)
         Route::get('/logs', [AdminController::class, 'logs'])
             ->name('logs');
 
         // PHÂN HỆ QUẢN LÝ KHO HÀNG (WAREHOUSE MANAGEMENT)
         Route::prefix('warehouse')->name('warehouse.')->group(function () {
-            
+
             // 1. Quản lý Phiếu Nhập Kho (Warehouse Receipts)
             Route::get('/receipts', [\App\Http\Controllers\Admin\WarehouseController::class, 'receipts'])->name('receipts');
             Route::get('/receipts/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createReceipt'])->name('receipts.create');
             Route::post('/receipts', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeReceipt'])->name('receipts.store');
             Route::get('/receipts/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showReceipt'])->name('receipts.show');
-            
+
             // 2. Thẻ Kho & Xem Tồn Kho (Stock Card & Inventory History)
             Route::get('/inventory', [\App\Http\Controllers\Admin\WarehouseController::class, 'inventory'])->name('inventory');
             Route::get('/inventory/{id}/history', [\App\Http\Controllers\Admin\WarehouseController::class, 'stockHistory'])->name('inventory.history');
-            
+
             // 3. Quản lý Phiếu Xuất Kho Hủy (Warehouse Issues)
             Route::get('/issues', [\App\Http\Controllers\Admin\WarehouseController::class, 'issues'])->name('issues');
             Route::get('/issues/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createIssue'])->name('issues.create');
             Route::post('/issues', [\App\Http\Controllers\Admin\WarehouseController::class, 'storeIssue'])->name('issues.store');
             Route::get('/issues/{id}', [\App\Http\Controllers\Admin\WarehouseController::class, 'showIssue'])->name('issues.show');
-            
+
             // 4. Quản lý Phiếu Kiểm Kê Kho (Inventory Balance Checks)
             Route::get('/checks', [\App\Http\Controllers\Admin\WarehouseController::class, 'checks'])->name('checks');
             Route::get('/checks/create', [\App\Http\Controllers\Admin\WarehouseController::class, 'createCheck'])->name('checks.create');
@@ -379,21 +424,9 @@ Route::prefix('admin')
             Route::delete('/{id}', [\App\Http\Controllers\Admin\BannerController::class, 'destroy'])->name('destroy');
         });
     });
-	
-/*
-|--------------------------------------------------------------------------
-| BẢO VỆ ĐƯỜNG DẪN HỒ SƠ THEO VAI TRÒ (BẢO VỆ LINK)
-|--------------------------------------------------------------------------
-*/
-Route::middleware(['auth'])->group(function () {
 
-    // HỒ SƠ KHÁCH HÀNG (Vai trò: user)
-    Route::get('/profile', function () {
-        return view('user.profile-user');
-    })->middleware('role:user')->name('profile');
+// Google Auth
+Route::get('/auth/google', [GoogleController::class, 'redirect'])
+    ->name('google.login');
 
-    // HỒ SƠ QUẢN TRỊ VIÊN (Vai trò: admin)
-    Route::get('/profile-admin', function () {
-        return view('admin.profile-admin');
-    })->middleware('role:admin')->name('profile.admin');
-});
+Route::get('/auth/google/callback', [GoogleController::class, 'callback']);

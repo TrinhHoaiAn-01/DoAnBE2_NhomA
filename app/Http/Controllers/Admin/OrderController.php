@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\Concerns\HandlesCrudSafety;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Support\DeliveryTimeSlot;
+use App\Support\SearchText;
 use App\Support\ShippingFeeCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,7 +18,11 @@ class OrderController extends Controller
 
     public function index(Request $request): View
     {
-        $search = trim((string) $request->string('search'));
+        $rawSearch = $request->string('search')->toString();
+        $search = SearchText::normalize($rawSearch);
+        if (SearchText::wasLimited($rawSearch)) {
+            session()->flash('info', SearchText::limitMessage());
+        }
         $status = $request->string('status')->toString();
 
         $orders = Order::query()

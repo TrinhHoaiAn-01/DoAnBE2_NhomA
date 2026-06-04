@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Admin\Concerns\HandlesCrudSafety;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Support\SearchText;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -18,7 +19,11 @@ class CategoryController extends Controller
 
     public function index(Request $request): View
     {
-        $search = trim((string) $request->string('search'));
+        $rawSearch = $request->string('search')->toString();
+        $search = SearchText::normalize($rawSearch);
+        if (SearchText::wasLimited($rawSearch)) {
+            session()->flash('info', SearchText::limitMessage());
+        }
         $status = $request->string('status')->toString();
 
         $categories = Category::query()

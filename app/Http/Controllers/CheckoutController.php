@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountActivityLog;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Promotion;
@@ -154,6 +155,24 @@ class CheckoutController extends Controller
         $request->session()->put('cart', $cart);
         $request->session()->forget('selected_ids');
 
+        if ($request->user()) {
+            AccountActivityLog::recordFor(
+                $request->user(),
+                'purchase',
+                'Mua hàng',
+                'Đặt đơn hàng ' . $order->code . ' với tổng tiền ' . number_format((float) $order->total, 0, ',', '.') . 'đ.',
+                [
+                    'order_id' => $order->id,
+                    'order_code' => $order->code,
+                    'total' => (float) $order->total,
+                    'payment_method' => $order->payment_method,
+                    'payment_status' => $order->payment_status,
+                    'status' => $order->status,
+                ],
+                $request
+            );
+        }
+
         // 7. Chuyển hướng theo phương thức thanh toán
         if ($order->payment_method !== 'cod') {
             // Nếu chuyển khoản hoặc ví, chuyển tới trang thanh toán demo
@@ -291,4 +310,3 @@ class CheckoutController extends Controller
         return collect($items)->sum('subtotal');
     }
 }
-

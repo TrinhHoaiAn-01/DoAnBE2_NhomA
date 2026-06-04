@@ -1,4 +1,4 @@
-@extends('layouts.app', [
+﻿@extends('layouts.app', [
     'title' => 'Quên mật khẩu',
     'hideNavbar' => true
 ])
@@ -17,13 +17,14 @@
 
         min-height:100vh;
 
-        overflow:hidden;
+        overflow-x:hidden;
+        overflow-y:auto;
 
-        font-family:'Segoe UI',sans-serif;
+        font-family:system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
         background:
-            radial-gradient(circle at top left, rgba(37,99,235,0.18), transparent 25%),
-            radial-gradient(circle at bottom right, rgba(124,58,237,0.18), transparent 25%),
+            radial-gradient(circle at top left, rgba(22,163,74,0.18), transparent 25%),
+            radial-gradient(circle at bottom right, rgba(4,120,87,0.18), transparent 25%),
             linear-gradient(
                 135deg,
                 #020617,
@@ -62,7 +63,7 @@
         width:260px;
         height:260px;
 
-        background:#2563eb;
+        background:#16a34a;
 
         top:-80px;
         left:-80px;
@@ -73,7 +74,7 @@
         width:320px;
         height:320px;
 
-        background:#7c3aed;
+        background:#047857;
 
         right:-120px;
         bottom:-120px;
@@ -257,45 +258,37 @@
 
     .form-control:focus{
 
-        border-color:#3b82f6;
+        border-color:#22c55e;
 
         background:
             rgba(255,255,255,0.08);
 
         box-shadow:
-            0 0 0 4px rgba(37,99,235,0.15);
+            0 0 0 4px rgba(22,163,74,0.15);
     }
 
     /* =========================
-        CAPTCHA BOX
+        CAPTCHA
     ========================== */
 
-    .captcha-box{
-
-        width:100%;
-
-        height:80px;
-
-        border-radius:20px;
-
-        border:
-            1px dashed rgba(255,255,255,0.14);
-
-        background:
-            rgba(255,255,255,0.04);
+    .recaptcha-wrapper{
 
         display:flex;
 
-        align-items:center;
         justify-content:center;
 
-        color:#94a3b8;
+        min-height:78px;
 
-        font-size:14px;
+        overflow:hidden;
+    }
 
-        text-align:center;
+    .invalid-feedback{
 
-        padding:20px;
+        color:#fca5a5;
+
+        font-size:13px;
+
+        margin-top:8px;
     }
 
     /* =========================
@@ -326,12 +319,12 @@
         background:
             linear-gradient(
                 135deg,
-                #2563eb,
-                #7c3aed
+                #16a34a,
+                #047857
             );
 
         box-shadow:
-            0 12px 30px rgba(124,58,237,0.22);
+            0 12px 30px rgba(4,120,87,0.22);
     }
 
     .submit-btn:hover{
@@ -339,7 +332,7 @@
         transform:translateY(-3px);
 
         box-shadow:
-            0 18px 35px rgba(124,58,237,0.32);
+            0 18px 35px rgba(4,120,87,0.32);
     }
 
     /* =========================
@@ -385,6 +378,14 @@
 
         .main-title{
             font-size:30px;
+        }
+    }
+
+    @media(max-width:380px){
+
+        .recaptcha-wrapper .g-recaptcha{
+            transform:scale(0.86);
+            transform-origin:center top;
         }
     }
 
@@ -435,7 +436,7 @@
         <!-- FORM -->
         <form
             method="POST"
-            action="#"
+            action="{{ route('password.update.fake') }}"
         >
 
             @csrf
@@ -450,8 +451,45 @@
                 <input
                     type="email"
                     name="email"
+                    value="{{ old('email') }}"
                     class="form-control"
                     placeholder="Nhập email..."
+                    autocomplete="off"
+                    required
+                >
+
+            </div>
+
+            <!-- NEW PASSWORD -->
+            <div class="form-group">
+
+                <label class="form-label">
+                    Mật khẩu mới
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="Nhập mật khẩu mới..."
+                    autocomplete="off"
+                    required
+                >
+
+            </div>
+
+            <!-- CONFIRM PASSWORD -->
+            <div class="form-group">
+
+                <label class="form-label">
+                    Xác nhận mật khẩu
+                </label>
+
+                <input
+                    type="password"
+                    name="password_confirmation"
+                    class="form-control"
+                    placeholder="Nhập lại mật khẩu..."
                     autocomplete="off"
                     required
                 >
@@ -461,17 +499,20 @@
             <!-- CAPTCHA -->
             <div class="form-group">
 
-                <label class="form-label">
-                    CAPTCHA
-                </label>
+                <div class="recaptcha-wrapper">
 
-                <div class="captcha-box">
-
-                    Khu vực hiển thị CAPTCHA API
-                    <br>
-                    (Google reCAPTCHA / Cloudflare Turnstile)
+                    <div
+                        class="g-recaptcha"
+                        data-sitekey="{{ config('services.recaptcha.site_key') }}"
+                    ></div>
 
                 </div>
+
+                @error('g-recaptcha-response')
+                    <div class="invalid-feedback d-block text-center">
+                        {{ $message }}
+                    </div>
+                @enderror
 
             </div>
 
@@ -500,5 +541,9 @@
     </div>
 
 </div>
+
+@push('scripts')
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+@endpush
 
 @endsection

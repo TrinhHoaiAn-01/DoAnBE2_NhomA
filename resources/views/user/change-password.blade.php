@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,10 +11,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <link href="{{ asset('assets/site-preferences.css') }}" rel="stylesheet">
 
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet">
 
     <style>
 
@@ -22,7 +21,7 @@
             margin:0;
             padding:0;
             box-sizing:border-box;
-            font-family:'Poppins', sans-serif;
+            font-family:system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
         body{
@@ -42,7 +41,7 @@
         .bg1{
             width:350px;
             height:350px;
-            background:#2563eb;
+            background:#16a34a;
             top:-120px;
             left:-120px;
         }
@@ -50,7 +49,7 @@
         .bg2{
             width:300px;
             height:300px;
-            background:#7c3aed;
+            background:#047857;
             bottom:-100px;
             right:-100px;
             animation-delay:2s;
@@ -106,7 +105,7 @@
             width:90px;
             height:90px;
             border-radius:50%;
-            background:linear-gradient(135deg,#3b82f6,#2563eb);
+            background:linear-gradient(135deg,#22c55e,#16a34a);
             display:flex;
             justify-content:center;
             align-items:center;
@@ -158,7 +157,7 @@
             background:rgba(255,255,255,0.12);
             color:white;
             box-shadow:none;
-            border:1px solid #3b82f6;
+            border:1px solid #22c55e;
         }
 
         .form-control::placeholder{
@@ -170,7 +169,7 @@
             border:none;
             padding:16px;
             border-radius:18px;
-            background:linear-gradient(135deg,#3b82f6,#2563eb);
+            background:linear-gradient(135deg,#22c55e,#16a34a);
             color:white;
             font-size:16px;
             font-weight:600;
@@ -202,7 +201,7 @@
     </style>
 
 </head>
-<body>
+<body class="standalone-user-page password-page">
 
 <div class="bg-circle bg1"></div>
 <div class="bg-circle bg2"></div>
@@ -338,5 +337,6 @@
 
 </div>
 
+<script src="{{ asset('assets/site-preferences.js') }}"></script>
 </body>
 </html>

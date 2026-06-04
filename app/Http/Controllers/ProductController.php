@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\StockAlert;
+use App\Support\SearchText;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -27,13 +28,19 @@ class ProductController extends Controller
     public function index(Request $request): View
     {
         // 1. Lấy các tham số tìm kiếm, danh mục, sắp xếp từ Request
-        $search = trim((string) $request->string('search'));
+        $rawSearch = $request->string('search')->toString();
+        $search = SearchText::normalize($rawSearch);
+        if (SearchText::wasLimited($rawSearch)) {
+            session()->flash('info', SearchText::limitMessage());
+        }
         $categorySlug = $request->string('category')->toString();
         $sort = $request->string('sort')->toString();
 
         // 2. Xây dựng câu truy vấn tìm kiếm sản phẩm đang hoạt động (is_active = true)
         $products = Product::query()
             ->with('category')
+            ->withAvg(['reviews as average_rating' => fn($q) => $q->where('is_approved', true)], 'rating')
+            ->withCount(['reviews as approved_reviews_count' => fn($q) => $q->where('is_approved', true)])
             ->where('is_active', true)
             ->when($search !== '', function ($query) use ($search): void {
                 // Tìm kiếm theo tên sản phẩm, thương hiệu hoặc mô tả
@@ -102,6 +109,8 @@ class ProductController extends Controller
             // Truy vấn thông tin của các sản phẩm đã xem trước đó
             $recentlyViewedProducts = Product::query()
                 ->whereIn('id', $displayIds)
+                ->withAvg(['reviews as average_rating' => fn($q) => $q->where('is_approved', true)], 'rating')
+                ->withCount(['reviews as approved_reviews_count' => fn($q) => $q->where('is_approved', true)])
                 ->where('is_active', true)
                 ->get()
                 // Đảm bảo thứ tự hiển thị đúng như thứ tự đã xem trong mảng Session
@@ -115,11 +124,37 @@ class ProductController extends Controller
         $recentlyViewedIds = array_slice($recentlyViewedIds, 0, 5);
         session()->put('recently_viewed', $recentlyViewedIds);
 
+        // 5. Tính toán phân bổ số sao đánh giá (Rating Distribution)
+        $ratingDistribution = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
+        $totalReviewsCount = $approvedReviews->count();
+        foreach ($approvedReviews as $review) {
+            $rating = (int) $review->rating;
+            if (isset($ratingDistribution[$rating])) {
+                $ratingDistribution[$rating]++;
+            }
+        }
+
+        $ratingPercentages = [];
+        foreach ($ratingDistribution as $star => $count) {
+            $ratingPercentages[$star] = $totalReviewsCount > 0 ? round(($count / $totalReviewsCount) * 100) : 0;
+        }
+
+        // 6. Tính tổng số lượng đã bán thực tế từ các đơn hàng không bị hủy
+        $soldCount = \App\Models\OrderItem::where('product_id', $product->id)
+            ->whereHas('order', function ($query) {
+                $query->where('status', '!=', 'cancelled');
+            })
+            ->sum('quantity');
+
         return view('products.show', [
             'product' => $product->load('category'),
             'approvedReviews' => $approvedReviews,
             'averageRating' => round((float) $approvedReviews->avg('rating'), 1), // Điểm đánh giá trung bình
+            'ratingPercentages' => $ratingPercentages,
+            'soldCount' => $soldCount,
             'relatedProducts' => Product::query()
+                ->withAvg(['reviews as average_rating' => fn($q) => $q->where('is_approved', true)], 'rating')
+                ->withCount(['reviews as approved_reviews_count' => fn($q) => $q->where('is_approved', true)])
                 // Gợi ý các sản phẩm cùng danh mục, ngoại trừ sản phẩm hiện tại
                 ->where('category_id', $product->category_id)
                 ->whereKeyNot($product->id)
@@ -202,7 +237,25 @@ class ProductController extends Controller
             'email.email' => 'Địa chỉ email không đúng định dạng.',
         ]);
 
-        // 3. Lưu đăng ký vào Database
+        // 3. Kiểm tra trùng lặp đăng ký
+        $exists = StockAlert::query()
+            ->where('product_id', $product->id)
+            ->where('status', 'pending')
+            ->where(function ($q) use ($data) {
+                if (!empty($data['email'])) {
+                    $q->orWhere('email', $data['email']);
+                }
+                if (!empty($data['phone'])) {
+                    $q->orWhere('phone', $data['phone']);
+                }
+            })
+            ->exists();
+
+        if ($exists) {
+            return back()->with('status', 'Bạn đã đăng ký nhận thông báo cho sản phẩm này rồi.');
+        }
+
+        // 4. Lưu đăng ký vào Database
         StockAlert::query()->create($data + [
             'product_id' => $product->id,
             'status' => 'pending',
@@ -211,4 +264,3 @@ class ProductController extends Controller
         return back()->with('status', 'NeoMart đã ghi nhận đăng ký! Chúng tôi sẽ gửi thông báo ngay khi sản phẩm có hàng trở lại.');
     }
 }
-

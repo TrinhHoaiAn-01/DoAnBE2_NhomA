@@ -24,7 +24,7 @@
             <div class="col-12 col-md-5">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                    <input type="text" id="faqSearchInput" class="form-control border-start-0" placeholder="Tìm kiếm nhanh câu hỏi, câu trả lời...">
+                    <input type="text" id="faqSearchInput" class="form-control border-start-0" placeholder="Tìm kiếm nhanh câu hỏi, câu trả lời..." data-search-limit="50">
                 </div>
             </div>
             <div class="col-12 col-md-7 d-flex justify-content-md-end align-items-center gap-2 flex-wrap">

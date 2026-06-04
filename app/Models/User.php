@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -22,30 +23,23 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-
+        protected $fillable = [
         'name',
-
         'username',
-
         'email',
-
         'phone',
-
         'avatar_url',
-
+        'avatar',
+        'google_id',
         'home_address',
-
         'gender',
-
         'date_of_birth',
-
         'password',
-
         'role_id',
-
         'status',
     ];
+
+
 
     /**
      * Các thuộc tính cần được ẩn khi chuyển đổi sang dạng mảng hoặc JSON.
@@ -80,9 +74,17 @@ class User extends Authenticatable
     }
 
     /**
+     * Các dòng nhật ký hoạt động thuộc về tài khoản này.
+     */
+    public function accountActivityLogs(): HasMany
+    {
+        return $this->hasMany(AccountActivityLog::class);
+    }
+
+    /**
      * Relationship to Wishlist.
      */
-    public function wishlists()
+    public function wishlists(): HasMany
     {
         return $this->hasMany(Wishlist::class);
     }

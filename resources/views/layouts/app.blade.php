@@ -9,7 +9,23 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="{{ asset('assets/site-preferences.css') }}" rel="stylesheet">
+
+    <script>
+        (function () {
+            try {
+                var language = localStorage.getItem('language') || 'vi';
+                if (language === 'jp') {
+                    language = 'vi';
+                    localStorage.setItem('language', language);
+                }
+
+                document.documentElement.lang = language === 'en' ? 'en' : 'vi';
+                document.documentElement.dataset.theme = localStorage.getItem('dark-mode') === 'true' ? 'dark' : 'light';
+                document.documentElement.style.setProperty('--font-size-base', localStorage.getItem('font-size') || '16px');
+            } catch (error) {}
+        })();
+    </script>
 
     <style>
         /* ============================================================
@@ -47,7 +63,7 @@
         *, *::before, *::after { box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background-color: var(--surface-2);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
@@ -211,10 +227,19 @@
             min-width: 200px;
         }
         .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
             border-radius: var(--radius-sm);
             font-size: 0.875rem;
             padding: 0.5rem 0.75rem;
             transition: var(--transition);
+        }
+        .dropdown-item .menu-icon,
+        .mobile-sidebar-item .menu-icon {
+            width: 1.1rem;
+            text-align: center;
+            flex-shrink: 0;
         }
         .dropdown-item:hover { background: var(--primary-light); color: var(--primary); }
         .dropdown-divider { margin: 0.35rem 0; border-color: var(--border); }
@@ -275,8 +300,8 @@
 
         /* Newsletter */
         .newsletter-wrap {
-            background: rgba(99,102,241,0.1);
-            border: 1px solid rgba(99,102,241,0.25);
+            background: rgba(0,136,72,0.12);
+            border: 1px solid rgba(0,136,72,0.28);
             border-radius: var(--radius-lg);
             padding: 1.5rem;
         }
@@ -545,6 +570,12 @@
 
                     <!-- Auth -->
                     @auth
+                        @php
+                            $profileUrl = auth()->user()->role_id == 5
+                                ? route('profile.admin')
+                                : route('profile');
+                        @endphp
+
                         <div class="dropdown">
                             <button class="user-btn dropdown-toggle p-0" type="button"
                                     data-bs-toggle="dropdown" aria-expanded="false"
@@ -561,41 +592,47 @@
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('profile') }}">
-                                        Hồ sơ cá nhân
+                                    <a class="dropdown-item" href="{{ $profileUrl }}">
+                                        <i class="fa-solid fa-user menu-icon"></i>
+                                        Hồ sơ người dùng
                                     </a>
                                 </li>
-                                @if(Route::has('orders.index'))
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('orders.index') }}">
-                                        Lịch sử đơn hàng
-                                    </a>
-                                </li>
-                                @endif
                                 @if(Route::has('recently-viewed.index'))
                                 <li>
                                     <a class="dropdown-item" href="{{ route('recently-viewed.index') }}">
+                                        <i class="fa-solid fa-clock-rotate-left menu-icon"></i>
                                         Sản phẩm đã xem
                                     </a>
                                 </li>
                                 @endif
+                                @if(Route::has('orders.index'))
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                        Quản trị
+                                    <a class="dropdown-item" href="{{ route('orders.index') }}">
+                                        <i class="fa-solid fa-receipt menu-icon"></i>
+                                        Lịch sử đơn hàng
                                     </a>
                                 </li>
+                                @endif
                                 @if(Route::has('wishlist.index'))
                                 <li>
                                     <a class="dropdown-item" href="{{ route('wishlist.index') }}">
+                                        <i class="fa-solid fa-heart menu-icon"></i>
                                         Danh sách yêu thích
                                     </a>
                                 </li>
                                 @endif
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('settings') }}">
+                                        <i class="fa-solid fa-gear menu-icon"></i>
+                                        Cài đặt
+                                    </a>
+                                </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="post" action="{{ route('logout') }}" class="m-0">
                                         @csrf
                                         <button class="dropdown-item text-danger" type="submit">
+                                            <i class="fa-solid fa-right-from-bracket menu-icon"></i>
                                             Đăng xuất
                                         </button>
                                     </form>
@@ -659,43 +696,52 @@
         <div class="offcanvas-body p-0">
             <nav class="d-flex flex-column">
                 <a href="{{ route('home') }}" class="mobile-sidebar-item">
-                    <span>🏠</span> Trang chủ
+                    <i class="fa-solid fa-house menu-icon"></i> Trang chủ
                 </a>
                 <a href="{{ route('products.index') }}" class="mobile-sidebar-item">
-                    <span>📦</span> Danh sách sản phẩm
+                    <i class="fa-solid fa-box-open menu-icon"></i> Danh sách sản phẩm
                 </a>
                 <a href="{{ route('cart.index') }}" class="mobile-sidebar-item">
-                    <span>🛒</span> Xem giỏ hàng
+                    <i class="fa-solid fa-cart-shopping menu-icon"></i> Xem giỏ hàng
                 </a>
-                @if(Route::has('recently-viewed.index'))
-                <a href="{{ route('recently-viewed.index') }}" class="mobile-sidebar-item">
-                    <span>🕐</span> Sản phẩm đã xem
-                </a>
-                @endif
                 <a href="{{ route('checkout.index') }}" class="mobile-sidebar-item">
-                    <span>💳</span> Tiến hành thanh toán
+                    <i class="fa-solid fa-credit-card menu-icon"></i> Tiến hành thanh toán
                 </a>
                 
                 <div style="height: 1px; background: var(--border); margin: 0.75rem 1.5rem;"></div>
                 
                 @auth
-                    <a href="{{ route('profile') }}" class="mobile-sidebar-item">
-                        <span>👤</span> Hồ sơ cá nhân
+                    @php
+                        $profileUrl = auth()->user()->role_id == 5
+                            ? route('profile.admin')
+                            : route('profile');
+                    @endphp
+
+                    <a href="{{ $profileUrl }}" class="mobile-sidebar-item">
+                        <i class="fa-solid fa-user menu-icon"></i> Hồ sơ người dùng
                     </a>
+                    @if(Route::has('recently-viewed.index'))
+                    <a href="{{ route('recently-viewed.index') }}" class="mobile-sidebar-item">
+                        <i class="fa-solid fa-clock-rotate-left menu-icon"></i> Sản phẩm đã xem
+                    </a>
+                    @endif
                     @if(Route::has('orders.index'))
                     <a href="{{ route('orders.index') }}" class="mobile-sidebar-item">
-                        <span>📋</span> Lịch sử đơn hàng
+                        <i class="fa-solid fa-receipt menu-icon"></i> Lịch sử đơn hàng
                     </a>
                     @endif
                     @if(Route::has('wishlist.index'))
                     <a href="{{ route('wishlist.index') }}" class="mobile-sidebar-item">
-                        <span>❤️</span> Danh sách yêu thích
+                        <i class="fa-solid fa-heart menu-icon"></i> Danh sách yêu thích
                     </a>
                     @endif
+                    <a href="{{ route('settings') }}" class="mobile-sidebar-item">
+                        <i class="fa-solid fa-gear menu-icon"></i> Cài đặt
+                    </a>
                     <form method="post" action="{{ route('logout') }}" class="m-0">
                         @csrf
                         <button type="submit" class="mobile-sidebar-item w-100 text-start bg-transparent" style="color: var(--danger) !important;">
-                            <span>🚪</span> Đăng xuất
+                            <i class="fa-solid fa-right-from-bracket menu-icon"></i> Đăng xuất
                         </button>
                     </form>
                 @else
@@ -781,6 +827,8 @@
 </button>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('assets/site-preferences.js') }}"></script>
+<script src="{{ asset('assets/search-limit.js') }}"></script>
 <script>
     // Page loader
     window.addEventListener('load', () => {
@@ -944,12 +992,19 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <h6>NeoMart bán hàng chính hãng không?</h6>
-                <p class="mb-3">Chắc chắn rồi! <strong>100%</strong> sản phẩm tại NeoMart đều là hàng chính hãng, có nguồn gốc xuất xứ rõ ràng.</p>
-                <h6>Làm sao để tôi theo dõi đơn hàng?</h6>
-                <p class="mb-3">Bạn có thể theo dõi tiến trình giao hàng bằng cách đăng nhập vào tài khoản và truy cập phần <strong>"Quản lý đơn hàng"</strong>.</p>
-                <h6>Có xuất hóa đơn VAT không?</h6>
-                <p>NeoMart cung cấp đầy đủ hóa đơn VAT điện tử cho tất cả các đơn hàng khi quý khách có yêu cầu.</p>
+                @if(isset($global_faqs) && $global_faqs->isNotEmpty())
+                    @foreach($global_faqs as $faq)
+                        <h6 class="fw-bold text-dark"><i class="bi bi-question-circle-fill text-success"></i> {{ $faq->question }}</h6>
+                        <p class="mb-3 text-secondary" style="font-size: 0.9rem;">{{ $faq->answer }}</p>
+                    @endforeach
+                @else
+                    <h6>NeoMart bán hàng chính hãng không?</h6>
+                    <p class="mb-3">Chắc chắn rồi! <strong>100%</strong> sản phẩm tại NeoMart đều là hàng chính hãng, có nguồn gốc xuất xứ rõ ràng.</p>
+                    <h6>Làm sao để tôi theo dõi đơn hàng?</h6>
+                    <p class="mb-3">Bạn có thể theo dõi tiến trình giao hàng bằng cách đăng nhập vào tài khoản và truy cập phần <strong>"Quản lý đơn hàng"</strong>.</p>
+                    <h6>Có xuất hóa đơn VAT không?</h6>
+                    <p>NeoMart cung cấp đầy đủ hóa đơn VAT điện tử cho tất cả các đơn hàng khi quý khách có yêu cầu.</p>
+                @endif
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đã hiểu</button>
@@ -966,33 +1021,53 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded-3">
-                    <i class="bi bi-geo-alt-fill fs-3 text-danger"></i>
+                <div class="d-flex align-items-center gap-3 mb-2 p-2 bg-light rounded-3">
+                    <i class="bi bi-geo-alt-fill fs-4 text-danger"></i>
                     <div>
-                        <div class="fw-bold text-dark">Địa chỉ trực tiếp</div>
+                        <div class="fw-bold text-dark" style="font-size:0.9rem;">Địa chỉ trực tiếp</div>
                         <div class="text-muted small">123 Đường Công Nghệ, Quận 1, TP. Hồ Chí Minh</div>
                     </div>
                 </div>
-                <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded-3">
-                    <i class="bi bi-telephone-fill fs-3 text-success"></i>
+                <div class="d-flex align-items-center gap-3 mb-3 p-2 bg-light rounded-3">
+                    <i class="bi bi-telephone-fill fs-4 text-success"></i>
                     <div>
-                        <div class="fw-bold text-dark">Hotline hỗ trợ 24/7</div>
+                        <div class="fw-bold text-dark" style="font-size:0.9rem;">Hotline hỗ trợ 24/7</div>
                         <div class="text-muted small">(+84) 123 456 789</div>
                     </div>
                 </div>
-                <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded-3">
-                    <i class="bi bi-envelope-fill fs-3 text-primary"></i>
-                    <div>
-                        <div class="fw-bold text-dark">Email liên hệ</div>
-                        <div class="text-muted small">support@neomart.vn</div>
+
+                <hr class="my-3">
+
+                <!-- Contact Form -->
+                <h6 class="mb-3 text-dark"><i class="bi bi-pencil-square text-success"></i> Gửi ý kiến đóng góp / Liên hệ hỗ trợ</h6>
+                <form id="contact-form" action="{{ route('contact.store') }}" method="POST">
+                    @csrf
+                    <div class="mb-2">
+                        <label for="contact-name" class="form-label small fw-bold">Họ tên *</label>
+                        <input type="text" class="form-control form-control-sm" id="contact-name" name="name" required placeholder="Nhập họ tên của bạn">
                     </div>
-                </div>
-                <p class="text-center mt-4 fw-semibold text-success">
-                    Chúng tôi luôn sẵn lòng lắng nghe và hỗ trợ quý khách mọi lúc, mọi nơi!
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <div class="row g-2 mb-2">
+                        <div class="col-md-6">
+                            <label for="contact-email" class="form-label small fw-bold">Email *</label>
+                            <input type="email" class="form-control form-control-sm" id="contact-email" name="email" required placeholder="example@gmail.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="contact-phone" class="form-label small fw-bold">Số điện thoại</label>
+                            <input type="text" class="form-control form-control-sm" id="contact-phone" name="phone" placeholder="Nhập số điện thoại">
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="contact-subject" class="form-label small fw-bold">Chủ đề *</label>
+                        <input type="text" class="form-control form-control-sm" id="contact-subject" name="subject" required placeholder="Góp ý sản phẩm, báo lỗi...">
+                    </div>
+                    <div class="mb-3">
+                        <label for="contact-message" class="form-label small fw-bold">Lời nhắn *</label>
+                        <textarea class="form-control form-control-sm" id="contact-message" name="message" rows="3" required placeholder="Nhập ý kiến đóng góp của bạn..."></textarea>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-sm fw-bold">Gửi tin nhắn</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

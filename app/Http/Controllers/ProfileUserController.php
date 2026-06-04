@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountActivityLog;
+use App\Models\User;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 
 /**
  * Controller ProfileUserController
@@ -24,6 +29,10 @@ class ProfileUserController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role_id == 5) {
+            return redirect()->route('profile.admin');
+        }
+
         return view('user.profile-user');
     }
 
@@ -36,9 +45,10 @@ class ProfileUserController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
+        $oldProfile = $this->profileSnapshot($user);
 
         // 1. Xác thực tính hợp lệ của dữ liệu đầu vào
-        $request->validate([
+        $data = $request->validate([
 
             'name' => [
                 'nullable',
@@ -54,7 +64,9 @@ class ProfileUserController extends Controller
 
             'user_id' => [
                 'required',
-                'integer'
+                'integer',
+                'min:1',
+                Rule::unique('users', 'id')->ignore($user->id),
             ],
 
             'email' => [
@@ -91,6 +103,9 @@ class ProfileUserController extends Controller
                 'mimes:jpg,jpeg,png',
                 'max:2048' // Dung lượng ảnh tối đa 2MB
             ],
+        ], [
+            'user_id.unique' => 'ID này đã tồn tại!',
+            'user_id.min' => 'ID người dùng phải lớn hơn 0!',
         ]);
 
         // 2. Kiểm tra xem tên đăng nhập mới có bị trùng với tài khoản khác hay không
@@ -109,20 +124,6 @@ class ProfileUserController extends Controller
         }
 
         // 3. Kiểm tra xem ID mới có bị trùng lặp với người dùng khác trong hệ thống không
-        $checkId = DB::table('users')
-            ->where('id', $request->user_id)
-            ->where('id', '!=', $user->id)
-            ->exists();
-
-        if ($checkId) {
-
-            return back()
-                ->withErrors([
-                    'user_id' => 'ID này đã tồn tại!'
-                ])
-                ->withInput();
-        }
-
         // 4. Xử lý cập nhật ảnh đại diện (Avatar) mới nếu có file được tải lên
         if ($request->hasFile('avatar')) {
 
@@ -149,25 +150,58 @@ class ProfileUserController extends Controller
         }
 
         // 5. Gán và cập nhật các thông tin cá nhân mới
-        $user->name = $request->name;
+        $oldUserId = (int) $user->id;
+        $newUserId = (int) $data['user_id'];
 
-        $user->username = $request->username;
+        DB::transaction(function () use ($user, $data, $oldUserId, $newUserId): void {
+            if ($oldUserId !== $newUserId) {
+                Schema::disableForeignKeyConstraints();
+            }
 
-        // Cập nhật lại ID người dùng nếu thay đổi hợp lệ
-        $user->id = $request->user_id;
+            try {
+                DB::table('users')
+                    ->where('id', $oldUserId)
+                    ->update([
+                        'id' => $newUserId,
+                        'name' => $data['name'],
+                        'username' => $data['username'],
+                        'email' => $data['email'],
+                        'phone' => $data['phone'],
+                        'home_address' => $data['home_address'],
+                        'gender' => $data['gender'],
+                        'date_of_birth' => $data['date_of_birth'],
+                        'avatar_url' => $user->avatar_url,
+                        'updated_at' => now(),
+                    ]);
 
-        $user->email = $request->email;
+                if ($oldUserId !== $newUserId) {
+                    $this->syncUserReferences($oldUserId, $newUserId);
+                }
+            } finally {
+                if ($oldUserId !== $newUserId) {
+                    Schema::enableForeignKeyConstraints();
+                }
+            }
+        });
 
-        $user->phone = $request->phone;
+        if ($oldUserId !== $newUserId) {
+            Auth::login(User::query()->findOrFail($newUserId));
+        }
 
-        $user->home_address = $request->home_address;
+        $user = Auth::user()->fresh();
 
-        $user->gender = $request->gender;
+        $changes = $this->profileChanges($oldProfile, $this->profileSnapshot($user));
 
-        $user->date_of_birth = $request->date_of_birth;
-
-        // Lưu thông tin vào Database
-        $user->save();
+        if ($changes !== []) {
+            AccountActivityLog::recordFor(
+                $user,
+                'profile_update',
+                'Cập nhật hồ sơ',
+                'Tài khoản đã cập nhật thông tin hồ sơ cá nhân.',
+                ['changes' => $changes],
+                $request
+            );
+        }
 
         // =========================
         // SUCCESS
@@ -213,6 +247,134 @@ class ProfileUserController extends Controller
 		$user->password = Hash::make($request->new_password);
 		$user->save();
 
+        AccountActivityLog::recordFor(
+            $user,
+            'profile_update',
+            'Đổi mật khẩu',
+            'Tài khoản đã thay đổi mật khẩu đăng nhập.',
+            ['changes' => [
+                [
+                    'field' => 'password',
+                    'label' => 'Mật khẩu',
+                    'old' => 'Đã ẩn',
+                    'new' => 'Đã cập nhật',
+                ],
+            ]],
+            $request
+        );
+
 		return back()->with('success', 'Đổi mật khẩu thành công');
 	}
+
+    /**
+     * Xử lý yêu cầu xóa tài khoản người dùng.
+     */
+    public function deleteAccount(Request $request)
+    {
+        $user = Auth::user();
+
+        // Đăng xuất trước khi xóa
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Xóa tài khoản
+        $user->delete();
+
+        return redirect()->route('home')->with('success', 'Tài khoản đã được xóa thành công.');
+    }
+
+    /**
+     * Đồng bộ các bản ghi đang tham chiếu tới user khi cho phép đổi ID tài khoản.
+     */
+    private function syncUserReferences(int $oldUserId, int $newUserId): void
+    {
+        $tables = [
+            'account_activity_logs',
+            'orders',
+            'product_reviews',
+            'warehouse_receipts',
+            'warehouse_issues',
+            'inventory_checks',
+            'sessions',
+        ];
+
+        foreach ($tables as $table) {
+            if (! Schema::hasTable($table) || ! Schema::hasColumn($table, 'user_id')) {
+                continue;
+            }
+
+            DB::table($table)
+                ->where('user_id', $oldUserId)
+                ->update(['user_id' => $newUserId]);
+        }
+    }
+
+    /**
+     * Lấy ảnh chụp các trường hồ sơ cần ghi nhật ký.
+     */
+    private function profileSnapshot($user): array
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'username' => $user->username,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'home_address' => $user->home_address,
+            'gender' => $user->gender,
+            'date_of_birth' => $this->formatDateForLog($user->date_of_birth),
+            'avatar_url' => $user->avatar_url,
+        ];
+    }
+
+    /**
+     * Chuẩn bị danh sách trường thay đổi để hiển thị trên giao diện nhật ký.
+     */
+    private function profileChanges(array $oldProfile, array $newProfile): array
+    {
+        $labels = [
+            'id' => 'ID người dùng',
+            'name' => 'Họ và tên',
+            'username' => 'Tên đăng nhập',
+            'email' => 'Email',
+            'phone' => 'Số điện thoại',
+            'home_address' => 'Địa chỉ',
+            'gender' => 'Giới tính',
+            'date_of_birth' => 'Ngày sinh',
+            'avatar_url' => 'Ảnh đại diện',
+        ];
+
+        $changes = [];
+
+        foreach ($labels as $field => $label) {
+            $oldValue = $oldProfile[$field] ?? null;
+            $newValue = $newProfile[$field] ?? null;
+
+            if (($oldValue ?? '') === ($newValue ?? '')) {
+                continue;
+            }
+
+            $changes[] = [
+                'field' => $field,
+                'label' => $label,
+                'old' => $oldValue,
+                'new' => $newValue,
+            ];
+        }
+
+        return $changes;
+    }
+
+    /**
+     * Chuẩn hóa ngày sinh trước khi ghi vào metadata JSON.
+     */
+    private function formatDateForLog($value): ?string
+    {
+        if ($value instanceof CarbonInterface) {
+            return $value->format('Y-m-d');
+        }
+
+        return $value ? (string) $value : null;
+    }
 }

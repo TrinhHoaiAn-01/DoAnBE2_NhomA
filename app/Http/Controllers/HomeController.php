@@ -36,6 +36,8 @@ class HomeController extends Controller
         // 2. Lấy danh sách sản phẩm nổi bật (Mới nhất, đang bán và còn hàng trong kho)
         $featured_products = Product::query()
             ->with('category')
+            ->withAvg(['reviews as average_rating' => fn($q) => $q->where('is_approved', true)], 'rating')
+            ->withCount(['reviews as approved_reviews_count' => fn($q) => $q->where('is_approved', true)])
             ->where('is_active', true)
             ->where('stock', '>', 0)
             ->latest()
@@ -45,6 +47,8 @@ class HomeController extends Controller
         // 3. Đề xuất sản phẩm – lấy ngẫu nhiên 8 sản phẩm đang hoạt động và còn hàng
         $suggested_products = Product::query()
             ->with('category')
+            ->withAvg(['reviews as average_rating' => fn($q) => $q->where('is_approved', true)], 'rating')
+            ->withCount(['reviews as approved_reviews_count' => fn($q) => $q->where('is_approved', true)])
             ->where('is_active', true)
             ->where('stock', '>', 0)
             ->inRandomOrder()
@@ -54,6 +58,8 @@ class HomeController extends Controller
         // 4. Lấy danh sách sản phẩm Flash Sale (Sản phẩm đang hoạt động và có giá bán hiện tại nhỏ hơn giá bán gốc)
         $flash_sales = Product::query()
             ->with('category')
+            ->withAvg(['reviews as average_rating' => fn($q) => $q->where('is_approved', true)], 'rating')
+            ->withCount(['reviews as approved_reviews_count' => fn($q) => $q->where('is_approved', true)])
             ->where('is_active', true)
             ->whereNotNull('original_price')
             ->whereColumn('price', '<', 'original_price')
@@ -63,22 +69,12 @@ class HomeController extends Controller
         // 5. Thiết lập thời gian kết thúc flash sale (giả lập là 2 tiếng kể từ thời điểm hiện tại)
         $flash_sale_end = now()->addHours(2)->format('Y-m-d H:i:s');
 
-        // 6. Mock dữ liệu Banners (Tạm thời mock dữ liệu tĩnh, sau này có thể cấu hình động từ Database)
+        // 6. Lấy sản phẩm mới nhất có ảnh để hiển thị banner mặc định nếu chưa có banner từ DB
         $newestProduct = Product::query()
             ->where('is_active', true)
             ->whereNotNull('image_url')
             ->latest()
             ->first();
-
-        // Banners
-        $banners = [
-            ['image' => 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=1200', 'title' => 'Mega Sale - Giảm tới 50%', 'link' => route('products.index')],
-            [
-                'image' => $newestProduct?->image_url ?? 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=1200',
-                'title' => $newestProduct ? 'Mới nhất: ' . $newestProduct->name : 'Sản phẩm mới nhất',
-                'link'  => $newestProduct ? route('products.show', $newestProduct) : route('products.index'),
-            ],
-        ];
 
         // 7. Trả về view 'home' với toàn bộ các biến dữ liệu cần thiết
         return view('home', [
@@ -87,7 +83,6 @@ class HomeController extends Controller
             'flash_sales' => $flash_sales,
             'flash_sale_end' => $flash_sale_end,
             'suggested_products' => $suggested_products,
-            'banners' => $banners,
             'newestProduct' => $newestProduct,
         ]);
     }

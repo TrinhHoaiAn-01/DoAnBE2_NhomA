@@ -1,4 +1,4 @@
-@extends('layouts.app', [
+﻿@extends('layouts.app', [
     'title' => 'Đăng nhập NeoMart',
     'hideNavbar' => true
 ])
@@ -17,13 +17,14 @@
 
         min-height:100vh;
 
-        overflow:hidden;
+        overflow-x:hidden;
+        overflow-y:auto;
 
-        font-family:'Segoe UI',sans-serif;
+        font-family:system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
         background:
-            radial-gradient(circle at top left, rgba(37,99,235,0.20), transparent 25%),
-            radial-gradient(circle at bottom right, rgba(124,58,237,0.20), transparent 25%),
+            radial-gradient(circle at top left, rgba(22,163,74,0.20), transparent 25%),
+            radial-gradient(circle at bottom right, rgba(4,120,87,0.20), transparent 25%),
             linear-gradient(
                 135deg,
                 #020617,
@@ -62,7 +63,7 @@
         width:260px;
         height:260px;
 
-        background:#2563eb;
+        background:#16a34a;
 
         top:-80px;
         left:-80px;
@@ -73,7 +74,7 @@
         width:340px;
         height:340px;
 
-        background:#7c3aed;
+        background:#047857;
 
         right:-120px;
         bottom:-120px;
@@ -162,7 +163,7 @@
 
         filter:
             drop-shadow(
-                0 20px 45px rgba(37,99,235,0.35)
+                0 20px 45px rgba(22,163,74,0.35)
             );
 
         transition:0.3s;
@@ -229,13 +230,13 @@
 
     .form-control:focus{
 
-        border-color:#3b82f6;
+        border-color:#22c55e;
 
         background:
             rgba(255,255,255,0.08);
 
         box-shadow:
-            0 0 0 4px rgba(37,99,235,0.15);
+            0 0 0 4px rgba(22,163,74,0.15);
 
         color:#ffffff !important;
     }
@@ -288,7 +289,7 @@
 
     .remember-left input{
 
-        accent-color:#2563eb;
+        accent-color:#16a34a;
     }
 
     .remember a{
@@ -302,6 +303,30 @@
 
     .remember a:hover{
         color:white;
+    }
+
+    /* =========================
+        CAPTCHA
+    ========================== */
+
+    .recaptcha-wrapper{
+
+        display:flex;
+
+        justify-content:center;
+
+        min-height:78px;
+
+        overflow:hidden;
+    }
+
+    .invalid-feedback{
+
+        color:#fca5a5;
+
+        font-size:13px;
+
+        margin-top:8px;
     }
 
     /* =========================
@@ -330,12 +355,12 @@
         background:
             linear-gradient(
                 135deg,
-                #2563eb,
-                #7c3aed
+                #16a34a,
+                #047857
             );
 
         box-shadow:
-            0 12px 30px rgba(124,58,237,0.22);
+            0 12px 30px rgba(4,120,87,0.22);
     }
 
     .submit-btn:hover{
@@ -343,7 +368,7 @@
         transform:translateY(-3px);
 
         box-shadow:
-            0 18px 35px rgba(124,58,237,0.32);
+            0 18px 35px rgba(4,120,87,0.32);
     }
 
     /* =========================
@@ -442,13 +467,6 @@
         height:22px;
     }
 
-    .social-github img{
-
-        background:white;
-
-        border-radius:50%;
-    }
-
     /* =========================
         REGISTER
     ========================== */
@@ -477,6 +495,18 @@
 
     .register-link a:hover{
         color:white;
+    }
+
+    @media(max-width:380px){
+
+        .login-card{
+            padding:32px 20px;
+        }
+
+        .recaptcha-wrapper .g-recaptcha{
+            transform:scale(0.86);
+            transform-origin:center top;
+        }
     }
 
 </style>
@@ -518,6 +548,7 @@
                 <input
                     type="email"
                     name="email"
+                    value="{{ old('email') }}"
                     class="form-control"
                     placeholder="Nhập email..."
                     autocomplete="off"
@@ -566,6 +597,26 @@
 
             </div>
 
+            <!-- CAPTCHA -->
+            <div class="form-group">
+
+                <div class="recaptcha-wrapper">
+
+                    <div
+                        class="g-recaptcha"
+                        data-sitekey="{{ config('services.recaptcha.site_key') }}"
+                    ></div>
+
+                </div>
+
+                @error('g-recaptcha-response')
+                    <div class="invalid-feedback d-block text-center">
+                        {{ $message }}
+                    </div>
+                @enderror
+
+            </div>
+
             <!-- LOGIN BUTTON -->
             <button
                 type="submit"
@@ -588,7 +639,7 @@
 
                 <!-- GOOGLE -->
                 <a
-                    href="#"
+                    href="{{ route('google.login') }}"
                     class="social-btn"
                 >
 
@@ -599,23 +650,6 @@
 
                     <span>
                         Đăng nhập với Google
-                    </span>
-
-                </a>
-
-                <!-- GITHUB -->
-                <a
-                    href="#"
-                    class="social-btn social-github"
-                >
-
-                    <img
-                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
-                        alt="Github"
-                    >
-
-                    <span>
-                        Đăng nhập với Github
                     </span>
 
                 </a>
@@ -638,5 +672,9 @@
     </div>
 
 </div>
+
+@push('scripts')
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+@endpush
 
 @endsection
