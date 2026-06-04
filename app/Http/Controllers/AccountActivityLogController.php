@@ -29,7 +29,8 @@ class AccountActivityLogController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        return view('user.account-activity-logs', [
+        return view('user.profile-user', [
+            'profileSection' => 'activity',
             'logs' => $logs,
             'type' => $type,
             'typeOptions' => [

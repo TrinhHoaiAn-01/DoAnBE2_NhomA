@@ -257,11 +257,159 @@
 
             opacity: 0.8;
         }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.24);
+            transform: translateX(6px);
+        }
+
+        .section-subtitle {
+            margin-top: -14px;
+            margin-bottom: 24px;
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .filter-link {
+            padding: 9px 14px;
+            border-radius: 999px;
+            color: rgba(255, 255, 255, 0.82);
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            font-size: 14px;
+        }
+
+        .filter-link.active,
+        .filter-link:hover {
+            color: #ffffff;
+            background: #2563eb;
+            border-color: #60a5fa;
+        }
+
+        .timeline {
+            display: grid;
+            gap: 14px;
+        }
+
+        .activity-item {
+            display: grid;
+            grid-template-columns: 46px 1fr;
+            gap: 14px;
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .activity-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(37, 99, 235, 0.24);
+            color: #93c5fd;
+            font-size: 18px;
+        }
+
+        .activity-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .activity-time {
+            margin-top: 4px;
+            color: rgba(255, 255, 255, 0.64);
+            font-size: 13px;
+        }
+
+        .activity-description {
+            margin: 10px 0 0;
+            color: rgba(255, 255, 255, 0.86);
+        }
+
+        .meta-grid {
+            margin-top: 12px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .meta-line {
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.38);
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .empty-state {
+            padding: 34px 20px;
+            border-radius: 18px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .pager {
+            margin-top: 22px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .pager a,
+        .pager span {
+            padding: 10px 15px;
+            border-radius: 999px;
+            color: #ffffff;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .pager span {
+            opacity: 0.45;
+        }
+
+        .support-control {
+            min-height: 52px;
+            padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        textarea.support-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        select.support-control option {
+            color: #111827;
+            background: #ffffff;
+        }
+
+        .admin-line {
+            margin-top: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
     </style>
 
 </head>
 
 <body>
+
+    @php
+        $profileSection = $profileSection ?? 'profile';
+    @endphp
 
     <!-- BACKGROUND -->
     <div class="bg bg1"></div>
@@ -323,6 +471,14 @@
 
                             </a>
 
+                            <a href="{{ route('profile') }}" class="nav-item {{ $profileSection === 'profile' ? 'active' : '' }}">
+
+                                <i class="fa fa-user"></i>
+
+                                Thông tin hồ sơ
+
+                            </a>
+
                             <a href="{{ route('change.password') }}" class="nav-item">
 
                                 <i class="fa fa-key"></i>
@@ -332,7 +488,7 @@
                             </a>
 
                             <!-- LOG ACTIVITY -->
-                            <a href="{{ route('account.activity.logs') }}" class="nav-item">
+                            <a href="{{ route('account.activity.logs') }}" class="nav-item {{ $profileSection === 'activity' ? 'active' : '' }}">
 
                                 <i class="fa fa-clock-rotate-left"></i>
 
@@ -341,7 +497,7 @@
                             </a>
 
                             <!-- SUPPORT -->
-                            <a href="{{ route('support.user') }}" class="nav-item">
+                            <a href="{{ route('support.user') }}" class="nav-item {{ $profileSection === 'support' ? 'active' : '' }}">
 
                                 <i class="fa fa-headset"></i>
 
@@ -383,6 +539,8 @@
                 <div class="col-lg-8">
 
                     <div class="right">
+
+                        @if($profileSection === 'profile')
 
                         <!-- TITLE -->
                         <div class="title">
@@ -579,6 +737,249 @@
                             </div>
 
                         </form>
+
+                        @elseif($profileSection === 'activity')
+
+                        <div class="title">
+                            Nhật ký hoạt động
+                        </div>
+
+                        <p class="section-subtitle">
+                            Theo dõi lịch sử đăng nhập, thay đổi hồ sơ và các lần mua hàng của tài khoản.
+                        </p>
+
+                        <div class="filter-row" aria-label="Lọc nhật ký hoạt động">
+
+                            <a class="filter-link {{ ($type ?? '') === '' ? 'active' : '' }}"
+                                href="{{ route('account.activity.logs') }}">
+                                Tất cả
+                            </a>
+
+                            @foreach(($typeOptions ?? []) as $value => $label)
+
+                                <a class="filter-link {{ ($type ?? '') === $value ? 'active' : '' }}"
+                                    href="{{ route('account.activity.logs', ['type' => $value]) }}">
+                                    {{ $label }}
+                                </a>
+
+                            @endforeach
+
+                        </div>
+
+                        @if(($logs ?? collect())->isEmpty())
+
+                            <div class="empty-state">
+                                <i class="fa fa-clock-rotate-left mb-3 fs-3"></i>
+                                <div>Chưa có hoạt động nào được ghi nhận.</div>
+                            </div>
+
+                        @else
+
+                            <div class="timeline">
+
+                                @foreach($logs as $log)
+
+                                    @php
+                                        $icon = match ($log->type) {
+                                            'login' => 'fa-right-to-bracket',
+                                            'profile_update' => 'fa-user-pen',
+                                            'purchase' => 'fa-bag-shopping',
+                                            default => 'fa-circle-info',
+                                        };
+                                        $changes = $log->metadata['changes'] ?? [];
+                                    @endphp
+
+                                    <article class="activity-item">
+
+                                        <div class="activity-icon">
+                                            <i class="fa {{ $icon }}"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <h3 class="activity-title">
+                                                {{ $log->title }}
+                                            </h3>
+
+                                            <div class="activity-time">
+
+                                                {{ $log->created_at->format('d/m/Y H:i:s') }}
+
+                                                @if($log->ip_address)
+                                                    · IP: {{ $log->ip_address }}
+                                                @endif
+
+                                            </div>
+
+                                            @if($log->description)
+
+                                                <p class="activity-description">
+                                                    {{ $log->description }}
+                                                </p>
+
+                                            @endif
+
+                                            @if($changes !== [])
+
+                                                <div class="meta-grid">
+
+                                                    @foreach($changes as $change)
+
+                                                        <div class="meta-line">
+                                                            <strong>{{ $change['label'] ?? $change['field'] ?? 'Trường dữ liệu' }}:</strong>
+                                                            {{ $change['old'] ?? 'Trống' }} → {{ $change['new'] ?? 'Trống' }}
+                                                        </div>
+
+                                                    @endforeach
+
+                                                </div>
+
+                                            @elseif($log->type === 'purchase' && is_array($log->metadata))
+
+                                                <div class="meta-grid">
+
+                                                    <div class="meta-line">
+                                                        <strong>Mã đơn hàng:</strong> {{ $log->metadata['order_code'] ?? 'Không xác định' }}
+                                                    </div>
+
+                                                    <div class="meta-line">
+                                                        <strong>Tổng tiền:</strong> {{ number_format((float) ($log->metadata['total'] ?? 0), 0, ',', '.') }}đ
+                                                    </div>
+
+                                                </div>
+
+                                            @endif
+
+                                        </div>
+
+                                    </article>
+
+                                @endforeach
+
+                            </div>
+
+                            <div class="pager">
+
+                                @if($logs->onFirstPage())
+                                    <span>Trang trước</span>
+                                @else
+                                    <a href="{{ $logs->previousPageUrl() }}">Trang trước</a>
+                                @endif
+
+                                @if($logs->hasMorePages())
+                                    <a href="{{ $logs->nextPageUrl() }}">Trang sau</a>
+                                @else
+                                    <span>Trang sau</span>
+                                @endif
+
+                            </div>
+
+                        @endif
+
+                        @elseif($profileSection === 'support')
+
+                        <div class="title">
+                            Hỗ trợ người dùng
+                        </div>
+
+                        <p class="section-subtitle">
+                            Gửi thông tin lỗi để admin kiểm tra và phản hồi qua email của bạn.
+                        </p>
+
+                        @if(session('success'))
+
+                            <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
+
+                                {{ session('success') }}
+
+                                <button type="button" class="btn-close" data-bs-dismiss="alert">
+                                </button>
+
+                            </div>
+
+                        @endif
+
+                        @if($errors->any())
+
+                            <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+
+                                <ul class="mb-0">
+
+                                    @foreach($errors->all() as $error)
+
+                                        <li>{{ $error }}</li>
+
+                                    @endforeach
+
+                                </ul>
+
+                                <button type="button" class="btn-close" data-bs-dismiss="alert">
+                                </button>
+
+                            </div>
+
+                        @endif
+
+                        <form method="POST" action="{{ route('support.send') }}">
+
+                            @csrf
+
+                            <div class="mb-3">
+
+                                <label class="form-label" for="support_email">
+                                    Email người dùng
+                                </label>
+
+                                <input id="support_email" type="email" class="form-control support-control" name="email"
+                                    value="{{ old('email', Auth::user()->email) }}" placeholder="email@example.com" required>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label" for="issue_type">
+                                    Chọn lỗi
+                                </label>
+
+                                <select id="issue_type" name="issue_type" class="form-control support-control" required>
+                                    <option value="">-- Chọn loại lỗi --</option>
+                                    <option value="account" {{ old('issue_type') === 'account' ? 'selected' : '' }}>Lỗi tài khoản</option>
+                                    <option value="order" {{ old('issue_type') === 'order' ? 'selected' : '' }}>Lỗi đơn hàng</option>
+                                    <option value="payment" {{ old('issue_type') === 'payment' ? 'selected' : '' }}>Lỗi thanh toán</option>
+                                    <option value="system" {{ old('issue_type') === 'system' ? 'selected' : '' }}>Lỗi hệ thống</option>
+                                    <option value="other" {{ old('issue_type') === 'other' ? 'selected' : '' }}>Lỗi khác</option>
+                                </select>
+
+                            </div>
+
+                            <div class="mb-4">
+
+                                <label class="form-label" for="description">
+                                    Mô tả lỗi
+                                </label>
+
+                                <textarea id="description" name="description" class="form-control support-control"
+                                    placeholder="Mô tả lỗi bạn đang gặp..." required>{{ old('description') }}</textarea>
+
+                            </div>
+
+                            <div class="btn-wrapper">
+
+                                <button type="submit" class="btn-save">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    Gửi
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                        <div class="admin-line">
+                            <i class="fa-solid fa-envelope me-2"></i>
+                            Email admin: {{ config('mail.from.address', 'trinhhoaia03@gmail.com') }}
+                        </div>
+
+                        @endif
 
                     </div>
 

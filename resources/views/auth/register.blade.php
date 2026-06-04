@@ -267,6 +267,83 @@
         margin-top:8px;
     }
 
+    .alert-success{
+
+        padding:14px 16px;
+
+        margin-bottom:22px;
+
+        border-radius:16px;
+
+        color:#bbf7d0;
+
+        background:rgba(34,197,94,0.12);
+
+        border:1px solid rgba(34,197,94,0.22);
+
+        font-size:14px;
+    }
+
+    .otp-panel{
+
+        padding:18px;
+
+        margin-bottom:22px;
+
+        border-radius:20px;
+
+        background:rgba(59,130,246,0.10);
+
+        border:1px solid rgba(147,197,253,0.18);
+
+        color:#cbd5e1;
+
+        font-size:14px;
+
+        line-height:1.6;
+    }
+
+    .otp-email{
+
+        color:#ffffff;
+
+        font-weight:700;
+
+        word-break:break-word;
+    }
+
+    .otp-actions{
+
+        display:flex;
+
+        justify-content:center;
+
+        gap:14px;
+
+        margin-top:18px;
+
+        flex-wrap:wrap;
+    }
+
+    .link-btn{
+
+        border:0;
+
+        background:transparent;
+
+        color:#93c5fd;
+
+        font-weight:600;
+
+        cursor:pointer;
+
+        padding:0;
+    }
+
+    .link-btn:hover{
+        color:#ffffff;
+    }
+
     /* =========================
         BUTTON
     ========================== */
@@ -397,6 +474,78 @@
 
             @csrf
 
+            @if(session('success'))
+                <div class="alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if($pendingRegistration ?? false)
+
+                <div class="otp-panel">
+                    Mã OTP đã được gửi tới
+                    <span class="otp-email">{{ $pendingRegistration['email'] }}</span>.
+                    Mã có hiệu lực trong 3 phút và có thể đối chiếu bằng Google Authenticator.
+                </div>
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Mã OTP
+                    </label>
+
+                    <input
+                        type="text"
+                        name="registration_otp"
+                        value="{{ old('registration_otp') }}"
+                        class="form-control @error('registration_otp') is-invalid @enderror"
+                        placeholder="Nhập mã OTP 6 số..."
+                        inputmode="numeric"
+                        maxlength="6"
+                        autocomplete="one-time-code"
+                        required
+                        autofocus
+                    >
+
+                    @error('registration_otp')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+                    Xác nhận OTP
+                </button>
+
+                <div class="otp-actions">
+                    <button
+                        type="submit"
+                        class="link-btn"
+                        formmethod="POST"
+                        formaction="{{ route('register.otp.resend') }}"
+                        formnovalidate
+                    >
+                        Gửi lại mã OTP
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="link-btn"
+                        formmethod="POST"
+                        formaction="{{ route('register.otp.cancel') }}"
+                        formnovalidate
+                    >
+                        Đăng ký lại
+                    </button>
+                </div>
+
+            @else
+
             <!-- ACCOUNT NAME -->
             <div class="form-group">
 
@@ -516,6 +665,8 @@
             >
                 Tạo tài khoản
             </button>
+
+            @endif
 
             <!-- LOGIN -->
             <div class="login-link">

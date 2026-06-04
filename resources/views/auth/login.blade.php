@@ -467,13 +467,6 @@
         height:22px;
     }
 
-    .social-facebook img{
-
-        background:white;
-
-        border-radius:50%;
-    }
-
     /* =========================
         REGISTER
     ========================== */
@@ -657,23 +650,6 @@
 
                     <span>
                         Đăng nhập với Google
-                    </span>
-
-                </a>
-
-                <!-- FACEBOOK -->
-                <a
-                    href="{{ route('facebook.login') }}"
-                    class="social-btn social-facebook"
-                >
-
-                    <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png"
-                        alt="Facebook"
-                    >
-
-                    <span>
-                        Đăng nhập với Facebook
                     </span>
 
                 </a>

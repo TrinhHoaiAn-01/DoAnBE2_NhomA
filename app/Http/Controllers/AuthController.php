@@ -8,9 +8,11 @@ use App\Models\SystemLog;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -22,6 +24,11 @@ use Illuminate\View\View;
  */
 class AuthController extends Controller
 {
+    private const REGISTRATION_OTP_SESSION_KEY = 'registration_otp_pending';
+    private const REGISTRATION_OTP_TTL_MINUTES = 3;
+    private const REGISTRATION_OTP_PERIOD_SECONDS = 180;
+    private const REGISTRATION_OTP_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+
     /**
      * Hiển thị trang đăng nhập.
      *
@@ -113,7 +120,9 @@ class AuthController extends Controller
      */
     public function showRegister(): View
     {
-        return view('auth.register');
+        return view('auth.register', [
+            'pendingRegistration' => session(self::REGISTRATION_OTP_SESSION_KEY),
+        ]);
     }
 
     /**
@@ -124,10 +133,142 @@ class AuthController extends Controller
      */
     public function register(Request $request): RedirectResponse
     {
+        if ($request->filled('registration_otp')) {
+            return $this->completeRegistrationWithOtp($request);
+        }
+
         $this->verifyRecaptcha($request);
 
         // 1. Kiểm tra tính hợp lệ của dữ liệu đăng ký
-        $data = $request->validate([
+        $data = $this->validateRegistrationData($request);
+        $otpSecret = $this->generateRegistrationOtpSecret();
+        $otp = $this->generateRegistrationTotp($otpSecret);
+
+        // 2. Lưu dữ liệu đăng ký chờ xác thực OTP trong session
+        $request->session()->put(self::REGISTRATION_OTP_SESSION_KEY, [
+            'data' => [
+                'name' => $data['name'] ?? $data['username'],
+                'username' => $data['username'],
+                'email' => $data['email'],
+                'phone' => $data['phone'] ?? null,
+                'avatar_url' => $data['avatar_url'] ?? null,
+                'home_address' => $data['home_address'] ?? null,
+                'gender' => $data['gender'] ?? null,
+                'date_of_birth' => $data['date_of_birth'] ?? null,
+                'password' => Hash::make($data['password']),
+                'role_id' => 1,
+                'status' => true,
+            ],
+            'email' => $data['email'],
+            'otp_secret' => $otpSecret,
+            'otp_hash' => Hash::make($otp),
+            'expires_at' => now()->addMinutes(self::REGISTRATION_OTP_TTL_MINUTES)->toIso8601String(),
+        ]);
+
+        // 3. Gửi OTP tới email, chưa tạo tài khoản cho đến khi mã hợp lệ
+        $this->sendRegistrationOtp($data['email'], $otp, $otpSecret);
+
+        return redirect()
+            ->route('register')
+            ->with('success', 'Mã OTP đã được gửi tới email của bạn. Vui lòng nhập mã trong vòng 3 phút.');
+    }
+
+    public function resendRegistrationOtp(Request $request): RedirectResponse
+    {
+        $pendingRegistration = $request->session()->get(self::REGISTRATION_OTP_SESSION_KEY);
+
+        if (!$pendingRegistration) {
+            return redirect()->route('register');
+        }
+
+        $otpSecret = $this->generateRegistrationOtpSecret();
+        $otp = $this->generateRegistrationTotp($otpSecret);
+
+        $pendingRegistration['otp_secret'] = $otpSecret;
+        $pendingRegistration['otp_hash'] = Hash::make($otp);
+        $pendingRegistration['expires_at'] = now()->addMinutes(self::REGISTRATION_OTP_TTL_MINUTES)->toIso8601String();
+
+        $request->session()->put(self::REGISTRATION_OTP_SESSION_KEY, $pendingRegistration);
+
+        $this->sendRegistrationOtp($pendingRegistration['email'], $otp, $otpSecret);
+
+        return redirect()
+            ->route('register')
+            ->with('success', 'Mã OTP mới đã được gửi tới email của bạn. Mã có hiệu lực trong 3 phút.');
+    }
+
+    public function cancelRegistrationOtp(Request $request): RedirectResponse
+    {
+        $request->session()->forget(self::REGISTRATION_OTP_SESSION_KEY);
+
+        return redirect()->route('register');
+    }
+
+    private function completeRegistrationWithOtp(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'registration_otp' => ['required', 'digits:6'],
+        ], [
+            'registration_otp.required' => 'Vui lòng nhập mã OTP.',
+            'registration_otp.digits' => 'Mã OTP phải gồm 6 chữ số.',
+        ]);
+
+        $pendingRegistration = $request->session()->get(self::REGISTRATION_OTP_SESSION_KEY);
+
+        if (!$pendingRegistration) {
+            throw ValidationException::withMessages([
+                'registration_otp' => 'Phiên xác thực OTP không tồn tại. Vui lòng đăng ký lại.',
+            ]);
+        }
+
+        if (now()->greaterThan(Carbon::parse($pendingRegistration['expires_at']))) {
+            $request->session()->forget(self::REGISTRATION_OTP_SESSION_KEY);
+
+            throw ValidationException::withMessages([
+                'registration_otp' => 'Mã OTP đã hết hạn. Vui lòng đăng ký lại để nhận mã mới.',
+            ]);
+        }
+
+        if (!$this->registrationOtpMatches($request->input('registration_otp'), $pendingRegistration)) {
+            throw ValidationException::withMessages([
+                'registration_otp' => 'Mã OTP sai. Vui lòng kiểm tra lại email hoặc Google Authenticator.',
+            ]);
+        }
+
+        $data = $pendingRegistration['data'];
+
+        if (User::where('username', $data['username'])->exists()) {
+            $request->session()->forget(self::REGISTRATION_OTP_SESSION_KEY);
+
+            throw ValidationException::withMessages([
+                'registration_otp' => 'Tên tài khoản đã được sử dụng. Vui lòng đăng ký lại.',
+            ]);
+        }
+
+        if (User::where('email', $data['email'])->exists()) {
+            $request->session()->forget(self::REGISTRATION_OTP_SESSION_KEY);
+
+            throw ValidationException::withMessages([
+                'registration_otp' => 'Email đã được sử dụng. Vui lòng đăng ký lại.',
+            ]);
+        }
+
+        $user = new User($data);
+        $user->email_verified_at = now();
+        $user->save();
+
+        $request->session()->forget(self::REGISTRATION_OTP_SESSION_KEY);
+
+        Auth::login($user);
+        Auth::logout();
+
+        return redirect()->route('login')
+            ->with('success', 'Đăng ký thành công!');
+    }
+
+    private function validateRegistrationData(Request $request): array
+    {
+        return $request->validate([
             'name' => ['nullable', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users,username'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
@@ -138,29 +279,106 @@ class AuthController extends Controller
             'date_of_birth' => ['nullable', 'date'],
             'password' => ['required', 'string', 'confirmed', 'min:8'],
         ]);
+    }
 
-        // 2. Tạo bản ghi người dùng mới trong cơ sở dữ liệu
-        $user = User::create([
-            'name' => $data['name'] ?? $data['username'],
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
-            'avatar_url' => $data['avatar_url'] ?? null,
-            'home_address' => $data['home_address'] ?? null,
-            'gender' => $data['gender'] ?? null,
-            'date_of_birth' => $data['date_of_birth'] ?? null,
-            'password' => Hash::make($data['password']), // Mã hóa mật khẩu
-            'role_id' => 1, // Mặc định gán vai trò là Khách hàng (role_id = 1)
-            'status' => true, // Trạng thái hoạt động mặc định là kích hoạt
-        ]);
+    private function registrationOtpMatches(string $otp, array $pendingRegistration): bool
+    {
+        if (Hash::check($otp, $pendingRegistration['otp_hash'])) {
+            return true;
+        }
 
-        // 3. Thực hiện đăng nhập rồi lập tức đăng xuất (để thiết lập session ban đầu nếu cần)
-        // và yêu cầu người dùng tự đăng nhập lại tại trang đăng nhập
-        Auth::login($user);
-        Auth::logout();
+        if (empty($pendingRegistration['otp_secret'])) {
+            return false;
+        }
 
-        return redirect()->route('login')
-            ->with('success', 'Đăng ký thành công!');
+        foreach ([0, -1] as $window) {
+            if (hash_equals($this->generateRegistrationTotp($pendingRegistration['otp_secret'], null, $window), $otp)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function generateRegistrationOtpSecret(): string
+    {
+        $bytes = random_bytes(20);
+        $bits = '';
+
+        foreach (str_split($bytes) as $byte) {
+            $bits .= str_pad(decbin(ord($byte)), 8, '0', STR_PAD_LEFT);
+        }
+
+        $secret = '';
+
+        foreach (str_split($bits, 5) as $chunk) {
+            $secret .= self::REGISTRATION_OTP_ALPHABET[bindec(str_pad($chunk, 5, '0', STR_PAD_RIGHT))];
+        }
+
+        return $secret;
+    }
+
+    private function generateRegistrationTotp(string $secret, ?int $timestamp = null, int $window = 0): string
+    {
+        $counter = intdiv($timestamp ?? time(), self::REGISTRATION_OTP_PERIOD_SECONDS) + $window;
+        $counterBytes = pack('N*', 0) . pack('N*', $counter);
+        $hash = hash_hmac('sha1', $counterBytes, $this->decodeBase32Secret($secret), true);
+        $offset = ord($hash[19]) & 0x0f;
+        $binaryCode = (
+            ((ord($hash[$offset]) & 0x7f) << 24) |
+            ((ord($hash[$offset + 1]) & 0xff) << 16) |
+            ((ord($hash[$offset + 2]) & 0xff) << 8) |
+            (ord($hash[$offset + 3]) & 0xff)
+        );
+
+        return str_pad((string) ($binaryCode % 1000000), 6, '0', STR_PAD_LEFT);
+    }
+
+    private function decodeBase32Secret(string $secret): string
+    {
+        $secret = strtoupper(preg_replace('/[^A-Z2-7]/', '', $secret));
+        $bits = '';
+
+        foreach (str_split($secret) as $character) {
+            $position = strpos(self::REGISTRATION_OTP_ALPHABET, $character);
+
+            if ($position === false) {
+                continue;
+            }
+
+            $bits .= str_pad(decbin($position), 5, '0', STR_PAD_LEFT);
+        }
+
+        $bytes = '';
+
+        foreach (str_split($bits, 8) as $chunk) {
+            if (strlen($chunk) === 8) {
+                $bytes .= chr(bindec($chunk));
+            }
+        }
+
+        return $bytes;
+    }
+
+    private function sendRegistrationOtp(string $email, string $otp, string $otpSecret): void
+    {
+        $issuer = rawurlencode(config('app.name', 'NeoMart'));
+        $label = rawurlencode('NeoMart:' . $email);
+        $otpAuthUri = "otpauth://totp/{$label}?secret={$otpSecret}&issuer={$issuer}&digits=6&period=" . self::REGISTRATION_OTP_PERIOD_SECONDS;
+
+        try {
+            Mail::raw(
+                "Ma OTP dang ky NeoMart cua ban la: {$otp}\n\nMa nay co hieu luc trong 3 phut. Vui long khong chia se ma nay cho nguoi khac.\n\nGoogle Authenticator tam thoi:\nSecret: {$otpSecret}\nURI: {$otpAuthUri}",
+                function ($mail) use ($email): void {
+                    $mail->to($email)
+                        ->subject('Ma OTP dang ky NeoMart');
+                }
+            );
+        } catch (\Throwable) {
+            throw ValidationException::withMessages([
+                'email' => 'Không thể gửi mã OTP tới email này. Vui lòng kiểm tra cấu hình email và thử lại.',
+            ]);
+        }
     }
 
     /**

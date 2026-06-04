@@ -26,6 +26,10 @@ class ProfileUserController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role_id == 5) {
+            return redirect()->route('profile.admin');
+        }
+
         return view('user.profile-user');
     }
 

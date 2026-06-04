@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 
 class SupportUserController extends Controller
 {
@@ -12,9 +13,11 @@ class SupportUserController extends Controller
     | HIỂN THỊ TRANG SUPPORT
     |--------------------------------------------------------------------------
     */
-    public function index()
+    public function index(): View
     {
-        return view('user.support-user');
+        return view('user.profile-user', [
+            'profileSection' => 'support',
+        ]);
     }
 
     /*
@@ -24,70 +27,47 @@ class SupportUserController extends Controller
     */
     public function send(Request $request)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDATE
-        |--------------------------------------------------------------------------
-        */
-        $request->validate([
-
-            'name' => 'required|string|max:255',
-
-            'email' => 'required|email',
-
-            'type' => 'required|string',
-
-            'message' => 'required|string|min:10',
-
+        $validated = $request->validate([
+            'email' => ['required', 'email', 'max:255'],
+            'issue_type' => ['required', 'string', 'in:account,order,payment,system,other'],
+            'description' => ['required', 'string', 'min:10', 'max:5000'],
+        ], [], [
+            'email' => 'email người dùng',
+            'issue_type' => 'loại lỗi',
+            'description' => 'mô tả lỗi',
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | NỘI DUNG EMAIL
-        |--------------------------------------------------------------------------
-        */
-        $content = "
+        $issueLabels = [
+            'account' => 'Lỗi tài khoản',
+            'order' => 'Lỗi đơn hàng',
+            'payment' => 'Lỗi thanh toán',
+            'system' => 'Lỗi hệ thống',
+            'other' => 'Lỗi khác',
+        ];
 
-        HỖ TRỢ NGƯỜI DÙNG
+        $user = $request->user();
+        $adminEmail = config('mail.from.address', 'trinhhoaia03@gmail.com');
+        $issueLabel = $issueLabels[$validated['issue_type']];
 
-        -------------------------
+        $content = trim("
+YÊU CẦU HỖ TRỢ NGƯỜI DÙNG
 
-        Họ tên: {$request->name}
+Họ tên: " . ($user->name ?: $user->username) . "
+Tên đăng nhập: {$user->username}
+ID người dùng: {$user->id}
+Email người dùng: {$validated['email']}
+Loại lỗi: {$issueLabel}
 
-        Email: {$request->email}
+Mô tả lỗi:
+{$validated['description']}
+        ");
 
-        Loại hỗ trợ: {$request->type}
-
-        Nội dung:
-
-        {$request->message}
-
-        ";
-
-        /*
-        |--------------------------------------------------------------------------
-        | GỬI EMAIL
-        |--------------------------------------------------------------------------
-        */
-        Mail::raw($content, function ($mail) use ($request) {
-
-            $mail->to('yourgmail@gmail.com')
-
-                ->subject('Yêu cầu hỗ trợ từ người dùng');
-
+        Mail::raw($content, function ($mail) use ($adminEmail, $validated, $issueLabel) {
+            $mail->to($adminEmail)
+                ->replyTo($validated['email'])
+                ->subject("Yêu cầu hỗ trợ: {$issueLabel}");
         });
 
-        /*
-        |--------------------------------------------------------------------------
-        | RETURN
-        |--------------------------------------------------------------------------
-        */
-        return back()->with(
-
-            'success',
-
-            'Gửi yêu cầu hỗ trợ thành công!'
-
-        );
+        return back()->with('success', 'Gửi thành công');
     }
 }

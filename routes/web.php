@@ -19,9 +19,7 @@ use App\Http\Controllers\ProductController as ShopProductController;
 use App\Http\Controllers\ProfileUserController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Middleware\CheckRole;
-use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\SupportUserController;
-use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -115,6 +113,12 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/register', [AuthController::class, 'register'])
         ->name('register.submit'); // Xử lý gửi thông tin đăng ký mới
 
+    Route::post('/register/resend-otp', [AuthController::class, 'resendRegistrationOtp'])
+        ->name('register.otp.resend');
+
+    Route::post('/register/cancel-otp', [AuthController::class, 'cancelRegistrationOtp'])
+        ->name('register.otp.cancel');
+
     // QUÊN MẬT KHẨU (FORGOT PASSWORD)
     Route::get('/forgetpassword', [AuthController::class, 'showForgetPassword'])
         ->name('password.request'); // Trang nhập email để khôi phục mật khẩu
@@ -206,6 +210,10 @@ Route::middleware('auth')->group(function () {
 */
 
 Route::get('/profile-admin', function () {
+    if (auth()->user()->role_id != 5) {
+        return redirect()->route('profile');
+    }
+
     return view('admin.profile-admin');
 })->middleware('auth')->name('profile.admin');
 
@@ -229,15 +237,17 @@ Route::get('/settings', function () {
 | SUPPORT USER
 |--------------------------------------------------------------------------
 */
-Route::get(
-    '/support-user',
-    [SupportUserController::class, 'index']
-)->name('support.user');
+Route::middleware('auth')->group(function (): void {
+    Route::get(
+        '/support-user',
+        [SupportUserController::class, 'index']
+    )->name('support.user');
 
-Route::post(
-    '/support-send',
-    [SupportUserController::class, 'send']
-)->name('support.send');
+    Route::post(
+        '/support-send',
+        [SupportUserController::class, 'send']
+    )->name('support.send');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -390,33 +400,8 @@ Route::prefix('admin')
         });
     });
 
-/*
-|--------------------------------------------------------------------------
-| BẢO VỆ ĐƯỜNG DẪN HỒ SƠ THEO VAI TRÒ (BẢO VỆ LINK)
-|--------------------------------------------------------------------------
-*/
-Route::middleware(['auth'])->group(function () {
-
-    // HỒ SƠ KHÁCH HÀNG (Vai trò: user)
-    Route::get('/profile', function () {
-        return view('user.profile-user');
-    })->middleware('role:user')->name('profile');
-
-    // HỒ SƠ QUẢN TRỊ VIÊN (Vai trò: admin)
-    Route::get('/profile-admin', function () {
-        return view('admin.profile-admin');
-    })->middleware('role:admin')->name('profile.admin');
-});
-
 // Google Auth
 Route::get('/auth/google', [GoogleController::class, 'redirect'])
     ->name('google.login');
 
 Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
-
-
-// Facebook Auth
-Route::get('/auth/facebook', [FacebookController::class, 'redirect'])
-    ->name('facebook.login');
-
-Route::get('/auth/facebook/callback', [FacebookController::class, 'callback']);

@@ -542,6 +542,12 @@
 
                     <!-- Auth -->
                     @auth
+                        @php
+                            $profileUrl = auth()->user()->role_id == 5
+                                ? route('profile.admin')
+                                : route('profile');
+                        @endphp
+
                         <div class="dropdown">
                             <button class="user-btn dropdown-toggle p-0" type="button"
                                     data-bs-toggle="dropdown" aria-expanded="false"
@@ -558,13 +564,8 @@
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('profile') }}">
-                                        Hồ sơ cá nhân
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                        Quản trị
+                                    <a class="dropdown-item" href="{{ $profileUrl }}">
+                                        Hồ sơ người dùng
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
@@ -652,8 +653,14 @@
                 <div style="height: 1px; background: var(--border); margin: 0.75rem 1.5rem;"></div>
                 
                 @auth
-                    <a href="{{ route('profile') }}" class="mobile-sidebar-item">
-                        <span>👤</span> Hồ sơ cá nhân
+                    @php
+                        $profileUrl = auth()->user()->role_id == 5
+                            ? route('profile.admin')
+                            : route('profile');
+                    @endphp
+
+                    <a href="{{ $profileUrl }}" class="mobile-sidebar-item">
+                        <span>👤</span> Hồ sơ người dùng
                     </a>
                     <form method="post" action="{{ route('logout') }}" class="m-0">
                         @csrf
