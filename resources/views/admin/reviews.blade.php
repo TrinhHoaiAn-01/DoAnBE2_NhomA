@@ -74,6 +74,7 @@
                                     <form method="post" action="{{ route('admin.reviews.update', $review) }}">
                                         @csrf
                                         @method('patch')
+                                        <input type="hidden" name="_record_updated_at" value="{{ $review->updated_at?->getTimestamp() }}">
                                         <input type="hidden" name="is_approved" value="{{ $review->is_approved ? 0 : 1 }}">
                                         <button class="btn btn-sm btn-outline-primary" type="submit">{{ $review->is_approved ? 'Ẩn' : 'Duyệt' }}</button>
                                     </form>

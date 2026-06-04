@@ -5,10 +5,21 @@ namespace Database\Seeders;
 use App\Models\Supplier;
 use Illuminate\Database\Seeder;
 
+/**
+ * Lớp SupplierSeeder
+ *
+ * Khởi tạo dữ liệu mẫu cho danh sách Nhà cung cấp (Suppliers) hàng hóa của hệ thống.
+ */
 class SupplierSeeder extends Seeder
 {
+    /**
+     * Thực thi chèn dữ liệu mẫu nhà cung cấp.
+     *
+     * @return void
+     */
     public function run(): void
     {
+        // Danh sách các nhà cung cấp mẫu đầu vào
         $suppliers = [
             [
                 'name' => 'NeoFresh Foods',
@@ -37,6 +48,7 @@ class SupplierSeeder extends Seeder
             ],
         ];
 
+        // Lặp qua mảng và thêm hoặc cập nhật thông tin nhà cung cấp
         foreach ($suppliers as $supplier) {
             Supplier::query()->updateOrCreate(
                 ['name' => $supplier['name']],

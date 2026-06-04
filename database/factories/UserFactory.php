@@ -7,17 +7,23 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
+ * Lớp UserFactory
+ *
+ * Định nghĩa khuôn mẫu mặc định cho dữ liệu mẫu của Model User.
+ * Giúp tạo tự động danh sách lớn các tài khoản người dùng ngẫu nhiên phục vụ kiểm thử.
+ *
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
 class UserFactory extends Factory
 {
     /**
-     * The current password being used by the factory.
+     * Mật khẩu tĩnh được mã hóa sử dụng chung cho các tài khoản sinh từ Factory.
+     * Tránh việc phải Hash lại mật khẩu nhiều lần gây chậm tiến trình test.
      */
     protected static ?string $password;
 
     /**
-     * Define the model's default state.
+     * Định nghĩa các giá trị thuộc tính mặc định cho thực thể User.
      *
      * @return array<string, mixed>
      */
@@ -35,7 +41,9 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * Trạng thái tài khoản người dùng chưa xác minh địa chỉ Email.
+     *
+     * @return static
      */
     public function unverified(): static
     {

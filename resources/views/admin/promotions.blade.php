@@ -84,6 +84,7 @@
                     @csrf
                     @if ($editing)
                         @method('put')
+                        <input type="hidden" name="_record_updated_at" value="{{ $editing->updated_at?->getTimestamp() }}">
                     @endif
 
                     <div class="row g-3">

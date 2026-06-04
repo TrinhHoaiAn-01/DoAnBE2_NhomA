@@ -7,10 +7,24 @@ use App\Models\Product;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
+/**
+ * Lớp CatalogSeeder
+ *
+ * Khởi tạo dữ liệu mẫu cho danh mục sản phẩm (Categories) và các sản phẩm (Products) tương ứng.
+ */
 class CatalogSeeder extends Seeder
 {
+    /**
+     * Thực thi chèn dữ liệu mẫu danh mục và sản phẩm.
+     *
+     * @return void
+     */
     public function run(): void
     {
+        // Danh sách các danh mục mẫu của hệ thống cửa hàng tiện lợi
+        // Xóa các sản phẩm đã tồn tại nhưng không còn trong 
+        // danh sách seeder
+        \App\Models\Product::query()->whereIn('sku', ['NM-GAO-THO', 'NM-NR-CHEN'])->delete();
         $categories = [
             [
                 'name' => 'Thuc pham',
@@ -49,6 +63,7 @@ class CatalogSeeder extends Seeder
             ],
         ];
 
+        // Lặp qua mảng và thêm hoặc cập nhật danh mục vào cơ sở dữ liệu
         foreach ($categories as $category) {
             Category::query()->updateOrCreate(
                 ['slug' => Str::slug($category['name'])],
@@ -56,6 +71,7 @@ class CatalogSeeder extends Seeder
             );
         }
 
+        // Danh sách các sản phẩm mẫu tương ứng với từng danh mục
         $products = [
             [
                 'category' => 'Do uong',
@@ -66,6 +82,7 @@ class CatalogSeeder extends Seeder
                 'price' => 49000,
                 'original_price' => 59000,
                 'stock' => 42,
+                'image_url' => 'https://cdn.lottemart.vn/media/description/product/cache/8934673573399-DT-1.jpg.webp',
             ],
             [
                 'category' => 'Thuc pham',
@@ -76,6 +93,7 @@ class CatalogSeeder extends Seeder
                 'price' => 129000,
                 'original_price' => 145000,
                 'stock' => 18,
+                'image_url' => 'https://bizweb.dktcdn.net/thumb/grande/100/469/765/products/z4583220339056-161e658dce652d5fa5cbe14ae788956e.jpg',
             ],
             [
                 'category' => 'Gia dung',
@@ -86,6 +104,7 @@ class CatalogSeeder extends Seeder
                 'price' => 39000,
                 'original_price' => 45000,
                 'stock' => 7,
+                'image_url' => 'https://product.hstatic.net/1000075554/product/3072_3800f24addd84595a1296d394c8a9a76_429c18eb8f0d4254b58bfcc8552ae588_f2c28a92c3194c448dd71c0d648cb16b_grande.jpg',
             ],
             [
                 'category' => 'My pham',
@@ -96,6 +115,7 @@ class CatalogSeeder extends Seeder
                 'price' => 79000,
                 'original_price' => 99000,
                 'stock' => 0,
+                'image_url' => 'https://images.unsplash.com/photo-1526947425960-945c6e72858f?w=600&q=80',
             ],
             [
                 'category' => 'Do uong',
@@ -106,6 +126,7 @@ class CatalogSeeder extends Seeder
                 'price' => 69000,
                 'original_price' => 79000,
                 'stock' => 25,
+                'image_url' => 'https://trungnguyencoffeevn.com/wp-content/uploads/2018/09/G7-Instant-Black-Coffee-no-sugar-317f.jpg',
             ],
             [
                 'category' => 'Thuc pham',
@@ -116,6 +137,7 @@ class CatalogSeeder extends Seeder
                 'price' => 54000,
                 'original_price' => 64000,
                 'stock' => 33,
+                'image_url' => 'https://cdn.chiaki.vn/unsafe/0x480/left/top/smart/filters:quality(75)/https://chiaki.vn/upload/product/2024/12/banh-quy-bo-bourbon-nhat-ban-hop-thiec-676a6e15dd9d1-24122024151725.png',
             ],
             [
                 'category' => 'Gia dung',
@@ -126,7 +148,9 @@ class CatalogSeeder extends Seeder
                 'price' => 32000,
                 'original_price' => null,
                 'stock' => 9,
+                'image_url' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkKVwHP-RQWmKqVpbi0CPsHTdEG5SxcYk3pA&s',
             ],
+
             [
                 'category' => 'My pham',
                 'name' => 'Sua rua mat LeafCare',
@@ -136,9 +160,12 @@ class CatalogSeeder extends Seeder
                 'price' => 89000,
                 'original_price' => 109000,
                 'stock' => 16,
+                'image_url' => 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&q=80',
             ],
+
         ];
 
+        // Lặp qua mảng sản phẩm và liên kết khóa ngoại với danh mục để thêm/cập nhật
         foreach ($products as $item) {
             $category = Category::query()->where('name', $item['category'])->first();
 
@@ -157,7 +184,7 @@ class CatalogSeeder extends Seeder
                     'price' => $item['price'],
                     'original_price' => $item['original_price'],
                     'stock' => $item['stock'],
-                    'image_url' => 'https://placehold.co/600x400?text=' . urlencode($item['name']),
+                    'image_url' => $item['image_url'] ?? ('https://placehold.co/600x400?text=' . urlencode($item['name'])),
                     'is_active' => true,
                 ]
             );

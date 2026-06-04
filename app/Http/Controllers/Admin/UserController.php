@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\HandlesCrudSafety;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -10,6 +11,8 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
+    use HandlesCrudSafety;
+
     public function index(Request $request): View
     {
         $search = trim((string) $request->string('search'));
@@ -29,7 +32,7 @@ class UserController extends Controller
                 $query->where('role_id', $roleId);
             })
             ->when($status !== null && $status !== '', function ($query) use ($status): void {
-                $query->where('status', (bool)$status);
+                $query->where('status', (bool) $status);
             })
             ->latest()
             ->paginate(15)
@@ -50,23 +53,32 @@ class UserController extends Controller
 
     public function update(Request $request, User $user): RedirectResponse
     {
-        $data = $request->validate([
+        $data = $this->validateCrud($request, [
             'role_id' => ['required', 'integer', 'in:1,2,3,4,5'],
             'status' => ['required', 'in:0,1'],
         ]);
 
-        $statusVal = (bool)$data['status'];
+        $statusVal = (bool) $data['status'];
 
-        if ($request->user()?->is($user) && !$statusVal) {
-            return to_route('admin.users.index')->with('error', 'Không thể khóa tài khoản đang đăng nhập.');
+        if ($request->user()?->is($user) && ! $statusVal) {
+            return to_route('admin.users.index')
+                ->with('error', 'Không thể khóa tài khoản đang đăng nhập. Thao tác này đã bị chặn để tránh mất quyền truy cập.');
         }
 
-        $user->update([
-            'role_id' => $data['role_id'],
-            'status' => $statusVal,
-        ]);
+        return $this->runCrudOperation(function () use ($request, $user, $data, $statusVal): RedirectResponse {
+            $this->transaction(function () use ($request, $user, $data, $statusVal): void {
+                $lockedUser = $this->lockForCrud($user);
+                $this->assertFreshRecord($request, $lockedUser, 'người dùng');
 
-        return to_route('admin.users.index')->with('status', 'Đã cập nhật người dùng.');
+                $lockedUser->update([
+                    'role_id' => $data['role_id'],
+                    'status' => $statusVal,
+                ]);
+            });
+
+            return to_route('admin.users.index')
+                ->with('status', 'Đã cập nhật người dùng. Hệ thống đã kiểm tra phiên chỉnh sửa và quyền thao tác trước khi lưu.');
+        }, 'cập nhật người dùng');
     }
 
     private function roleOptions(): array
