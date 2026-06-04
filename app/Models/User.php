@@ -22,30 +22,23 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-
+        protected $fillable = [
         'name',
-
         'username',
-
         'email',
-
         'phone',
-
         'avatar_url',
-
+        'avatar',
+        'google_id',
         'home_address',
-
         'gender',
-
         'date_of_birth',
-
         'password',
-
         'role_id',
-
         'status',
     ];
+
+
 
     /**
      * Các thuộc tính cần được ẩn khi chuyển đổi sang dạng mảng hoặc JSON.
