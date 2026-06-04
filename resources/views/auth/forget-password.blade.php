@@ -17,7 +17,8 @@
 
         min-height:100vh;
 
-        overflow:hidden;
+        overflow-x:hidden;
+        overflow-y:auto;
 
         font-family:'Segoe UI',sans-serif;
 
@@ -267,35 +268,27 @@
     }
 
     /* =========================
-        CAPTCHA BOX
+        CAPTCHA
     ========================== */
 
-    .captcha-box{
-
-        width:100%;
-
-        height:80px;
-
-        border-radius:20px;
-
-        border:
-            1px dashed rgba(255,255,255,0.14);
-
-        background:
-            rgba(255,255,255,0.04);
+    .recaptcha-wrapper{
 
         display:flex;
 
-        align-items:center;
         justify-content:center;
 
-        color:#94a3b8;
+        min-height:78px;
 
-        font-size:14px;
+        overflow:hidden;
+    }
 
-        text-align:center;
+    .invalid-feedback{
 
-        padding:20px;
+        color:#fca5a5;
+
+        font-size:13px;
+
+        margin-top:8px;
     }
 
     /* =========================
@@ -388,6 +381,14 @@
         }
     }
 
+    @media(max-width:380px){
+
+        .recaptcha-wrapper .g-recaptcha{
+            transform:scale(0.86);
+            transform-origin:center top;
+        }
+    }
+
 </style>
 
 <!-- BACKGROUND -->
@@ -435,7 +436,7 @@
         <!-- FORM -->
         <form
             method="POST"
-            action="#"
+            action="{{ route('password.update.fake') }}"
         >
 
             @csrf
@@ -450,8 +451,45 @@
                 <input
                     type="email"
                     name="email"
+                    value="{{ old('email') }}"
                     class="form-control"
                     placeholder="Nhập email..."
+                    autocomplete="off"
+                    required
+                >
+
+            </div>
+
+            <!-- NEW PASSWORD -->
+            <div class="form-group">
+
+                <label class="form-label">
+                    Mật khẩu mới
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="Nhập mật khẩu mới..."
+                    autocomplete="off"
+                    required
+                >
+
+            </div>
+
+            <!-- CONFIRM PASSWORD -->
+            <div class="form-group">
+
+                <label class="form-label">
+                    Xác nhận mật khẩu
+                </label>
+
+                <input
+                    type="password"
+                    name="password_confirmation"
+                    class="form-control"
+                    placeholder="Nhập lại mật khẩu..."
                     autocomplete="off"
                     required
                 >
@@ -461,17 +499,20 @@
             <!-- CAPTCHA -->
             <div class="form-group">
 
-                <label class="form-label">
-                    CAPTCHA
-                </label>
+                <div class="recaptcha-wrapper">
 
-                <div class="captcha-box">
-
-                    Khu vực hiển thị CAPTCHA API
-                    <br>
-                    (Google reCAPTCHA / Cloudflare Turnstile)
+                    <div
+                        class="g-recaptcha"
+                        data-sitekey="{{ config('services.recaptcha.site_key') }}"
+                    ></div>
 
                 </div>
+
+                @error('g-recaptcha-response')
+                    <div class="invalid-feedback d-block text-center">
+                        {{ $message }}
+                    </div>
+                @enderror
 
             </div>
 
@@ -500,5 +541,9 @@
     </div>
 
 </div>
+
+@push('scripts')
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+@endpush
 
 @endsection

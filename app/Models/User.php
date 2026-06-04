@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -70,5 +71,13 @@ class User extends Authenticatable
 
             'date_of_birth' => 'date',
         ];
+    }
+
+    /**
+     * Các dòng nhật ký hoạt động thuộc về tài khoản này.
+     */
+    public function accountActivityLogs(): HasMany
+    {
+        return $this->hasMany(AccountActivityLog::class);
     }
 }

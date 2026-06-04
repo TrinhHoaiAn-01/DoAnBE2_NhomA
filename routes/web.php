@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProductReviewController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\AccountActivityLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -19,12 +20,12 @@ use App\Http\Controllers\ProfileUserController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\FacebookController;
-
-
+use App\Http\Controllers\SupportUserController;
+use App\Http\Middleware\CheckRole;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-
 use App\Models\User;
 
 /*
@@ -173,6 +174,11 @@ Route::middleware('auth')->group(function () {
         [ProfileUserController::class, 'update']
     )->name('profile.update');
 
+    // Nhật ký hoạt động tài khoản
+    Route::get('/nhat-ky-hoat-dong',
+        [AccountActivityLogController::class, 'index']
+    )->name('account.activity.logs');
+
     // Trang đổi mật khẩu
     Route::get(
         '/changepassword',
@@ -218,7 +224,20 @@ Route::get('/settings', function () {
     return view('settings.setting');
 })->name('settings');
 
+/*
+|--------------------------------------------------------------------------
+| SUPPORT USER
+|--------------------------------------------------------------------------
+*/
+Route::get(
+    '/support-user',
+    [SupportUserController::class, 'index']
+)->name('support.user');
 
+Route::post(
+    '/support-send',
+    [SupportUserController::class, 'send']
+)->name('support.send');
 
 /*
 |--------------------------------------------------------------------------

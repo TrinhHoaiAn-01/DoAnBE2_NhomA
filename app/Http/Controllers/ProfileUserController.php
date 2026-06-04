@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountActivityLog;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -36,6 +38,7 @@ class ProfileUserController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
+        $oldProfile = $this->profileSnapshot($user);
 
         // 1. Xác thực tính hợp lệ của dữ liệu đầu vào
         $request->validate([
@@ -169,6 +172,19 @@ class ProfileUserController extends Controller
         // Lưu thông tin vào Database
         $user->save();
 
+        $changes = $this->profileChanges($oldProfile, $this->profileSnapshot($user));
+
+        if ($changes !== []) {
+            AccountActivityLog::recordFor(
+                $user,
+                'profile_update',
+                'Cập nhật hồ sơ',
+                'Tài khoản đã cập nhật thông tin hồ sơ cá nhân.',
+                ['changes' => $changes],
+                $request
+            );
+        }
+
         // =========================
         // SUCCESS
         // =========================
@@ -213,6 +229,90 @@ class ProfileUserController extends Controller
 		$user->password = Hash::make($request->new_password);
 		$user->save();
 
+        AccountActivityLog::recordFor(
+            $user,
+            'profile_update',
+            'Đổi mật khẩu',
+            'Tài khoản đã thay đổi mật khẩu đăng nhập.',
+            ['changes' => [
+                [
+                    'field' => 'password',
+                    'label' => 'Mật khẩu',
+                    'old' => 'Đã ẩn',
+                    'new' => 'Đã cập nhật',
+                ],
+            ]],
+            $request
+        );
+
 		return back()->with('success', 'Đổi mật khẩu thành công');
 	}
+
+    /**
+     * Lấy ảnh chụp các trường hồ sơ cần ghi nhật ký.
+     */
+    private function profileSnapshot($user): array
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'username' => $user->username,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'home_address' => $user->home_address,
+            'gender' => $user->gender,
+            'date_of_birth' => $this->formatDateForLog($user->date_of_birth),
+            'avatar_url' => $user->avatar_url,
+        ];
+    }
+
+    /**
+     * Chuẩn bị danh sách trường thay đổi để hiển thị trên giao diện nhật ký.
+     */
+    private function profileChanges(array $oldProfile, array $newProfile): array
+    {
+        $labels = [
+            'id' => 'ID người dùng',
+            'name' => 'Họ và tên',
+            'username' => 'Tên đăng nhập',
+            'email' => 'Email',
+            'phone' => 'Số điện thoại',
+            'home_address' => 'Địa chỉ',
+            'gender' => 'Giới tính',
+            'date_of_birth' => 'Ngày sinh',
+            'avatar_url' => 'Ảnh đại diện',
+        ];
+
+        $changes = [];
+
+        foreach ($labels as $field => $label) {
+            $oldValue = $oldProfile[$field] ?? null;
+            $newValue = $newProfile[$field] ?? null;
+
+            if (($oldValue ?? '') === ($newValue ?? '')) {
+                continue;
+            }
+
+            $changes[] = [
+                'field' => $field,
+                'label' => $label,
+                'old' => $oldValue,
+                'new' => $newValue,
+            ];
+        }
+
+        return $changes;
+    }
+
+    /**
+     * Chuẩn hóa ngày sinh trước khi ghi vào metadata JSON.
+     */
+    private function formatDateForLog($value): ?string
+    {
+        if ($value instanceof CarbonInterface) {
+            return $value->format('Y-m-d');
+        }
+
+        return $value ? (string) $value : null;
+    }
 }
