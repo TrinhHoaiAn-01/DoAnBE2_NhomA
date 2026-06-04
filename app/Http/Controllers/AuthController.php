@@ -469,6 +469,7 @@ class AuthController extends Controller
         try {
             $response = Http::asForm()
                 ->timeout(5)
+                ->withoutVerifying()
                 ->post('https://www.google.com/recaptcha/api/siteverify', [
                     'secret' => $secretKey,
                     'response' => $request->input('g-recaptcha-response'),
