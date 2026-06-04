@@ -276,15 +276,21 @@
                         <a href="{{ route('change.password') }}" class="nav-item">
                             <i class="fa fa-key"></i> Đổi mật khẩu
                         </a>
+                        @if(Route::has('wishlist.index'))
                         <a href="{{ route('wishlist.index') }}" class="nav-item active">
                             <i class="fa fa-heart"></i> Sản phẩm yêu thích
                         </a>
+                        @endif
+                        @if(Route::has('orders.index'))
                         <a href="{{ route('orders.index') }}" class="nav-item">
                             <i class="fa fa-receipt"></i> Lịch sử đặt hàng
                         </a>
+                        @endif
+                        @if(Route::has('recently-viewed.index'))
                         <a href="{{ route('recently-viewed.index') }}" class="nav-item">
                             <i class="fa fa-history"></i> Sản phẩm đã xem
                         </a>
+                        @endif
                         <a href="#" class="nav-item">
                             <i class="fa fa-clock-rotate-left"></i> Nhật ký hoạt động
                         </a>
