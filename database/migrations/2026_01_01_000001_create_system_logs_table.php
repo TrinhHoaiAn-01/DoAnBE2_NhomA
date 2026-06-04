@@ -6,19 +6,30 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Thực thi tạo cấu trúc bảng system_logs.
+     *
+     * @return void
+     */
     public function up(): void
     {
+        // Tạo bảng Nhật ký hoạt động hệ thống (system_logs)
         Schema::create('system_logs', function (Blueprint $table) {
-            $table->id();
-            $table->string('user_name'); // Who performed the action
-            $table->string('action'); // e.g., Update Permission, Approve Import
-            $table->string('target_type'); // What was affected (e.g., Role, Product)
-            $table->json('old_data')->nullable(); // Snapshot of data before action
-            $table->json('new_data')->nullable(); // Snapshot of data after action
-            $table->timestamps(); // includes created_at for exact time recording
+            $table->id(); // Khóa chính tự sinh
+            $table->string('user_name'); // Tên tài khoản hoặc định danh người thực hiện hành động
+            $table->string('action'); // Tên hành động (ví dụ: Update Permission, Approve Import...)
+            $table->string('target_type'); // Phân loại đối tượng chịu tác động (ví dụ: Role, Product...)
+            $table->json('old_data')->nullable(); // Ảnh chụp trạng thái dữ liệu cũ trước khi thực hiện (dạng JSON)
+            $table->json('new_data')->nullable(); // Ảnh chụp trạng thái dữ liệu mới sau khi thực hiện (dạng JSON)
+            $table->timestamps(); // Thời điểm tạo bản ghi nhật ký (ghi nhận chính xác thời gian hành động)
         });
     }
 
+    /**
+     * Hủy bỏ bảng system_logs khi rollback.
+     *
+     * @return void
+     */
     public function down(): void
     {
         Schema::dropIfExists('system_logs');

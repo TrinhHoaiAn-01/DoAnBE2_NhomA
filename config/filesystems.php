@@ -4,12 +4,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Filesystem Disk
+    | Đĩa Lưu Trữ Mặc Định (Default Filesystem Disk)
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the default filesystem disk that should be used
-    | by the framework. The "local" disk, as well as a variety of cloud
-    | based disks are available to your application for file storage.
+    | Tại đây bạn có thể chỉ định đĩa lưu trữ (filesystem disk) mặc định sẽ được
+    | sử dụng bởi framework. Đĩa "local" cũng như nhiều loại đĩa đám mây (cloud)
+    | khác luôn sẵn sàng cho ứng dụng của bạn lưu trữ tệp.
     |
     */
 
@@ -17,19 +17,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Filesystem Disks
+    | Các Đĩa Lưu Trữ (Filesystem Disks)
     |--------------------------------------------------------------------------
     |
-    | Below you may configure as many filesystem disks as necessary, and you
-    | may even configure multiple disks for the same driver. Examples for
-    | most supported storage drivers are configured here for reference.
+    | Tại đây bạn có thể cấu hình bao nhiêu đĩa tùy ý và thậm chí cấu hình nhiều
+    | đĩa cho cùng một driver. Các ví dụ về hầu hết các driver lưu trữ được hỗ trợ
+    | đều được cấu hình ở đây để tham khảo.
     |
-    | Supported drivers: "local", "ftp", "sftp", "s3"
+    | Các driver được hỗ trợ: "local", "ftp", "sftp", "s3"
     |
     */
 
     'disks' => [
 
+        // Đĩa lưu trữ cục bộ, riêng tư (Private Local Disk)
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
@@ -38,6 +39,7 @@ return [
             'report' => false,
         ],
 
+        // Đĩa lưu trữ công khai (Public Local Disk), có thể truy cập qua URL
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
@@ -47,6 +49,7 @@ return [
             'report' => false,
         ],
 
+        // Đĩa lưu trữ đám mây Amazon S3
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
@@ -64,12 +67,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Symbolic Links
+    | Liên Kết Ký Hiệu (Symbolic Links)
     |--------------------------------------------------------------------------
     |
-    | Here you may configure the symbolic links that will be created when the
-    | `storage:link` Artisan command is executed. The array keys should be
-    | the locations of the links and the values should be their targets.
+    | Tại đây bạn có thể cấu hình các liên kết ký hiệu (symlinks) được tạo ra
+    | khi lệnh Artisan `storage:link` được thực thi. Khóa của mảng sẽ là vị trí
+    | đường dẫn liên kết công khai và giá trị là thư mục đích thực tế.
     |
     */
 

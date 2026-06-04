@@ -6,13 +6,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Database Connection Name
+    | Tên Kết Nối Cơ Sở Dữ Liệu Mặc Định (Default Database Connection Name)
     |--------------------------------------------------------------------------
     |
-    | Here you may specify which of the database connections below you wish
-    | to use as your default connection for database operations. This is
-    | the connection which will be utilized unless another connection
-    | is explicitly specified when you execute a query / statement.
+    | Tại đây bạn có thể chỉ định kết nối cơ sở dữ liệu nào dưới đây bạn muốn
+    | sử dụng làm kết nối mặc định cho các thao tác cơ sở dữ liệu. Kết nối này
+    | sẽ được sử dụng trừ khi một kết nối khác được chỉ định cụ thể.
     |
     */
 
@@ -20,17 +19,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Database Connections
+    | Các Kết Nối Cơ Sở Dữ Liệu (Database Connections)
     |--------------------------------------------------------------------------
     |
-    | Below are all of the database connections defined for your application.
-    | An example configuration is provided for each database system which
-    | is supported by Laravel. You're free to add / remove connections.
+    | Dưới đây là tất cả các kết nối cơ sở dữ liệu được định nghĩa cho ứng dụng.
+    | Một cấu hình ví dụ được cung cấp cho mỗi hệ quản trị cơ sở dữ liệu
+    | được hỗ trợ bởi Laravel. Bạn có thể tự do thêm / bớt kết nối.
     |
     */
 
     'connections' => [
 
+        // Cấu hình kết nối cơ sở dữ liệu SQLite
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
@@ -42,6 +42,7 @@ return [
             'synchronous' => null,
         ],
 
+        // Cấu hình kết nối cơ sở dữ liệu MySQL
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
@@ -62,6 +63,7 @@ return [
             ]) : [],
         ],
 
+        // Cấu hình kết nối cơ sở dữ liệu MariaDB
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
@@ -82,6 +84,7 @@ return [
             ]) : [],
         ],
 
+        // Cấu hình kết nối cơ sở dữ liệu PostgreSQL
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DB_URL'),
@@ -97,6 +100,7 @@ return [
             'sslmode' => 'prefer',
         ],
 
+        // Cấu hình kết nối cơ sở dữ liệu SQL Server (Microsoft)
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),
@@ -116,12 +120,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Migration Repository Table
+    | Bảng Lưu Trực Trạng Thái Migration (Migration Repository Table)
     |--------------------------------------------------------------------------
     |
-    | This table keeps track of all the migrations that have already run for
-    | your application. Using this information, we can determine which of
-    | the migrations on disk haven't actually been run on the database.
+    | Bảng này ghi nhận lại tất cả các migration đã được chạy cho ứng dụng của bạn.
+    | Sử dụng thông tin này, chúng tôi có thể xác định migration nào trên đĩa
+    | chưa thực sự được chạy dưới cơ sở dữ liệu.
     |
     */
 
@@ -132,12 +136,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Redis Databases
+    | Cơ Sở Dữ Liệu Redis (Redis Databases)
     |--------------------------------------------------------------------------
     |
-    | Redis is an open source, fast, and advanced key-value store that also
-    | provides a richer body of commands than a typical key-value system
-    | such as Memcached. You may define your connection settings here.
+    | Redis là một bộ lưu trữ key-value mã nguồn mở, tốc độ cao và nâng cao,
+    | cung cấp tập lệnh phong phú hơn so với các hệ thống key-value thông thường.
+    | Bạn có thể định nghĩa cấu hình kết nối Redis của mình tại đây.
     |
     */
 
@@ -150,6 +154,7 @@ return [
             'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
         ],
 
+        // Kết nối Redis mặc định dùng cho việc lưu trữ dữ liệu
         'default' => [
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
@@ -159,6 +164,7 @@ return [
             'database' => env('REDIS_DB', '0'),
         ],
 
+        // Kết nối Redis dành riêng cho hệ thống Cache
         'cache' => [
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),

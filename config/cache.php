@@ -6,12 +6,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Cache Store
+    | Bộ Lưu Trữ Cache Mặc Định (Default Cache Store)
     |--------------------------------------------------------------------------
     |
-    | This option controls the default cache store that will be used by the
-    | framework. This connection is utilized if another isn't explicitly
-    | specified when running a cache operation inside the application.
+    | Tùy chọn này điều khiển bộ lưu trữ cache mặc định sẽ được sử dụng bởi
+    | framework. Kết nối này sẽ được dùng nếu một kết nối khác không được
+    | chỉ định cụ thể khi thực hiện thao tác cache trong ứng dụng.
     |
     */
 
@@ -19,25 +19,27 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Cache Stores
+    | Các Bộ Lưu Trữ Cache (Cache Stores)
     |--------------------------------------------------------------------------
     |
-    | Here you may define all of the cache "stores" for your application as
-    | well as their drivers. You may even define multiple stores for the
-    | same cache driver to group types of items stored in your caches.
+    | Tại đây bạn có thể định nghĩa tất cả các bộ lưu trữ cache cho ứng dụng của
+    | bạn cùng với driver tương ứng. Bạn cũng có thể định nghĩa nhiều bộ lưu trữ
+    | cho cùng một driver cache để phân nhóm dữ liệu lưu trữ.
     |
-    | Supported drivers: "array", "database", "file", "memcached",
+    | Các driver hỗ trợ: "array", "database", "file", "memcached",
     |                    "redis", "dynamodb", "octane", "null"
     |
     */
 
     'stores' => [
 
+        // Cache mảng (chỉ lưu trữ trong bộ nhớ tạm của request hiện tại)
         'array' => [
             'driver' => 'array',
             'serialize' => false,
         ],
 
+        // Cache cơ sở dữ liệu
         'database' => [
             'driver' => 'database',
             'connection' => env('DB_CACHE_CONNECTION'),
@@ -46,12 +48,14 @@ return [
             'lock_table' => env('DB_CACHE_LOCK_TABLE'),
         ],
 
+        // Cache tệp tin (File Cache)
         'file' => [
             'driver' => 'file',
             'path' => storage_path('framework/cache/data'),
             'lock_path' => storage_path('framework/cache/data'),
         ],
 
+        // Cache Memcached
         'memcached' => [
             'driver' => 'memcached',
             'persistent_id' => env('MEMCACHED_PERSISTENT_ID'),
@@ -71,12 +75,14 @@ return [
             ],
         ],
 
+        // Cache Redis
         'redis' => [
             'driver' => 'redis',
             'connection' => env('REDIS_CACHE_CONNECTION', 'cache'),
             'lock_connection' => env('REDIS_CACHE_LOCK_CONNECTION', 'default'),
         ],
 
+        // Cache DynamoDB (AWS)
         'dynamodb' => [
             'driver' => 'dynamodb',
             'key' => env('AWS_ACCESS_KEY_ID'),
@@ -86,6 +92,7 @@ return [
             'endpoint' => env('DYNAMODB_ENDPOINT'),
         ],
 
+        // Cache Octane (Sử dụng với Laravel Octane)
         'octane' => [
             'driver' => 'octane',
         ],
@@ -94,12 +101,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Cache Key Prefix
+    | Tiền Tố Khóa Cache (Cache Key Prefix)
     |--------------------------------------------------------------------------
     |
-    | When utilizing the APC, database, memcached, Redis, and DynamoDB cache
-    | stores, there might be other applications using the same cache. For
-    | that reason, you may prefix every cache key to avoid collisions.
+    | Khi sử dụng các bộ lưu trữ cache dùng chung như database, Redis, Memcached,
+    | có thể có các ứng dụng khác cũng sử dụng chung máy chủ cache đó.
+    | Tiền tố này giúp tránh xung đột khóa giữa các ứng dụng.
     |
     */
 

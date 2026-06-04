@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\HandlesCrudSafety;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Support\DeliveryTimeSlot;
+use App\Support\ShippingFeeCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class OrderController extends Controller
 {
+    use HandlesCrudSafety;
+
     public function index(Request $request): View
     {
         $search = trim((string) $request->string('search'));
@@ -48,28 +53,38 @@ class OrderController extends Controller
         return view('admin.orders.show', [
             'order' => $order->load('items.product', 'user'),
             'statusOptions' => $this->statusOptions(),
+            'shippingDistrictLabel' => ShippingFeeCalculator::districtLabel($order->shipping_district),
+            'shippingServiceLabel' => ShippingFeeCalculator::serviceLabel($order->shipping_service),
+            'deliveryTimeSlotLabel' => DeliveryTimeSlot::label($order->delivery_time_slot),
         ]);
     }
 
     public function update(Request $request, Order $order): RedirectResponse
     {
-        $data = $request->validate([
+        $data = $this->validateCrud($request, [
             'status' => ['required', 'in:pending,processing,shipping,completed,cancelled'],
         ]);
 
-        $order->update($data);
+        return $this->runCrudOperation(function () use ($request, $order, $data): RedirectResponse {
+            $this->transaction(function () use ($request, $order, $data): void {
+                $lockedOrder = $this->lockForCrud($order);
+                $this->assertFreshRecord($request, $lockedOrder, 'đơn hàng');
+                $lockedOrder->update($data);
+            });
 
-        return to_route('admin.orders.show', $order)->with('status', 'Da cap nhat trang thai don hang.');
+            return to_route('admin.orders.show', $order)
+                ->with('status', 'Đã cập nhật trạng thái đơn hàng. Hệ thống đã kiểm tra phiên chỉnh sửa trước khi lưu.');
+        }, 'cập nhật đơn hàng');
     }
 
     private function statusOptions(): array
     {
         return [
-            'pending' => 'Cho xu ly',
-            'processing' => 'Dang xu ly',
-            'shipping' => 'Dang giao',
-            'completed' => 'Hoan tat',
-            'cancelled' => 'Da huy',
+            'pending' => 'Chờ xử lý',
+            'processing' => 'Đang xử lý',
+            'shipping' => 'Đang giao',
+            'completed' => 'Hoàn tất',
+            'cancelled' => 'Đã hủy',
         ];
     }
 }
