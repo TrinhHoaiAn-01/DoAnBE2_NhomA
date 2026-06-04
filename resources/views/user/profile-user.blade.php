@@ -330,31 +330,40 @@
 
                         <a href="{{ route('change.password') }}"
                            class="nav-item">
-
                             <i class="fa fa-key"></i>
-
                             Đổi mật khẩu
+                        </a>
 
+                        <a href="{{ route('wishlist.index') }}"
+                           class="nav-item">
+                            <i class="fa fa-heart"></i>
+                            Sản phẩm yêu thích
+                        </a>
+
+                        <a href="{{ route('orders.index') }}"
+                           class="nav-item">
+                            <i class="fa fa-receipt"></i>
+                            Lịch sử đặt hàng
+                        </a>
+
+                        <a href="{{ route('recently-viewed.index') }}"
+                           class="nav-item">
+                            <i class="fa fa-history"></i>
+                            Sản phẩm đã xem
                         </a>
 						
 						<!-- LOG ACTIVITY -->
 						<a href="#"
 						   class="nav-item">
-
 							<i class="fa fa-clock-rotate-left"></i>
-
 							Nhật ký hoạt động
-
 						</a>
 						
 						<!-- SUPPORT -->
 						<a href="#"
 						   class="nav-item">
-
 							<i class="fa fa-headset"></i>
-
 							Hỗ trợ người dùng
-
 						</a>
 
                         <!-- DELETE -->

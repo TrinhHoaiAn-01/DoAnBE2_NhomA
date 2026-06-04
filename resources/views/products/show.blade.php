@@ -771,6 +771,12 @@
             <span style="position:absolute;left:0;top:15%;bottom:15%;width:4px;background:linear-gradient(180deg,var(--primary),var(--accent));border-radius:10px;"></span>
             Sản phẩm đã xem gần đây
         </h2>
+        @auth
+        <a href="{{ route('recently-viewed.index') }}"
+           style="font-size:0.85rem;font-weight:600;color:var(--primary);text-decoration:none;display:flex;align-items:center;gap:0.3rem;">
+            Xem tất cả <i class="bi bi-arrow-right"></i>
+        </a>
+        @endauth
     </div>
     <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-3">
         @foreach ($recentlyViewedProducts as $recentProduct)
