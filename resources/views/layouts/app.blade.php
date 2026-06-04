@@ -558,7 +558,7 @@
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('profile.index') }}">
+                                    <a class="dropdown-item" href="{{ route('profile') }}">
                                         Hồ sơ cá nhân
                                     </a>
                                 </li>
