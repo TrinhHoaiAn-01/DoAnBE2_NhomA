@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\Concerns\HandlesCrudSafety;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\SearchText;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -20,7 +21,11 @@ class ProductController extends Controller
 
     public function index(Request $request): View
     {
-        $search = trim((string) $request->string('search'));
+        $rawSearch = $request->string('search')->toString();
+        $search = SearchText::normalize($rawSearch);
+        if (SearchText::wasLimited($rawSearch)) {
+            session()->flash('info', SearchText::limitMessage());
+        }
         $categoryId = $request->integer('category_id');
         $stockStatus = $request->string('stock_status')->toString();
 

@@ -9,7 +9,23 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="{{ asset('assets/site-preferences.css') }}" rel="stylesheet">
+
+    <script>
+        (function () {
+            try {
+                var language = localStorage.getItem('language') || 'vi';
+                if (language === 'jp') {
+                    language = 'vi';
+                    localStorage.setItem('language', language);
+                }
+
+                document.documentElement.lang = language === 'en' ? 'en' : 'vi';
+                document.documentElement.dataset.theme = localStorage.getItem('dark-mode') === 'true' ? 'dark' : 'light';
+                document.documentElement.style.setProperty('--font-size-base', localStorage.getItem('font-size') || '16px');
+            } catch (error) {}
+        })();
+    </script>
 
     <style>
         /* ============================================================
@@ -47,7 +63,7 @@
         *, *::before, *::after { box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background-color: var(--surface-2);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
@@ -275,8 +291,8 @@
 
         /* Newsletter */
         .newsletter-wrap {
-            background: rgba(99,102,241,0.1);
-            border: 1px solid rgba(99,102,241,0.25);
+            background: rgba(0,136,72,0.12);
+            border: 1px solid rgba(0,136,72,0.28);
             border-radius: var(--radius-lg);
             padding: 1.5rem;
         }
@@ -568,6 +584,11 @@
                                         Hồ sơ người dùng
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('settings') }}">
+                                        <i class="bi bi-gear me-2"></i>Cài đặt
+                                    </a>
+                                </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="post" action="{{ route('logout') }}" class="m-0">
@@ -662,6 +683,9 @@
                     <a href="{{ $profileUrl }}" class="mobile-sidebar-item">
                         <span>👤</span> Hồ sơ người dùng
                     </a>
+                    <a href="{{ route('settings') }}" class="mobile-sidebar-item">
+                        <span><i class="bi bi-gear"></i></span> Cài đặt
+                    </a>
                     <form method="post" action="{{ route('logout') }}" class="m-0">
                         @csrf
                         <button type="submit" class="mobile-sidebar-item w-100 text-start bg-transparent" style="color: var(--danger) !important;">
@@ -751,6 +775,8 @@
 </button>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('assets/site-preferences.js') }}"></script>
+<script src="{{ asset('assets/search-limit.js') }}"></script>
 <script>
     // Page loader
     window.addEventListener('load', () => {

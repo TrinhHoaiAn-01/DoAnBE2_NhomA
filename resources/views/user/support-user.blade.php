@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -8,12 +8,12 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{{ asset('assets/site-preferences.css') }}" rel="stylesheet">
 
     <style>
         * {
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             letter-spacing: 0;
         }
 
@@ -46,7 +46,7 @@
         .sidebar {
             height: 100%;
             padding: 34px 24px;
-            background: linear-gradient(180deg, #2563eb, #1d4ed8);
+            background: linear-gradient(180deg, #16a34a, #15803d);
             text-align: center;
         }
 
@@ -144,7 +144,7 @@
         .form-select:focus {
             color: #ffffff;
             background: rgba(15, 23, 42, 0.9);
-            border-color: #60a5fa;
+            border-color: #86efac;
             box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.16);
         }
 
@@ -173,12 +173,12 @@
             border-radius: 14px;
             color: #ffffff;
             font-weight: 700;
-            background: #2563eb;
+            background: #16a34a;
             transition: 0.25s ease;
         }
 
         .btn-support:hover {
-            background: #1d4ed8;
+            background: #15803d;
             transform: translateY(-2px);
         }
 
@@ -235,7 +235,7 @@
     </style>
 </head>
 
-<body>
+<body class="standalone-user-page support-page">
     <div class="wrapper">
         <div class="support-shell">
             <div class="row g-0">
@@ -353,6 +353,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('assets/site-preferences.js') }}"></script>
 </body>
 
 </html>

@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\StockAlert;
+use App\Support\SearchText;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -27,7 +28,11 @@ class ProductController extends Controller
     public function index(Request $request): View
     {
         // 1. Lấy các tham số tìm kiếm, danh mục, sắp xếp từ Request
-        $search = trim((string) $request->string('search'));
+        $rawSearch = $request->string('search')->toString();
+        $search = SearchText::normalize($rawSearch);
+        if (SearchText::wasLimited($rawSearch)) {
+            session()->flash('info', SearchText::limitMessage());
+        }
         $categorySlug = $request->string('category')->toString();
         $sort = $request->string('sort')->toString();
 
@@ -211,4 +216,3 @@ class ProductController extends Controller
         return back()->with('status', 'NeoMart đã ghi nhận đăng ký! Chúng tôi sẽ gửi thông báo ngay khi sản phẩm có hàng trở lại.');
     }
 }
-

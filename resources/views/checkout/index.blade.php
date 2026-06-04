@@ -33,7 +33,7 @@
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="shipping_address">Địa chỉ giao hàng</label>
-                        <input class="form-control @error('shipping_address') is-invalid @enderror" id="shipping_address" name="shipping_address" value="{{ old('shipping_address') }}" required>
+                        <input class="form-control @error('shipping_address') is-invalid @enderror" id="shipping_address" name="shipping_address" value="{{ old('shipping_address', $user?->home_address) }}" required>
                         @error('shipping_address')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">

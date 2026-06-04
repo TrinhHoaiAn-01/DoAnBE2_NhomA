@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -11,8 +11,23 @@
     <!-- Bootstrap Icons (CDN để dùng icon) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{{ asset('assets/site-preferences.css') }}" rel="stylesheet">
+
+    <script>
+        (function () {
+            try {
+                var language = localStorage.getItem('language') || 'vi';
+                if (language === 'jp') {
+                    language = 'vi';
+                    localStorage.setItem('language', language);
+                }
+
+                document.documentElement.lang = language === 'en' ? 'en' : 'vi';
+                document.documentElement.dataset.theme = localStorage.getItem('dark-mode') === 'true' ? 'dark' : 'light';
+                document.documentElement.style.setProperty('--font-size-base', localStorage.getItem('font-size') || '16px');
+            } catch (error) {}
+        })();
+    </script>
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -20,7 +35,7 @@
     <style>
         body {
             background-color: #f8fafc;
-            font-family: 'Inter', sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             overflow-x: hidden;
             color: #1e293b;
         }
@@ -90,8 +105,8 @@
         }
         #sidebar ul li.active > a {
             color: #fff;
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
             font-weight: 600;
         }
         #sidebar ul li.active > a i {
@@ -107,8 +122,8 @@
             margin-top: auto;
         }
         .sidebar-profile .avatar-circle {
-            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+            background: linear-gradient(135deg, #16a34a 0%, #047857 100%);
+            box-shadow: 0 4px 8px rgba(22, 163, 74, 0.2);
             transition: transform 0.3s ease;
         }
         .sidebar-profile:hover .avatar-circle {
@@ -423,6 +438,8 @@
 
     <!-- Bootstrap 5 JS (Hàng của Trọng dời sang public) -->
     <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/site-preferences.js') }}"></script>
+    <script src="{{ asset('assets/search-limit.js') }}"></script>
     
 
     

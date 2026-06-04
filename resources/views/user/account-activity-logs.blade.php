@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -8,12 +8,12 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{{ asset('assets/site-preferences.css') }}" rel="stylesheet">
 
     <style>
         * {
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             letter-spacing: 0;
         }
 
@@ -38,13 +38,13 @@
         .bg1 {
             top: -80px;
             left: -80px;
-            background: #2563eb;
+            background: #16a34a;
         }
 
         .bg2 {
             right: -80px;
             bottom: -80px;
-            background: #7c3aed;
+            background: #047857;
         }
 
         .wrapper {
@@ -71,7 +71,7 @@
         .sidebar {
             height: 100%;
             padding: 34px 24px;
-            background: linear-gradient(180deg, #2563eb, #1d4ed8);
+            background: linear-gradient(180deg, #16a34a, #15803d);
             text-align: center;
         }
 
@@ -159,8 +159,8 @@
         .filter-link.active,
         .filter-link:hover {
             color: #ffffff;
-            background: #2563eb;
-            border-color: #60a5fa;
+            background: #16a34a;
+            border-color: #86efac;
         }
 
         .timeline {
@@ -185,7 +185,7 @@
             border-radius: 50%;
             display: grid;
             place-items: center;
-            background: rgba(37, 99, 235, 0.24);
+            background: rgba(22, 163, 74, 0.24);
             color: #93c5fd;
             font-size: 19px;
         }
@@ -282,7 +282,7 @@
     </style>
 </head>
 
-<body>
+<body class="standalone-user-page activity-page">
     <div class="bg bg1"></div>
     <div class="bg bg2"></div>
 
@@ -420,6 +420,7 @@
             </div>
         </div>
     </div>
+<script src="{{ asset('assets/site-preferences.js') }}"></script>
 </body>
 
 </html>

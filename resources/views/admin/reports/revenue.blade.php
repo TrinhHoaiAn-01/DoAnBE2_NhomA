@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Báo cáo doanh thu')
 
@@ -162,8 +162,8 @@
                     datasets: [{
                         label: 'Doanh thu',
                         data: @json($revenueData),
-                        borderColor: '#2563eb',
-                        backgroundColor: 'rgba(37, 99, 235, 0.68)',
+                        borderColor: '#16a34a',
+                        backgroundColor: 'rgba(22, 163, 74, 0.68)',
                         borderWidth: 1,
                         borderRadius: 6
                     }]

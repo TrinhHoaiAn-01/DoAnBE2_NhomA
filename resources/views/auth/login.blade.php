@@ -1,4 +1,4 @@
-@extends('layouts.app', [
+﻿@extends('layouts.app', [
     'title' => 'Đăng nhập NeoMart',
     'hideNavbar' => true
 ])
@@ -20,11 +20,11 @@
         overflow-x:hidden;
         overflow-y:auto;
 
-        font-family:'Segoe UI',sans-serif;
+        font-family:system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
         background:
-            radial-gradient(circle at top left, rgba(37,99,235,0.20), transparent 25%),
-            radial-gradient(circle at bottom right, rgba(124,58,237,0.20), transparent 25%),
+            radial-gradient(circle at top left, rgba(22,163,74,0.20), transparent 25%),
+            radial-gradient(circle at bottom right, rgba(4,120,87,0.20), transparent 25%),
             linear-gradient(
                 135deg,
                 #020617,
@@ -63,7 +63,7 @@
         width:260px;
         height:260px;
 
-        background:#2563eb;
+        background:#16a34a;
 
         top:-80px;
         left:-80px;
@@ -74,7 +74,7 @@
         width:340px;
         height:340px;
 
-        background:#7c3aed;
+        background:#047857;
 
         right:-120px;
         bottom:-120px;
@@ -163,7 +163,7 @@
 
         filter:
             drop-shadow(
-                0 20px 45px rgba(37,99,235,0.35)
+                0 20px 45px rgba(22,163,74,0.35)
             );
 
         transition:0.3s;
@@ -230,13 +230,13 @@
 
     .form-control:focus{
 
-        border-color:#3b82f6;
+        border-color:#22c55e;
 
         background:
             rgba(255,255,255,0.08);
 
         box-shadow:
-            0 0 0 4px rgba(37,99,235,0.15);
+            0 0 0 4px rgba(22,163,74,0.15);
 
         color:#ffffff !important;
     }
@@ -289,7 +289,7 @@
 
     .remember-left input{
 
-        accent-color:#2563eb;
+        accent-color:#16a34a;
     }
 
     .remember a{
@@ -355,12 +355,12 @@
         background:
             linear-gradient(
                 135deg,
-                #2563eb,
-                #7c3aed
+                #16a34a,
+                #047857
             );
 
         box-shadow:
-            0 12px 30px rgba(124,58,237,0.22);
+            0 12px 30px rgba(4,120,87,0.22);
     }
 
     .submit-btn:hover{
@@ -368,7 +368,7 @@
         transform:translateY(-3px);
 
         box-shadow:
-            0 18px 35px rgba(124,58,237,0.32);
+            0 18px 35px rgba(4,120,87,0.32);
     }
 
     /* =========================

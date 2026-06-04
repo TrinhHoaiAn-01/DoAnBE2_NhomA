@@ -16,17 +16,16 @@
 
     <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link href="{{ asset('assets/site-preferences.css') }}" rel="stylesheet">
 
     <!-- FONT -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
 
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
         body {
@@ -46,13 +45,13 @@
         }
 
         .bg1 {
-            background: #2563eb;
+            background: #16a34a;
             top: -80px;
             left: -80px;
         }
 
         .bg2 {
-            background: #7c3aed;
+            background: #047857;
             bottom: -80px;
             right: -80px;
         }
@@ -81,7 +80,7 @@
         /* LEFT */
 
         .left {
-            background: linear-gradient(180deg, #2563eb, #1d4ed8);
+            background: linear-gradient(180deg, #16a34a, #15803d);
             padding: 40px 25px;
             color: white;
             height: 100%;
@@ -159,25 +158,36 @@
             height: 35px;
             border-radius: 14px;
             background: rgba(255, 255, 255, 0.08);
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.34);
             color: white;
             margin-bottom: 10px;
         }
 
         .form-control:focus {
             background: rgba(255, 255, 255, 0.12);
-            box-shadow: none;
+            border-color: #86efac;
+            box-shadow: 0 0 0 0.2rem rgba(34, 197, 94, 0.2);
             color: white;
         }
 
         .form-control:disabled {
             background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.18);
             color: rgba(255, 255, 255, 0.6);
         }
 
         .form-control::placeholder {
             color: rgba(255, 255, 255, 0.55);
             opacity: 1;
+        }
+
+        select.form-control,
+        input[type="file"].form-control {
+            min-height: 44px;
+            height: 44px;
+            padding-top: 0.55rem;
+            padding-bottom: 0.55rem;
+            line-height: 1.3;
         }
 
         /* OPTION COLOR */
@@ -203,7 +213,7 @@
             padding: 12px 40px;
             border: none;
             border-radius: 30px;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            background: linear-gradient(135deg, #22c55e, #16a34a);
             color: white;
             font-weight: 600;
             transition: 0.3s;
@@ -251,6 +261,8 @@
 
             background: rgba(255, 255, 255, 0.05) !important;
 
+            border-color: rgba(255, 255, 255, 0.18) !important;
+
             color: rgba(255, 255, 255, 0.6) !important;
 
             cursor: default;
@@ -289,8 +301,8 @@
         .filter-link.active,
         .filter-link:hover {
             color: #ffffff;
-            background: #2563eb;
-            border-color: #60a5fa;
+            background: #16a34a;
+            border-color: #86efac;
         }
 
         .timeline {
@@ -314,7 +326,7 @@
             border-radius: 50%;
             display: grid;
             place-items: center;
-            background: rgba(37, 99, 235, 0.24);
+            background: rgba(22, 163, 74, 0.24);
             color: #93c5fd;
             font-size: 18px;
         }
@@ -401,11 +413,51 @@
             color: rgba(255, 255, 255, 0.7);
             font-size: 14px;
         }
+
+        html[data-theme="light"] body.profile-page .form-control {
+            background: #ffffff !important;
+            border-color: #94a3b8 !important;
+            color: #0f172a !important;
+        }
+
+        html[data-theme="light"] body.profile-page .form-control:focus {
+            border-color: #16a34a !important;
+            box-shadow: 0 0 0 0.2rem rgba(22, 163, 74, 0.18) !important;
+        }
+
+        html[data-theme="light"] body.profile-page .form-control:disabled,
+        html[data-theme="light"] body.profile-page .fake-disabled {
+            background: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+            color: #64748b !important;
+        }
+
+        html[data-theme="light"] body.profile-page .form-control::placeholder {
+            color: #64748b !important;
+        }
+
+        html[data-theme="dark"] body.profile-page .form-control {
+            background: rgba(15, 23, 42, 0.7) !important;
+            border-color: rgba(255, 255, 255, 0.34) !important;
+            color: #ffffff !important;
+        }
+
+        html[data-theme="dark"] body.profile-page .form-control:focus {
+            border-color: #86efac !important;
+            box-shadow: 0 0 0 0.2rem rgba(34, 197, 94, 0.22) !important;
+        }
+
+        html[data-theme="dark"] body.profile-page .form-control:disabled,
+        html[data-theme="dark"] body.profile-page .fake-disabled {
+            background: rgba(15, 23, 42, 0.45) !important;
+            border-color: rgba(255, 255, 255, 0.18) !important;
+            color: rgba(255, 255, 255, 0.64) !important;
+        }
     </style>
 
 </head>
 
-<body>
+<body class="standalone-user-page profile-page">
 
     @php
         $profileSection = $profileSection ?? 'profile';
@@ -629,7 +681,7 @@
                                     </label>
 
                                     <input type="number" name="user_id" class="form-control no-spinner"
-                                        value="{{ Auth::user()->id }}" placeholder="ID">
+                                        value="{{ old('user_id', Auth::user()->id) }}" placeholder="ID">
 
                                 </div>
 
@@ -657,7 +709,7 @@
                                         Số điện thoại
                                     </label>
 
-                                    <input type="text" name="phone" value="{{ Auth::user()->phone }}"
+                                    <input type="text" name="phone" value="{{ old('phone', Auth::user()->phone) }}"
                                         class="form-control" placeholder="Nhập số điện thoại">
 
                                 </div>
@@ -723,7 +775,7 @@
                             </label>
 
                             <textarea name="home_address" class="form-control"
-                                placeholder="Nhập địa chỉ">{{ Auth::user()->home_address }}</textarea>
+                                placeholder="Nhập địa chỉ">{{ old('home_address', Auth::user()->home_address) }}</textarea>
 
                             <!-- BUTTON CENTER -->
                             <div class="btn-wrapper">
@@ -1050,6 +1102,7 @@
     <!-- BOOTSTRAP -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<script src="{{ asset('assets/site-preferences.js') }}"></script>
 </body>
 
 </html>
