@@ -80,4 +80,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(AccountActivityLog::class);
     }
+
+    /**
+     * Relationship to Wishlist.
+     */
+    public function wishlists(): HasMany
+    {
+        return $this->hasMany(Wishlist::class);
+    }
 }

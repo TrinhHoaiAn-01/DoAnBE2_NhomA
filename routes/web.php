@@ -40,6 +40,9 @@ use App\Models\User;
 // TRANG CHỦ
 Route::get('/', HomeController::class)->name('home');
 
+// Gửi ý kiến liên hệ từ trang chủ
+Route::post('/lien-he', [\App\Http\Controllers\ContactSubmitController::class, 'store'])->name('contact.store');
+
 // KHÁCH HÀNG: KHÁM PHÁ SẢN PHẨM (PRODUCT DISCOVERY)
 Route::get('/san-pham', [ShopProductController::class, 'index'])
     ->name('products.index'); // Danh sách sản phẩm kèm bộ lọc tìm kiếm
@@ -142,6 +145,22 @@ Route::middleware('auth')->group(function (): void {
     // ĐĂNG XUẤT HỆ THỐNG
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
+
+    // SẢN PHẨM YÊU THÍCH (WISHLIST)
+    Route::get('/wishlist', [\App\Http\Controllers\WishlistController::class, 'index'])
+        ->name('wishlist.index');
+    Route::post('/wishlist', [\App\Http\Controllers\WishlistController::class, 'store'])
+        ->name('wishlist.store');
+    Route::delete('/wishlist/{id}', [\App\Http\Controllers\WishlistController::class, 'destroy'])
+        ->name('wishlist.destroy');
+
+    // SẢN PHẨM ĐÃ XEM (RECENTLY VIEWED)
+    Route::get('/recently-viewed', [\App\Http\Controllers\RecentlyViewedController::class, 'index'])
+        ->name('recently-viewed.index');
+    Route::delete('/recently-viewed/{id}', [\App\Http\Controllers\RecentlyViewedController::class, 'destroy'])
+        ->name('recently-viewed.destroy');
+    Route::post('/recently-viewed/clear', [\App\Http\Controllers\RecentlyViewedController::class, 'clear'])
+        ->name('recently-viewed.clear');
 
     // LỊCH SỬ ĐƠN ĐẶT HÀNG (ORDER HISTORY)
     Route::get('/don-hang', [OrderHistoryController::class, 'index'])

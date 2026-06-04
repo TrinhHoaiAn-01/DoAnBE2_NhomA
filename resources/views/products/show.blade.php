@@ -507,8 +507,11 @@
                         <i class="bi bi-bell-fill"></i> Nhận thông báo khi có hàng
                     </button>
                 @endif
-                <button class="btn-wishlist-lg" onclick="toggleWishlistLg(this)" title="Yêu thích">
-                    <i class="bi bi-heart"></i>
+                @php
+                    $inWishlist = auth()->check() && auth()->user()->wishlists()->where('product_id', $product->id)->exists();
+                @endphp
+                <button class="btn-wishlist-lg {{ $inWishlist ? 'active' : '' }}" onclick="toggleWishlistLg(this, '{{ $product->id }}')" title="Yêu thích">
+                    <i class="bi {{ $inWishlist ? 'bi-heart-fill' : 'bi-heart' }}"></i>
                 </button>
             </div>
 
@@ -771,6 +774,12 @@
             <span style="position:absolute;left:0;top:15%;bottom:15%;width:4px;background:linear-gradient(180deg,var(--primary),var(--accent));border-radius:10px;"></span>
             Sản phẩm đã xem gần đây
         </h2>
+        @auth
+        <a href="{{ route('recently-viewed.index') }}"
+           style="font-size:0.85rem;font-weight:600;color:var(--primary);text-decoration:none;display:flex;align-items:center;gap:0.3rem;">
+            Xem tất cả <i class="bi bi-arrow-right"></i>
+        </a>
+        @endauth
     </div>
     <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-3">
         @foreach ($recentlyViewedProducts as $recentProduct)
@@ -897,11 +906,57 @@
     });
 
     // Wishlist
-    function toggleWishlistLg(btn) {
-        btn.classList.toggle('active');
-        const icon = btn.querySelector('i');
-        icon.classList.toggle('bi-heart');
-        icon.classList.toggle('bi-heart-fill');
+    function toggleWishlistLg(btn, productId) {
+        const isAuthenticated = @json(auth()->check());
+        if (!isAuthenticated) {
+            alert('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích.');
+            window.location.href = "{{ route('login') }}";
+            return;
+        }
+
+        const isActive = btn.classList.contains('active');
+        const url = isActive ? `/wishlist/${productId}` : '/wishlist';
+        const method = isActive ? 'DELETE' : 'POST';
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: method === 'POST' ? JSON.stringify({ product_id: productId }) : null
+        })
+        .then(res => {
+            if (!res.ok) {
+                return res.json().then(err => {
+                    throw new Error(err.message || `Lỗi từ hệ thống (Status ${res.status})`);
+                }).catch(() => {
+                    throw new Error(`Lỗi từ hệ thống (Status ${res.status})`);
+                });
+            }
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                btn.classList.toggle('active');
+                const icon = btn.querySelector('i');
+                if (data.in_wishlist) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                } else {
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                }
+            } else {
+                alert(data.message || 'Có lỗi xảy ra.');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert(err.message || 'Không thể kết nối đến máy chủ.');
+        });
     }
 
     // Tab switch

@@ -605,116 +605,63 @@
     </div>
 
     {{-- ===== 2. BANNER CAROUSEL ===== --}}
-    @if(count($banners) > 0)
+    @php
+        $carouselBanners = [];
+        if (isset($global_banners) && $global_banners->isNotEmpty()) {
+            foreach ($global_banners as $gb) {
+                $img = Str::startsWith($gb->image_url, ['http://', 'https://']) ? $gb->image_url : asset('storage/' . $gb->image_url);
+                $carouselBanners[] = [
+                    'image' => $img,
+                    'title' => $gb->title,
+                    'link'  => $gb->link ?? route('products.index')
+                ];
+            }
+        } else {
+            // Fallback to static mock banners
+            $carouselBanners = $banners;
+        }
+    @endphp
+
+    @if(count($carouselBanners) > 0)
     <div class="banner-carousel-wrap mb-4">
         <div id="homeBanner" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
-                @foreach($banners as $index => $banner)
+                @foreach($carouselBanners as $index => $banner)
                     <button type="button" data-bs-target="#homeBanner" data-bs-slide-to="{{ $index }}"
                             class="{{ $index == 0 ? 'active' : '' }}"></button>
                 @endforeach
             </div>
             <div class="carousel-inner" style="background: #047857;">
-
-                {{-- SLIDE 0: Mega Sale – chỉ dẫn đến trang sản phẩm --}}
-                <div class="carousel-item active">
-                    {{-- Desktop: full image + gradient overlay --}}
-                    <img src="{{ $banners[0]['image'] }}"
-                         class="d-block w-100" style="object-fit:cover;opacity:0.85;"
-                         alt="{{ $banners[0]['title'] }}">
-                    <div class="carousel-caption text-start d-none d-md-flex"
-                         style="left:0;right:auto;bottom:0;top:0;background:linear-gradient(90deg,rgba(4,120,87,.95) 0%,rgba(4,120,87,.5) 55%,transparent 100%);padding:2rem 2.5rem;border-radius:0;flex-direction:column;justify-content:center;max-width:55%;z-index:5;pointer-events:none;">
-                        <h2 class="fw-black text-white mb-3"
-                            style="font-size:clamp(1.2rem,3vw,1.8rem);text-shadow:0 2px 8px rgba(0,0,0,.3);">
-                            {{ $banners[0]['title'] }}
-                        </h2>
-                        <a href="{{ $banners[0]['link'] }}"
-                           class="hero-btn-primary"
-                           style="font-size:.85rem;padding:.55rem 1.25rem;align-self:flex-start;pointer-events:auto;">
-                            Mua ngay <i class="bi bi-arrow-right ms-1"></i>
-                        </a>
-                    </div>
-
-                    {{-- Mobile: Green card --}}
-                    <div class="d-md-none mobile-slide0-card">
-                        <div>
-                            <h3>{{ $banners[0]['title'] }}</h3>
-                            <a href="{{ $banners[0]['link'] }}" class="mobile-slide0-btn">
-                                Mua ngay <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- SLIDE 1: Sản phẩm mới nhất – form POST buy-now --}}
-                @if(isset($banners[1]))
-                <div class="carousel-item">
-                    @if($newestProduct)
-                        <!-- Desktop Layout -->
-                        <div class="d-none d-md-block w-100 position-relative"
-                             style="height:380px;background:linear-gradient(90deg,#047857 0%,#059669 35%,#ecfdf5 70%,#f3f4f6 100%);">
-                            <img src="{{ $newestProduct->image_url }}"
-                                 class="position-absolute"
-                                 style="right:5%;top:50%;transform:translateY(-50%);max-height:80%;max-width:40%;object-fit:contain;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12);background:white;padding:1rem;"
-                                 alt="{{ $newestProduct->name }}">
-                        </div>
-                        <div class="d-none d-md-flex carousel-caption text-start"
+                @foreach($carouselBanners as $index => $banner)
+                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                        {{-- Desktop: full image + gradient overlay --}}
+                        <img src="{{ $banner['image'] }}"
+                             class="d-block w-100" style="object-fit:cover;opacity:0.85;"
+                             alt="{{ $banner['title'] }}">
+                        <div class="carousel-caption text-start d-none d-md-flex"
                              style="left:0;right:auto;bottom:0;top:0;background:linear-gradient(90deg,rgba(4,120,87,.95) 0%,rgba(4,120,87,.5) 55%,transparent 100%);padding:2rem 2.5rem;border-radius:0;flex-direction:column;justify-content:center;max-width:55%;z-index:5;pointer-events:none;">
-                            <span class="badge mb-2" style="background:#fbbf24;color:#1a1a1a;font-size:.7rem;letter-spacing:.05em;width:fit-content;">Mới nhất</span>
-                            <h2 class="fw-black text-white mb-1"
-                                style="font-size:clamp(1rem,2.5vw,1.5rem);text-shadow:0 2px 8px rgba(0,0,0,.3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
-                                {{ $newestProduct->name }}
+                            <h2 class="fw-black text-white mb-3"
+                                style="font-size:clamp(1.2rem,3vw,1.8rem);text-shadow:0 2px 8px rgba(0,0,0,.3);">
+                                {{ $banner['title'] }}
                             </h2>
-                            <p class="text-white mb-3" style="font-size:1.1rem;font-weight:700;opacity:.9;">
-                                {{ number_format($newestProduct->price, 0, ',', '.') }}đ
-                                @if($newestProduct->original_price && $newestProduct->original_price > $newestProduct->price)
-                                    <del class="ms-2" style="font-size:.85rem;opacity:.65;">{{ number_format($newestProduct->original_price, 0, ',', '.') }}đ</del>
-                                @endif
-                            </p>
-
-                            {{-- Nút MUA NGAY: POST đến cart.buy-now để thêm vào giỏ và chuyển thẳng checkout --}}
-                            <form method="POST" action="{{ route('cart.buy-now', $newestProduct) }}"
-                                  style="align-self:flex-start;pointer-events:auto;">
-                                @csrf
-                                <input type="hidden" name="quantity" value="1">
-                                <button type="submit" class="hero-btn-primary"
-                                        style="font-size:.85rem;padding:.55rem 1.25rem;border:none;cursor:pointer;">
-                                    Mua ngay <i class="bi bi-arrow-right ms-1"></i>
-                                </button>
-                            </form>
-                        </div>
-
-                        <!-- Mobile Layout (green card with product thumbnail) -->
-                        <div class="d-md-none mobile-slide-flex">
-                            <div class="mobile-slide-left">
-                                <h4>Mới nhất: {{ $newestProduct->name }}</h4>
-                                <form method="POST" action="{{ route('cart.buy-now', $newestProduct) }}" class="m-0">
-                                    @csrf
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="mobile-slide0-btn">
-                                        Mua ngay <i class="bi bi-arrow-right"></i>
-                                    </button>
-                                </form>
-                            </div>
-                            <div class="mobile-slide-right">
-                                <img src="{{ $newestProduct->image_url }}" alt="{{ $newestProduct->name }}">
-                            </div>
-                        </div>
-                    @else
-                        {{-- Fallback khi không có sản phẩm --}}
-                        <div class="d-block w-100" style="height:380px;background:linear-gradient(90deg,#047857,#059669);"></div>
-                        <div class="d-flex carousel-caption text-start"
-                             style="left:0;right:auto;bottom:0;top:0;background:rgba(4,120,87,.85);padding:2rem 2.5rem;display:flex;flex-direction:column;justify-content:center;max-width:55%;z-index:5;pointer-events:none;">
-                            <h2 class="fw-black text-white mb-3">{{ $banners[1]['title'] }}</h2>
-                            <a href="{{ $banners[1]['link'] }}" class="hero-btn-primary"
+                            <a href="{{ $banner['link'] }}"
+                               class="hero-btn-primary"
                                style="font-size:.85rem;padding:.55rem 1.25rem;align-self:flex-start;pointer-events:auto;">
                                 Khám phá ngay <i class="bi bi-arrow-right ms-1"></i>
                             </a>
                         </div>
-                    @endif
-                </div>
-                @endif
 
+                        {{-- Mobile: Green card --}}
+                        <div class="d-md-none mobile-slide0-card">
+                            <div>
+                                <h3>{{ $banner['title'] }}</h3>
+                                <a href="{{ $banner['link'] }}" class="mobile-slide0-btn">
+                                    Khám phá ngay <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#homeBanner" data-bs-slide="prev"></button>
             <button class="carousel-control-next" type="button" data-bs-target="#homeBanner" data-bs-slide="next"></button>
@@ -788,8 +735,11 @@
                                 @elseif($product->created_at->gt(now()->subDays(7)))
                                     <span class="badge-corner bg-success text-white">Mới</span>
                                 @endif
-                                <button class="wishlist-btn" onclick="toggleWishlist(this)" title="Yêu thích">
-                                    <i class="bi bi-heart"></i>
+                                @php
+                                    $inWishlist = auth()->check() && auth()->user()->wishlists()->where('product_id', $product->id)->exists();
+                                @endphp
+                                <button class="wishlist-btn {{ $inWishlist ? 'active' : '' }}" onclick="toggleWishlist(this, '{{ $product->id }}')" title="Yêu thích">
+                                    <i class="bi {{ $inWishlist ? 'bi-heart-fill' : 'bi-heart' }}"></i>
                                 </button>
                                 <a href="{{ route('products.show', $product) }}">
                                     <img src="{{ $product->image_url ?: 'https://placehold.co/400x300?text='.urlencode($product->name) }}" alt="{{ $product->name }}" loading="lazy" style="{{ $product->stock <= 0 ? 'filter: grayscale(1); opacity: 0.65;' : '' }}">
@@ -980,12 +930,49 @@
         setInterval(tick, 1000);
     })();
 
-    // Wishlist toggle (UI only)
-    function toggleWishlist(btn) {
-        btn.classList.toggle('active');
-        const icon = btn.querySelector('i');
-        icon.classList.toggle('bi-heart');
-        icon.classList.toggle('bi-heart-fill');
+    // Wishlist toggle (AJAX backend integration)
+    function toggleWishlist(btn, productId) {
+        const isAuthenticated = @json(auth()->check());
+        if (!isAuthenticated) {
+            alert('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích.');
+            window.location.href = "{{ route('login') }}";
+            return;
+        }
+
+        const isActive = btn.classList.contains('active');
+        const url = isActive ? `/wishlist/${productId}` : '/wishlist';
+        const method = isActive ? 'DELETE' : 'POST';
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: method === 'POST' ? JSON.stringify({ product_id: productId }) : null
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                btn.classList.toggle('active');
+                const icon = btn.querySelector('i');
+                if (data.in_wishlist) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                } else {
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                }
+            } else {
+                alert(data.message || 'Có lỗi xảy ra.');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Không thể kết nối đến máy chủ.');
+        });
     }
 </script>
 @endpush
